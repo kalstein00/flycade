@@ -15,3 +15,9 @@ Run typechecking regularly, single test files regularly, and the full test suite
 Once done, call the Skill tool with "code-review" to review the work.
 
 Commit your work to the current branch.
+
+When implementing a ticket, finish by updating the issue tracker:
+
+- If all acceptance criteria are satisfied, comment with the commit, implementation summary, and verification results, then close the ticket.
+- State whether the commit has been pushed.
+- If any acceptance criteria remain unmet, leave the ticket open and comment with the remaining work and blockers.
