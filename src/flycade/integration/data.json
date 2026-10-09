@@ -1,0 +1,52 @@
+{
+  "info": {
+    "player_page": {
+      "address": 109,
+      "type": "|u1"
+    },
+    "player_x": {
+      "address": 134,
+      "type": "|u1"
+    },
+    "screen_page": {
+      "address": 1818,
+      "type": "|u1"
+    },
+    "screen_x": {
+      "address": 1820,
+      "type": "|u1"
+    },
+    "engine": {
+      "address": 14,
+      "type": "|u1"
+    },
+    "lives": {
+      "address": 1882,
+      "type": "|u1"
+    },
+    "world": {
+      "address": 1887,
+      "type": "|u1"
+    },
+    "level": {
+      "address": 1884,
+      "type": "|u1"
+    },
+    "timer_expired": {
+      "address": 1881,
+      "type": "|u1"
+    },
+    "player_y_high": {
+      "address": 181,
+      "type": "|u1"
+    },
+    "mode": {
+      "address": 1904,
+      "type": "|u1"
+    },
+    "time": {
+      "address": 2040,
+      "type": ">n3"
+    }
+  }
+}

@@ -1,0 +1,754 @@
+{
+  "recorded_local_date": "2026-10-10 Asia/Seoul",
+  "scope": "A1 / AC-01 real NES preparation; no training claims",
+  "manifest": {
+    "game": "SuperMarioBros-Nes-v0",
+    "state": "Level1-1",
+    "stable_retro": "1.0.1",
+    "integration_version": "flycade-smb-1",
+    "core": "fceumm",
+    "buttons": [
+      "B",
+      null,
+      "SELECT",
+      "START",
+      "UP",
+      "DOWN",
+      "LEFT",
+      "RIGHT",
+      "A"
+    ],
+    "upstream_sha256": {
+      "Level1-1.state": "905a2e5d8a1bcc8b5955d132a77a8244025d205c2c6a9b07404758d3b84174b5",
+      "rom.sha": "b6b802455068c878076f2ca148e95668e79fc1a1cd8a29edc0b4c70c2a923f52",
+      "data.json": "d82a50603b506d5c06a90122a76a16c4ca1c9ef5ed7b845d4e8f1aa17f916b3a",
+      "scenario.json": "6c2b3ea6a36ba51b10a20ac0f118c7efd0136f50c519be4603e03bea1692bdb4",
+      "metadata.json": "aa374d335d017f410c7aa2e956c3d4589d3d71d94710bd62f268efcb5a76d433"
+    },
+    "rom_payload_sha1": "facee9c577a5262dbe33ac4930bb0b58c8c037f7",
+    "available_states": [
+      "Level1-1",
+      "Level1-1-99lives",
+      "Level1-4",
+      "Level2-1",
+      "Level2-1-clouds",
+      "Level2-1-clouds-easy",
+      "Level3-1",
+      "Level4-1",
+      "Level5-1",
+      "Level6-1",
+      "Level7-1",
+      "Level8-1"
+    ],
+    "core_sha256": "b60f93804e63d421b838b900458e086ca2f26a22d2a4ddb157f0c13a21086724",
+    "custom_sha256": {
+      "data.json": "1739364596573936a6c4ba52b160b5ad07e327bd607525c99c5c13feba04a397",
+      "scenario.json": "fd5add1082b332fdf04ac3ff7cd801097fd6b844d1efae60abc6f5231e4794de"
+    },
+    "rom_sha256": "f61548fdf1670cffefcc4f0b7bdcdd9eaba0c226e3b74f8666071496988248de",
+    "evidence": "artifacts verified; NES execution unverified"
+  },
+  "diagnostics": {
+    "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "wsl": true,
+    "python": "3.12.9 (main, Mar 11 2025, 17:26:57) [Clang 20.1.0 ]",
+    "cpu": {
+      "name": "AMD Ryzen 7 7800X3D 8-Core Processor",
+      "logical_count": 16,
+      "available_count": 16
+    },
+    "memory": {
+      "windows_total_bytes": 33520857088,
+      "linux_total_bytes": 16356294656,
+      "linux_available_bytes": 12768346112,
+      "cgroup_limits_bytes": [],
+      "effective_limit_bytes": 16356294656
+    },
+    "disk": {
+      "directory": "/home/kalstein/vscode/flycade/reports/a1-first",
+      "free_bytes": 46703362048,
+      "total_bytes": 269427478528
+    },
+    "gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 5090",
+        "total_vram_mib": 32607,
+        "free_vram_mib": 29301,
+        "driver": "610.88"
+      }
+    ],
+    "packages": {
+      "stable-retro": "1.0.1",
+      "gymnasium": "1.4.0",
+      "numpy": "2.5.3",
+      "pillow": "12.3.0",
+      "torch": null,
+      "stable-baselines3": null
+    },
+    "issues": [],
+    "capabilities": {
+      "diagnostics": "available",
+      "nes_demo": "dependencies import; ROM/state validation required",
+      "gpu_training": "unverified: follow-up ticket",
+      "connectome_training": "unverified: follow-up ticket"
+    }
+  },
+  "reset": {
+    "position": 40,
+    "screen_position": 0,
+    "max_progress": 0,
+    "frames": 0,
+    "executed_frames": 0,
+    "reason": null,
+    "game": {
+      "engine": 8,
+      "mode": 1,
+      "player_page": 0,
+      "level": 0,
+      "lives": 2,
+      "player_x": 40,
+      "player_y_high": 1,
+      "screen_page": 0,
+      "screen_x": 0,
+      "time": 400,
+      "timer_expired": 0,
+      "world": 0
+    }
+  },
+  "native_shape": [
+    224,
+    240,
+    3
+  ],
+  "runs": {
+    "a1-first": {
+      "started_utc": "2026-10-09T17:06:40.719634+00:00",
+      "transitions": 120,
+      "contract": {
+        "config": {
+          "width": 84,
+          "height": 84,
+          "color": "RGB",
+          "frame_stack": 4,
+          "action_repeat": 4,
+          "progress_reward": 1.0,
+          "survival_reward": 0.0,
+          "death_reward": -10.0,
+          "completion_reward": 100.0,
+          "no_progress_frames": 600,
+          "max_frames": 480
+        },
+        "actions": [
+          [],
+          [
+            "RIGHT"
+          ],
+          [
+            "RIGHT",
+            "A"
+          ],
+          [
+            "RIGHT",
+            "B"
+          ],
+          [
+            "RIGHT",
+            "B",
+            "A"
+          ],
+          [
+            "A"
+          ],
+          [
+            "LEFT"
+          ]
+        ],
+        "button_order": [
+          "B",
+          null,
+          "SELECT",
+          "START",
+          "UP",
+          "DOWN",
+          "LEFT",
+          "RIGHT",
+          "A"
+        ],
+        "observation_shape": [
+          4,
+          84,
+          84,
+          3
+        ],
+        "observation_dtype": "uint8",
+        "resize": "Pillow bilinear",
+        "frame_stack_order": "oldest to newest; last frame of each action repeat",
+        "policy_input": "pixels only",
+        "reward_unit": "per emulated frame"
+      },
+      "last_transition": {
+        "transition": 120,
+        "action": 0,
+        "buttons": [],
+        "reward": 4.0,
+        "terminated": false,
+        "truncated": true,
+        "observation_sha256": "8ae022f7c1b2412b24088cf5bef1824014ed499df3188ed7a5716cbf945ac009",
+        "position": 584,
+        "screen_position": 471,
+        "max_progress": 544,
+        "frames": 480,
+        "executed_frames": 4,
+        "reason": "external_limit",
+        "game": {
+          "engine": 8,
+          "mode": 1,
+          "player_page": 2,
+          "level": 0,
+          "lives": 2,
+          "player_x": 72,
+          "player_y_high": 1,
+          "screen_page": 1,
+          "screen_x": 215,
+          "time": 380,
+          "timer_expired": 0,
+          "world": 0
+        }
+      },
+      "total_reward": 544.0,
+      "artifacts_sha256": {
+        "last-screen.png": "dd4f2b5fbabc154fd88c84221e19131e96334baeaa15fc0b8d2eb269f5b4180c",
+        "reset-policy.npy": "97fa848dbb108996026d0eeb1f2487dc13cd26bed2e30c9e2f4603b0aff318cd",
+        "last-policy.npy": "76a71b5b0efabb51245a4a7c4d388e7859fd044e18b9217d1f8a563eeeed2f5e",
+        "reset-screen.png": "ddaa67ae5fd9a787cb3c9f76f02cd2a3108b109971ebea94c32196dd2dcd98e0",
+        "last-policy.png": "f9403001a7ab22a9b59b84a009270fc0a0692ca0c4d1bc2d391a89db74c172cc",
+        "transitions.jsonl": "fcc00e1dfdabffd23e5d61052467d7f6824e519ef926726acf6eae492e6b7af7",
+        "reset-policy.png": "c876b1bae9ca7f176c53649222789b928375520d75beff0c379db9cc451a176f",
+        "report.json": "46e1614a2aa48c60c6930fe57ce121535ff5b7891d79e3ac58195e37102e6842"
+      },
+      "backtracking_samples": [
+        {
+          "before": 437,
+          "after": 436,
+          "reward": 0.0
+        }
+      ],
+      "page_crossing_samples": [
+        {
+          "before": 252,
+          "after": 258,
+          "reward": 6.0
+        },
+        {
+          "before": 510,
+          "after": 516,
+          "reward": 6.0
+        }
+      ]
+    },
+    "a1-death": {
+      "started_utc": "2026-10-09T17:07:03.392653+00:00",
+      "transitions": 48,
+      "contract": {
+        "config": {
+          "width": 84,
+          "height": 84,
+          "color": "RGB",
+          "frame_stack": 4,
+          "action_repeat": 4,
+          "progress_reward": 1.0,
+          "survival_reward": 0.0,
+          "death_reward": -10.0,
+          "completion_reward": 100.0,
+          "no_progress_frames": 600,
+          "max_frames": 1200
+        },
+        "actions": [
+          [],
+          [
+            "RIGHT"
+          ],
+          [
+            "RIGHT",
+            "A"
+          ],
+          [
+            "RIGHT",
+            "B"
+          ],
+          [
+            "RIGHT",
+            "B",
+            "A"
+          ],
+          [
+            "A"
+          ],
+          [
+            "LEFT"
+          ]
+        ],
+        "button_order": [
+          "B",
+          null,
+          "SELECT",
+          "START",
+          "UP",
+          "DOWN",
+          "LEFT",
+          "RIGHT",
+          "A"
+        ],
+        "observation_shape": [
+          4,
+          84,
+          84,
+          3
+        ],
+        "observation_dtype": "uint8",
+        "resize": "Pillow bilinear",
+        "frame_stack_order": "oldest to newest; last frame of each action repeat",
+        "policy_input": "pixels only",
+        "reward_unit": "per emulated frame"
+      },
+      "last_transition": {
+        "transition": 48,
+        "action": 1,
+        "buttons": [
+          "RIGHT"
+        ],
+        "reward": -7.0,
+        "terminated": true,
+        "truncated": false,
+        "observation_sha256": "a9ce1542b9b11be4a5c32bf0ac0e02fe5f3a4cac0dff106333d1b3700f196199",
+        "position": 297,
+        "screen_position": 185,
+        "max_progress": 255,
+        "frames": 191,
+        "executed_frames": 3,
+        "reason": "death",
+        "game": {
+          "engine": 11,
+          "mode": 1,
+          "player_page": 1,
+          "level": 0,
+          "lives": 2,
+          "player_x": 41,
+          "player_y_high": 1,
+          "screen_page": 0,
+          "screen_x": 185,
+          "time": 392,
+          "timer_expired": 0,
+          "world": 0
+        }
+      },
+      "total_reward": 245.0,
+      "artifacts_sha256": {
+        "last-screen.png": "375b9ffd660ec4a3a13744b9138b8bdb1f95a9fa87bc6e1fad301b9eeccae1a8",
+        "reset-policy.npy": "97fa848dbb108996026d0eeb1f2487dc13cd26bed2e30c9e2f4603b0aff318cd",
+        "last-policy.npy": "78e464d7875c75a9b3d7b876e632f256eedcc0376b61f9462bb032caaba4c522",
+        "reset-screen.png": "ddaa67ae5fd9a787cb3c9f76f02cd2a3108b109971ebea94c32196dd2dcd98e0",
+        "last-policy.png": "df3a334f6b3c38f5e32a29c5999e1028d8adf00d21e44c1f9213b7c468b48281",
+        "transitions.jsonl": "16231bcfd2619f850e0b81b71014362fca455c42116082974274d6161042b629",
+        "reset-policy.png": "c876b1bae9ca7f176c53649222789b928375520d75beff0c379db9cc451a176f",
+        "report.json": "548ad88234a95c9fe1b734b93dbc0c4c6a22f182fb05c7e2fcd7a65a4a525115"
+      },
+      "backtracking_samples": [],
+      "page_crossing_samples": [
+        {
+          "before": 250,
+          "after": 256,
+          "reward": 6.0
+        }
+      ]
+    },
+    "a1-stall": {
+      "started_utc": "2026-10-09T17:07:04.274999+00:00",
+      "transitions": 150,
+      "contract": {
+        "config": {
+          "width": 84,
+          "height": 84,
+          "color": "RGB",
+          "frame_stack": 4,
+          "action_repeat": 4,
+          "progress_reward": 1.0,
+          "survival_reward": 0.0,
+          "death_reward": -10.0,
+          "completion_reward": 100.0,
+          "no_progress_frames": 600,
+          "max_frames": 800
+        },
+        "actions": [
+          [],
+          [
+            "RIGHT"
+          ],
+          [
+            "RIGHT",
+            "A"
+          ],
+          [
+            "RIGHT",
+            "B"
+          ],
+          [
+            "RIGHT",
+            "B",
+            "A"
+          ],
+          [
+            "A"
+          ],
+          [
+            "LEFT"
+          ]
+        ],
+        "button_order": [
+          "B",
+          null,
+          "SELECT",
+          "START",
+          "UP",
+          "DOWN",
+          "LEFT",
+          "RIGHT",
+          "A"
+        ],
+        "observation_shape": [
+          4,
+          84,
+          84,
+          3
+        ],
+        "observation_dtype": "uint8",
+        "resize": "Pillow bilinear",
+        "frame_stack_order": "oldest to newest; last frame of each action repeat",
+        "policy_input": "pixels only",
+        "reward_unit": "per emulated frame"
+      },
+      "last_transition": {
+        "transition": 150,
+        "action": 0,
+        "buttons": [],
+        "reward": 0.0,
+        "terminated": false,
+        "truncated": true,
+        "observation_sha256": "884b72687bc44aca5eedb2b55ce2b8af803e2801eecb7888aa90ae1baba4eeb4",
+        "position": 40,
+        "screen_position": 0,
+        "max_progress": 0,
+        "frames": 600,
+        "executed_frames": 4,
+        "reason": "no_progress",
+        "game": {
+          "engine": 8,
+          "mode": 1,
+          "player_page": 0,
+          "level": 0,
+          "lives": 2,
+          "player_x": 40,
+          "player_y_high": 1,
+          "screen_page": 0,
+          "screen_x": 0,
+          "time": 375,
+          "timer_expired": 0,
+          "world": 0
+        }
+      },
+      "total_reward": 0.0,
+      "artifacts_sha256": {
+        "last-screen.png": "40ac84ab907efaac8b9a78360762b730d65446fb5e0994119cfd76898c3f04b9",
+        "reset-policy.npy": "97fa848dbb108996026d0eeb1f2487dc13cd26bed2e30c9e2f4603b0aff318cd",
+        "last-policy.npy": "eea5e91767fcd30cdedaac59748f3df2443a3b9f5bab35aaf2537e2aa64b4b72",
+        "reset-screen.png": "ddaa67ae5fd9a787cb3c9f76f02cd2a3108b109971ebea94c32196dd2dcd98e0",
+        "last-policy.png": "f93e1b147a11865f6c73f82131465840cd2cd3945418dcaf84f60cfc686507e6",
+        "transitions.jsonl": "4fa0d59fcecbe136c41b765dca67e8051d6d1407721bbcdd0a372d52868eec59",
+        "reset-policy.png": "c876b1bae9ca7f176c53649222789b928375520d75beff0c379db9cc451a176f",
+        "report.json": "ed59c3c8625c8c6ca47fbc31d1d7e90cb97360237dc8db9e9592b4df82dca838"
+      },
+      "backtracking_samples": [],
+      "page_crossing_samples": []
+    },
+    "a1-timeout": {
+      "started_utc": "2026-10-09T17:07:05.303464+00:00",
+      "transitions": 2403,
+      "contract": {
+        "config": {
+          "width": 84,
+          "height": 84,
+          "color": "RGB",
+          "frame_stack": 4,
+          "action_repeat": 4,
+          "progress_reward": 1.0,
+          "survival_reward": 0.0,
+          "death_reward": -10.0,
+          "completion_reward": 100.0,
+          "no_progress_frames": 30000,
+          "max_frames": 24000
+        },
+        "actions": [
+          [],
+          [
+            "RIGHT"
+          ],
+          [
+            "RIGHT",
+            "A"
+          ],
+          [
+            "RIGHT",
+            "B"
+          ],
+          [
+            "RIGHT",
+            "B",
+            "A"
+          ],
+          [
+            "A"
+          ],
+          [
+            "LEFT"
+          ]
+        ],
+        "button_order": [
+          "B",
+          null,
+          "SELECT",
+          "START",
+          "UP",
+          "DOWN",
+          "LEFT",
+          "RIGHT",
+          "A"
+        ],
+        "observation_shape": [
+          4,
+          84,
+          84,
+          3
+        ],
+        "observation_dtype": "uint8",
+        "resize": "Pillow bilinear",
+        "frame_stack_order": "oldest to newest; last frame of each action repeat",
+        "policy_input": "pixels only",
+        "reward_unit": "per emulated frame"
+      },
+      "last_transition": {
+        "transition": 2403,
+        "action": 0,
+        "buttons": [],
+        "reward": -10.0,
+        "terminated": true,
+        "truncated": false,
+        "observation_sha256": "c7e56967826457147e926120d0eb54433698ebea10ab34d3015d35d9479d1f33",
+        "position": 40,
+        "screen_position": 0,
+        "max_progress": 0,
+        "frames": 9612,
+        "executed_frames": 4,
+        "reason": "game_timeout",
+        "game": {
+          "engine": 11,
+          "mode": 1,
+          "player_page": 0,
+          "level": 0,
+          "lives": 2,
+          "player_x": 40,
+          "player_y_high": 1,
+          "screen_page": 0,
+          "screen_x": 0,
+          "time": 0,
+          "timer_expired": 1,
+          "world": 0
+        }
+      },
+      "total_reward": -10.0,
+      "artifacts_sha256": {
+        "last-screen.png": "6d8e722e085569b71994d8c2affcca8d1eb805f108c12418a18c5909b5a32956",
+        "reset-policy.npy": "97fa848dbb108996026d0eeb1f2487dc13cd26bed2e30c9e2f4603b0aff318cd",
+        "last-policy.npy": "9d43fdfd39b086f8131c5df4eaa13ea18937fce99f54fa69b25b955c6ca02f5c",
+        "reset-screen.png": "ddaa67ae5fd9a787cb3c9f76f02cd2a3108b109971ebea94c32196dd2dcd98e0",
+        "last-policy.png": "ff9532a2edb3985092548a0f7666afcad1644922c16d94633f48e5c3d73acafc",
+        "transitions.jsonl": "5dccc78ff8bafc05a9b78139ba77b39afc885f9400821f63b510ea0c960fab01",
+        "reset-policy.png": "c876b1bae9ca7f176c53649222789b928375520d75beff0c379db9cc451a176f",
+        "report.json": "9aaa95d2efc1d7d882a78938228a623f1e697506b5712d177e4641b44d1a83c0"
+      },
+      "backtracking_samples": [],
+      "page_crossing_samples": []
+    },
+    "a1-completion": {
+      "started_utc": "2026-10-09T17:10:17.278884+00:00",
+      "transitions": 341,
+      "contract": {
+        "config": {
+          "width": 84,
+          "height": 84,
+          "color": "RGB",
+          "frame_stack": 4,
+          "action_repeat": 4,
+          "progress_reward": 1.0,
+          "survival_reward": 0.0,
+          "death_reward": -10.0,
+          "completion_reward": 100.0,
+          "no_progress_frames": 600,
+          "max_frames": 1368
+        },
+        "actions": [
+          [],
+          [
+            "RIGHT"
+          ],
+          [
+            "RIGHT",
+            "A"
+          ],
+          [
+            "RIGHT",
+            "B"
+          ],
+          [
+            "RIGHT",
+            "B",
+            "A"
+          ],
+          [
+            "A"
+          ],
+          [
+            "LEFT"
+          ]
+        ],
+        "button_order": [
+          "B",
+          null,
+          "SELECT",
+          "START",
+          "UP",
+          "DOWN",
+          "LEFT",
+          "RIGHT",
+          "A"
+        ],
+        "observation_shape": [
+          4,
+          84,
+          84,
+          3
+        ],
+        "observation_dtype": "uint8",
+        "resize": "Pillow bilinear",
+        "frame_stack_order": "oldest to newest; last frame of each action repeat",
+        "policy_input": "pixels only",
+        "reward_unit": "per emulated frame"
+      },
+      "last_transition": {
+        "transition": 341,
+        "action": 3,
+        "buttons": [
+          "RIGHT",
+          "B"
+        ],
+        "reward": 100.0,
+        "terminated": true,
+        "truncated": false,
+        "observation_sha256": "4aed0ed655ff0aaf971fc8acbe6ae88ac35888d49abee60b71cccc7b6d3946fe",
+        "position": 3161,
+        "screen_position": 3048,
+        "max_progress": 3121,
+        "frames": 1361,
+        "executed_frames": 1,
+        "reason": "completion",
+        "game": {
+          "engine": 5,
+          "mode": 1,
+          "player_page": 12,
+          "level": 0,
+          "lives": 2,
+          "player_x": 89,
+          "player_y_high": 1,
+          "screen_page": 11,
+          "screen_x": 232,
+          "time": 346,
+          "timer_expired": 0,
+          "world": 0
+        }
+      },
+      "total_reward": 3221.0,
+      "artifacts_sha256": {
+        "last-screen.png": "3fa5e5b864472903ed51042c6cfac17aaa1e0ebdc58697fd6db1d410f67d33dd",
+        "reset-policy.npy": "97fa848dbb108996026d0eeb1f2487dc13cd26bed2e30c9e2f4603b0aff318cd",
+        "last-policy.npy": "214644e01e032f18afb6b6f3de502228a73a6ecd6a0fc7e8fe92a8419fe938dd",
+        "reset-screen.png": "ddaa67ae5fd9a787cb3c9f76f02cd2a3108b109971ebea94c32196dd2dcd98e0",
+        "last-policy.png": "9fdbc53935bf40d7e116b11c78fe6b363f9ffbe3ed2e5efa98d652249a59b719",
+        "transitions.jsonl": "7f1796788f4ac343a2fe63f66991cf2db5a5420465af814fc30fb660f97e0846",
+        "reset-policy.png": "c876b1bae9ca7f176c53649222789b928375520d75beff0c379db9cc451a176f",
+        "report.json": "b50af89af967b21897af31fe694935943fb27a844b8f2aa2362b9c7d4ce7a4ab"
+      },
+      "backtracking_samples": [],
+      "page_crossing_samples": [
+        {
+          "before": 254,
+          "after": 264,
+          "reward": 10.0
+        },
+        {
+          "before": 504,
+          "after": 514,
+          "reward": 10.0
+        },
+        {
+          "before": 764,
+          "after": 774,
+          "reward": 10.0
+        },
+        {
+          "before": 1014,
+          "after": 1024,
+          "reward": 10.0
+        },
+        {
+          "before": 1274,
+          "after": 1284,
+          "reward": 10.0
+        },
+        {
+          "before": 1534,
+          "after": 1544,
+          "reward": 10.0
+        },
+        {
+          "before": 1784,
+          "after": 1794,
+          "reward": 10.0
+        },
+        {
+          "before": 2044,
+          "after": 2054,
+          "reward": 10.0
+        },
+        {
+          "before": 2294,
+          "after": 2304,
+          "reward": 10.0
+        },
+        {
+          "before": 2557,
+          "after": 2567,
+          "reward": 10.0
+        },
+        {
+          "before": 2807,
+          "after": 2817,
+          "reward": 10.0
+        },
+        {
+          "before": 3062,
+          "after": 3072,
+          "reward": 10.0
+        }
+      ]
+    }
+  }
+}

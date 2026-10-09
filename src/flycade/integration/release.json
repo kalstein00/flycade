@@ -1,0 +1,26 @@
+{
+  "game": "SuperMarioBros-Nes-v0",
+  "state": "Level1-1",
+  "stable_retro": "1.0.1",
+  "integration_version": "flycade-smb-1",
+  "core": "fceumm",
+  "buttons": [
+    "B",
+    null,
+    "SELECT",
+    "START",
+    "UP",
+    "DOWN",
+    "LEFT",
+    "RIGHT",
+    "A"
+  ],
+  "upstream_sha256": {
+    "Level1-1.state": "905a2e5d8a1bcc8b5955d132a77a8244025d205c2c6a9b07404758d3b84174b5",
+    "rom.sha": "b6b802455068c878076f2ca148e95668e79fc1a1cd8a29edc0b4c70c2a923f52",
+    "data.json": "d82a50603b506d5c06a90122a76a16c4ca1c9ef5ed7b845d4e8f1aa17f916b3a",
+    "scenario.json": "6c2b3ea6a36ba51b10a20ac0f118c7efd0136f50c519be4603e03bea1692bdb4",
+    "metadata.json": "aa374d335d017f410c7aa2e956c3d4589d3d71d94710bd62f268efcb5a76d433"
+  },
+  "rom_payload_sha1": "facee9c577a5262dbe33ac4930bb0b58c8c037f7"
+}
