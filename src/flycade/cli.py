@@ -49,6 +49,15 @@ def main() -> int:
     training.add_argument('--seed', type=int)
     training.add_argument('--training-config', type=Path)
     training.add_argument('--config', type=Path, help='GameConfig JSON')
+    training.add_argument('--stop-after-updates', type=int, help='Save and stop this session; preserve total budget')
+    resume_parser = sub.add_parser('resume')
+    resume_parser.add_argument('output', type=Path)
+    resume_parser.add_argument('--home', type=Path, default=Path('.flycade'))
+    resume_parser.add_argument('--stop-after-updates', type=int)
+    history = sub.add_parser('history')
+    history.add_argument('output', type=Path)
+    history.add_argument('--serve', action='store_true', help='Read-only local browser playback')
+    history.add_argument('--port', type=int, default=8765)
     args = parser.parse_args()
     try:
         if args.command == 'diagnose':
@@ -68,6 +77,16 @@ def main() -> int:
             report = prepare_graph(args.cache, args.source_manifest or DEFAULT_SOURCE, args.config, args.output)
         elif args.command == 'inspect':
             report = inspect_registration(args.home)
+        elif args.command == 'history':
+            from flycade.recording import recording_history
+            if args.serve:
+                from flycade.history import serve_history
+                report = serve_history(args.output, args.port)
+            else:
+                report = recording_history(args.output)
+        elif args.command == 'resume':
+            from flycade.training import resume
+            report = resume(args.output, args.home, args.stop_after_updates)
         elif args.command == 'train':
             from flycade.game import GameConfig
             from flycade.training import TrainingConfig, train
@@ -76,7 +95,7 @@ def main() -> int:
                              if getattr(args, name) is not None})
             game = GameConfig(**json.loads(args.config.read_text())) if args.config else GameConfig()
             report = train(args.home, args.graph, args.output, TrainingConfig(**settings),
-                           game, args.device, args.fixture)
+                           game, args.device, args.fixture, args.stop_after_updates)
         else:
             from flycade.demo import demo
             from flycade.game import GameConfig

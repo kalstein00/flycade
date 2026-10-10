@@ -140,8 +140,36 @@ Run 출력은 다음과 같다.
 - `control-pixels.npy`, `report.json`: 고정 입력에서 동일 정책의 연결 제거 전후 행동 확률, 유효 갱신·전체 파라미터 변화·시간·자원·환경 종료 결과.
 - `transitions.jsonl`: 행동 확률·선택 행동·보상·관측 해시·종료 사유와 내부 프레임 수. RAM 진단은 로그에만 있고 정책 입력에 섞지 않는다.
 - `updates.jsonl`: 완료된 PPO 갱신별 누적 전이·프레임·완료 에피소드·성과·loss·entropy·gradient·비정상 수치·전이/초. `updates`는 rollout 학습 완료 횟수, `optimizer_steps`는 Adam 갱신 수다.
-- `final.pt`: rollout과 해당 optimizer epoch가 모두 끝난 안전 경계의 모델·optimizer·RNG·진도·manifest. 아직 새 프로세스 resume·원자 저장·손상 복구 계약을 제공하는 체크포인트 형식은 아니다.
+- `checkpoints/`, `latest.json`, `final.pt`: 안전 경계의 전체 학습 상태와 정상본 포인터. `final.pt`는 마지막 정상본의 편의 링크다. 새 프로세스 재개는 아래 절을 따른다.
 
-예산은 `updates × rollout_steps` 환경 전이다. 예산 종료 시 진행 중인 에피소드는 완료로 세지 않는다. 에뮬레이터는 같은 프로세스에 하나만 있으며 종료·예외·Ctrl+C에서 닫는다. Ctrl+C는 즉시 중단하고 실패/부분 보고서를 남기므로 `final.pt` 저장을 보장하지 않는다. 안전한 저장 요청과 재개는 후속 T04 범위다.
+예산은 `updates × rollout_steps` 환경 전이다. 예산 종료 시 진행 중인 에피소드는 완료로 세지 않는다. 에뮬레이터는 같은 프로세스에 하나만 있으며 종료·예외·Ctrl+C에서 닫는다. Ctrl+C는 현재 rollout과 optimizer 갱신 완료 후 저장·종료를 요청한다. 예외로 갱신이 실패하면 기존 정상 체크포인트를 보존한다.
 
 작은 CPU fixture와 실제 NES·RTX 5090의 분리된 결과, 라이브러리 선택 근거와 남은 불확실성은 [A3 검증 기록](docs/validation/A3.md)을 참고한다. 이 결과는 플랫폼 갱신 성공이며 초기 정책 대비 행동 성능 개선을 뜻하지 않는다.
+
+## 저장 후 종료, 재개, 플레이 영상
+
+새 Run의 `--updates`는 **전체 학습 예산**이다. `--stop-after-updates`는 이번 세션에서 실행할 갱신 수만 제한한다. 학습 도중 **Ctrl+C**를 눌러도 현재 rollout과 optimizer 갱신을 끝낸 뒤 안전하게 저장·종료한다. 완료 JSON의 `status: saved` 또는 `completed`, `environment_closed: true`를 확인한 뒤 PC를 종료한다.
+
+```bash
+uv run --offline --locked --extra graph --extra train flycade train \
+  --graph .flycade/graphs/visual-a2-final-001 --output reports/my-run \
+  --updates 1000 --stop-after-updates 10
+uv run --offline --locked --extra graph --extra train flycade resume reports/my-run
+```
+
+재개는 같은 Run에 새 세션을 만들며 모델·optimizer·난수·누적 진도를 이어받는다. **게임은 새 에피소드**로 시작한다. 전체 예산이 끝난 Run의 재개는 거부한다. 예산 연장·과거 분기·주기 자동 저장은 후속 범위다. `latest.json`이 가리키는 정상 체크포인트를 사용하며, 이전 정상본도 `checkpoints/`에 남긴다. 기존 A3의 단순 `final.pt` snapshot은 전체 재개 형식과 달라 지원하지 않는다.
+
+학습 플레이는 기본으로 **VP9 WebM, 12fps, CRF 45, 원본 게임 크기, 무음**으로 녹화한다. `ffmpeg`의 `libvpx-vp9` 인코더가 필요하다(Ubuntu: `sudo apt install ffmpeg`). 실제 게임 프레임 5장마다 1장을 스트리밍하고, 최대 60초씩 나눠 저장한다. 녹화 오류는 보고서의 `recording_error`로 알리고 학습 저장은 계속한다. 완성된 영상은 자동 삭제하지 않으므로 디스크 사용량을 확인한다.
+
+```bash
+# JSON 내역
+uv run --offline --locked --extra graph --extra train flycade history reports/my-run
+# Windows 브라우저에서 http://127.0.0.1:8765/ 열기
+uv run --offline --locked --extra graph --extra train flycade history reports/my-run --serve
+```
+
+목록에서 영상을 선택하고 재생·일시정지·탐색한다. 화면을 닫아도 저장된 파일은 유지된다. 새 녹화는 새로고침하면 나타난다. 이 화면은 학습 기록 영상이며 실시간 관찰·정책 평가·회로 활동 재생은 아니다. 서버는 loopback에만 바인딩하고 학습 상태를 쓰지 않는다.
+
+재개 호환성은 Python 소스 전체의 SHA-256, lock·패키지·Python/CUDA 버전, Run 설정 및 graph/ROM/state/초기 모델 해시가 동일한 경우로 한정한다. Git 커밋 ID는 출처 기록이며 문서만 바뀐 커밋은 허용된다. 코드 변경 후 부분 가중치 로드로 우회하지 않는다. 체크포인트는 Python/NumPy RNG를 포함한 로컬 신뢰 파일만 로드한다. 상세 계약과 실제 검증은 [A4 기록](docs/validation/A4.md)을 참조한다.
+
+브라우저 테스트 준비: `uv run playwright install chromium`. 자동 검증: `uv run --offline --locked --extra graph --extra train pytest -q`.

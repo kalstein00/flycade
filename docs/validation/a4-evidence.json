@@ -1,0 +1,508 @@
+{
+  "control": {
+    "output": "/home/kalstein/vscode/flycade/reports/a4-nes-5090-002/control",
+    "run_id": "a79d3c27-be2d-4eaa-a953-f83ee1096a95",
+    "session_id": "999cc801-ea01-46cd-82b2-e19920505901",
+    "evidence": "real NES on cuda",
+    "status": "completed",
+    "transitions": 16,
+    "emulator_frames": 64,
+    "updates": 4,
+    "optimizer_steps": 8,
+    "episodes": 4,
+    "episode_outcomes": {
+      "external_limit": 4
+    },
+    "reward_sum": 6.0,
+    "max_progress": 5,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 16
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.13501065969467163,
+          0.1331796795129776,
+          0.13726885616779327,
+          0.149994358420372,
+          0.15055043995380402,
+          0.13946370780467987,
+          0.1545322835445404
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14366517961025238,
+          0.14164121448993683,
+          0.14318563044071198,
+          0.14242911338806152,
+          0.14349770545959473,
+          0.14200611412525177,
+          0.1435750424861908
+        ]
+      ],
+      "max_probability_delta": 0.01095724105834961,
+      "passed": true
+    },
+    "loss": -0.08572115004062653,
+    "policy_loss": -0.11328370869159698,
+    "value_loss": 0.0882350355386734,
+    "entropy": 1.6554958820343018,
+    "approx_kl": 0.015280187129974365,
+    "clip_fraction": 0.0,
+    "gradient_l2": {
+      "encoder.0.weight": 6.037029266357422,
+      "encoder.0.bias": 0.9150870442390442,
+      "encoder.4.weight": 0.5788072943687439,
+      "encoder.4.bias": 0.19627350568771362,
+      "actor.weight": 4.957998275756836,
+      "actor.bias": 0.4566458463668823,
+      "critic.weight": 3.2173848152160645,
+      "critic.bias": 0.2963472306728363
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.021628815680742264,
+      "encoder.0.bias": 0.0023141521960496902,
+      "encoder.4.weight": 1.5786212682724,
+      "encoder.4.bias": 0.14322006702423096,
+      "actor.weight": 0.23899339139461517,
+      "actor.bias": 0.002174555091187358,
+      "critic.weight": 0.15343089401721954,
+      "critic.bias": 0.0014800271019339561
+    },
+    "training_seconds": 1.508883188000027,
+    "transitions_per_second": 10.603869224103061,
+    "checkpoint_id": "017f4e36-5ee4-481a-a94a-ad111ace0fc3",
+    "final_sha256": "a092da8c0d1aa8d15f74d1038fe606145ccabc9d041d0a48afc16f0d17f466ba",
+    "recording_error": null,
+    "recording_status": "complete",
+    "wall_seconds": 1.707680284999924,
+    "peak_rss_bytes": 2335752192,
+    "peak_cuda_allocated_bytes": 72292352
+  },
+  "saved": {
+    "output": "/home/kalstein/vscode/flycade/reports/a4-nes-5090-002/resumed",
+    "run_id": "cd3edd9a-c37f-468e-88a3-9e33b2b59f53",
+    "session_id": "e21c1468-0e7f-4442-880c-808f782e5d22",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 8,
+    "emulator_frames": 32,
+    "updates": 2,
+    "optimizer_steps": 4,
+    "episodes": 2,
+    "episode_outcomes": {
+      "external_limit": 2
+    },
+    "reward_sum": 1.0,
+    "max_progress": 1,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 16
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.13501065969467163,
+          0.1331796795129776,
+          0.13726885616779327,
+          0.149994358420372,
+          0.15055043995380402,
+          0.13946370780467987,
+          0.1545322835445404
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14366517961025238,
+          0.14164121448993683,
+          0.14318563044071198,
+          0.14242911338806152,
+          0.14349770545959473,
+          0.14200611412525177,
+          0.1435750424861908
+        ]
+      ],
+      "max_probability_delta": 0.01095724105834961,
+      "passed": true
+    },
+    "loss": -0.09664977341890335,
+    "policy_loss": -0.15691164135932922,
+    "value_loss": 0.15748772025108337,
+    "entropy": 1.8481991291046143,
+    "approx_kl": 0.019341260194778442,
+    "clip_fraction": 0.5,
+    "gradient_l2": {
+      "encoder.0.weight": 4.463311195373535,
+      "encoder.0.bias": 0.6854996681213379,
+      "encoder.4.weight": 0.5104022026062012,
+      "encoder.4.bias": 0.17431075870990753,
+      "actor.weight": 3.006274700164795,
+      "actor.bias": 0.2825867533683777,
+      "critic.weight": 4.220585823059082,
+      "critic.bias": 0.39672258496284485
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.01748131960630417,
+      "encoder.0.bias": 0.001826649415306747,
+      "encoder.4.weight": 0.9939776062965393,
+      "encoder.4.bias": 0.08932992815971375,
+      "actor.weight": 0.18254218995571136,
+      "actor.bias": 0.0016802133759483695,
+      "critic.weight": 0.09761201590299606,
+      "critic.bias": 0.0009209644049406052
+    },
+    "training_seconds": 1.2810648639999727,
+    "transitions_per_second": 6.244804790774568,
+    "checkpoint_id": "9a4b658a-4a63-4a28-a23a-840d0f1956d6",
+    "final_sha256": "75d424dcf750bf192fb9e80a0f141154291d0406ef38fd1bdcb19881e0f2aa93",
+    "recording_error": null,
+    "recording_status": "complete",
+    "wall_seconds": 1.4336359359999733,
+    "peak_rss_bytes": 2358374400,
+    "peak_cuda_allocated_bytes": 72292352
+  },
+  "resumed": {
+    "output": "/home/kalstein/vscode/flycade/reports/a4-nes-5090-002/resumed",
+    "run_id": "cd3edd9a-c37f-468e-88a3-9e33b2b59f53",
+    "session_id": "4e7adb41-cf63-48ca-b305-a82b446ecf5b",
+    "evidence": "real NES on cuda",
+    "status": "completed",
+    "transitions": 16,
+    "emulator_frames": 64,
+    "updates": 4,
+    "optimizer_steps": 8,
+    "episodes": 4,
+    "episode_outcomes": {
+      "external_limit": 4
+    },
+    "reward_sum": 6.0,
+    "max_progress": 5,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 16
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.04668145254254341,
+          0.17627891898155212,
+          0.09156379103660583,
+          0.1647089421749115,
+          0.0891755074262619,
+          0.28720948100090027,
+          0.14438195526599884
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14353416860103607,
+          0.14176413416862488,
+          0.14313258230686188,
+          0.14245033264160156,
+          0.1434135138988495,
+          0.14211440086364746,
+          0.14359083771705627
+        ]
+      ],
+      "max_probability_delta": 0.1450950801372528,
+      "passed": true
+    },
+    "loss": -0.08572115004062653,
+    "policy_loss": -0.11328370869159698,
+    "value_loss": 0.0882350355386734,
+    "entropy": 1.6554958820343018,
+    "approx_kl": 0.015280187129974365,
+    "clip_fraction": 0.0,
+    "gradient_l2": {
+      "encoder.0.weight": 6.037029266357422,
+      "encoder.0.bias": 0.9150870442390442,
+      "encoder.4.weight": 0.5788072943687439,
+      "encoder.4.bias": 0.19627350568771362,
+      "actor.weight": 4.957998275756836,
+      "actor.bias": 0.4566458463668823,
+      "critic.weight": 3.2173848152160645,
+      "critic.bias": 0.2963472306728363
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.021628815680742264,
+      "encoder.0.bias": 0.0023141521960496902,
+      "encoder.4.weight": 1.5786212682724,
+      "encoder.4.bias": 0.14322006702423096,
+      "actor.weight": 0.23899339139461517,
+      "actor.bias": 0.002174555091187358,
+      "critic.weight": 0.15343089401721954,
+      "critic.bias": 0.0014800271019339561
+    },
+    "training_seconds": 2.3765860639998664,
+    "transitions_per_second": 6.732346133963066,
+    "resumed_from": "9a4b658a-4a63-4a28-a23a-840d0f1956d6",
+    "resume_reset": {
+      "frames": 0,
+      "max_progress": 0,
+      "stack_frames_equal": true
+    },
+    "checkpoint_id": "e6613fb9-867e-4109-96e7-b0cd00c5adab",
+    "final_sha256": "4dc17a9dde7eedd45e83f1856154fa155bce6f020b228faf39d9acc93f36eadc",
+    "recording_error": null,
+    "recording_status": "complete",
+    "wall_seconds": 1.2400377080000453,
+    "peak_rss_bytes": 2396721152,
+    "peak_cuda_allocated_bytes": 71331840
+  },
+  "model_max_abs_delta": 0.0,
+  "tolerance": {
+    "atol": 1e-05,
+    "rtol": 1e-05
+  },
+  "recordings": {
+    "run_id": "cd3edd9a-c37f-468e-88a3-9e33b2b59f53",
+    "recordings": [
+      {
+        "run_id": "cd3edd9a-c37f-468e-88a3-9e33b2b59f53",
+        "session_id": "e21c1468-0e7f-4442-880c-808f782e5d22",
+        "resumed_from": null,
+        "start_updates": 0,
+        "created_unix": 1791606044.418105,
+        "reset": "new episode; learning state preserved",
+        "mode": "training_recording",
+        "status": "complete",
+        "file": "videos/e21c1468-0e7f-4442-880c-808f782e5d22-00001.webm",
+        "codec": "vp9",
+        "crf": 45,
+        "fps": 12,
+        "audio": false,
+        "width": 240,
+        "height": 224,
+        "session_frame_start": 0,
+        "segment": 1,
+        "frames": 7,
+        "duration_seconds": 0.5833333333333334,
+        "bytes": 6399,
+        "sha256": "d7a639f1aac9eeead354b2e6e758a3016c451a3dcf875ad73f6257a4e724b4ae",
+        "available": true
+      },
+      {
+        "run_id": "cd3edd9a-c37f-468e-88a3-9e33b2b59f53",
+        "session_id": "4e7adb41-cf63-48ca-b305-a82b446ecf5b",
+        "resumed_from": "9a4b658a-4a63-4a28-a23a-840d0f1956d6",
+        "start_updates": 2,
+        "created_unix": 1791606048.0949347,
+        "reset": "new episode; learning state preserved",
+        "mode": "training_recording",
+        "status": "complete",
+        "file": "videos/4e7adb41-cf63-48ca-b305-a82b446ecf5b-00001.webm",
+        "codec": "vp9",
+        "crf": 45,
+        "fps": 12,
+        "audio": false,
+        "width": 240,
+        "height": 224,
+        "session_frame_start": 0,
+        "segment": 1,
+        "frames": 7,
+        "duration_seconds": 0.5833333333333334,
+        "bytes": 6329,
+        "sha256": "938310dfde3a86a5b19068919c2c559815d5cc6a88a29e85e2a21d91b6edb15c",
+        "available": true
+      }
+    ],
+    "note": "Recorded training gameplay, not evaluation or live play; no circuit samples recorded."
+  }
+}
