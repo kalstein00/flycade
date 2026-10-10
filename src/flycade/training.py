@@ -24,7 +24,7 @@ from flycade.checkpoint import (FORMAT, atomic_json, capture_rng, load_checkpoin
                                 run_lock, save_checkpoint, sync_directory)
 from flycade.errors import PreparationError
 from flycade.control import SaveControl
-from flycade.game import GameConfig, GameEnv, Pixels
+from flycade.game import ACTIONS, GameConfig, GameEnv, Pixels
 from flycade.graph import digest, inspect_graph, write_json
 from flycade.nes import NesEmulator
 from flycade.policy import ConnectomePolicy, Policy, policy_for_kind
@@ -374,6 +374,9 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
 
         if resume_state is not None:
             periodic_evaluation()
+        report.setdefault('reward_components', {})
+        report.setdefault('action_counts', [0] * len(ACTIONS))
+        report.setdefault('enemy_defeats', 0)
         episode_step = 0
         with (output / 'transitions.jsonl').open('a') as transitions, (output / 'updates.jsonl').open('a') as updates:
             for update in range(start_updates, config.updates):
@@ -381,6 +384,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                     break
                 report['safe_boundary'] = False
                 rollout: list[RolloutTransition] = []
+                rollout_probabilities: list[list[float]] = []
                 for _ in range(config.rollout_steps):
                     if not env.observation_space.contains(obs):
                         raise ValueError('Invalid policy observation')
@@ -394,6 +398,8 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                         sampled = distribution.sample()
                         action = int(sampled.item())
                         logp = float(distribution.log_prob(sampled).item())
+                    probabilities = distribution.probs[0].cpu().tolist()
+                    rollout_probabilities.append(probabilities)
                     capture_seconds = time.perf_counter() - capture_started
                     following, reward, terminated, truncated, info = env.step(action)
                     control.poll(stop_requested, previous_seconds + time.perf_counter() - learning_started >= report['next_autosave_seconds'])
@@ -406,7 +412,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                         'transition': report['transitions'], 'episode': report['episodes'],
                         'observation_sha256': hashlib.sha256(obs.tobytes()).hexdigest(),
                         'next_observation_sha256': hashlib.sha256(following.tobytes()).hexdigest(),
-                        'action': action, 'probabilities': distribution.probs[0].cpu().tolist(),
+                        'action': action, 'probabilities': probabilities,
                         'reward': reward, 'terminated': terminated, 'truncated': truncated, **info})
                     if info['reason'] in ('position_discontinuity', 'unexpected_game_state', 'backend_end_unclassified'):
                         raise PreparationError('game_contract_violation', f"Invalid training transition: {info['reason']}")
@@ -417,9 +423,13 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                     rollout.append(RolloutTransition(obs, action, logp, float(value.item()), float(reward),
                         0. if terminated else float(bootstrap.item()), terminated or truncated))
                     report['reward_sum'] += reward
+                    for name, amount in info['reward_components'].items():
+                        report['reward_components'][name] = report['reward_components'].get(name, 0.) + amount
+                    report['action_counts'][action] += 1
+                    report['enemy_defeats'] += info['enemy_defeats']
                     report['max_progress'] = max(report['max_progress'], info['max_progress'])
                     if observing and observer is not None and raw is not None:
-                        observer.submit(raw, obs.copy(), distribution.probs[0].cpu().tolist(), action,
+                        observer.submit(raw, obs.copy(), probabilities, action,
                             report, update, observed, episode_step,
                             {'reward': reward, 'terminated': terminated, 'truncated': truncated,
                              'reason': info['reason'], 'max_progress': info['max_progress'],
@@ -434,6 +444,10 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                         obs = following
                 metrics = optimize(policy, optimizer, rollout, config, device)
                 report.update(metrics)
+                probabilities_array = np.asarray(rollout_probabilities, dtype=np.float64)
+                report['rollout_action_counts'] = np.bincount([t.action for t in rollout], minlength=len(ACTIONS)).tolist()
+                report['rollout_mean_probabilities'] = probabilities_array.mean(axis=0).tolist()
+                report['rollout_entropy'] = float(-(probabilities_array * np.log(probabilities_array.clip(1e-30))).sum(axis=1).mean())
                 report['updates'] = update + 1
                 report['optimizer_steps'] += config.epochs
                 report['safe_boundary'] = True

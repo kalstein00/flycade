@@ -34,19 +34,32 @@ class GameConfig:
     survival_reward: float = 0.0
     death_reward: float = -10.0
     completion_reward: float = 100.0
+    stall_reward: float = 0.0
+    stall_grace_frames: int = 60
+    no_progress_reward: float = 0.0
+    terminate_on_no_progress: bool = False
+    enemy_reward: float = 0.0
+    enemy_reward_cap: float = 5.0
     no_progress_frames: int = 600
     max_frames: int = 18000
 
     def __post_init__(self) -> None:
-        for name in ['width', 'height', 'frame_stack', 'action_repeat', 'no_progress_frames', 'max_frames']:
+        for name in ['width', 'height', 'frame_stack', 'action_repeat', 'no_progress_frames', 'max_frames', 'stall_grace_frames']:
             value = getattr(self, name)
             if type(value) is not int or value <= 0:
                 raise ValueError(f'{name} must be a positive integer')
         if self.color not in ('RGB', 'L'):
             raise ValueError('color must be RGB or L')
-        for name in ['progress_reward', 'survival_reward', 'death_reward', 'completion_reward']:
+        for name in ['progress_reward', 'survival_reward', 'death_reward', 'completion_reward',
+                     'stall_reward', 'no_progress_reward', 'enemy_reward', 'enemy_reward_cap']:
             if not np.isfinite(getattr(self, name)):
                 raise ValueError(f'{name} must be finite')
+        if self.stall_reward > 0 or self.no_progress_reward > 0:
+            raise ValueError('Stall and no-progress costs must be nonpositive')
+        if self.enemy_reward < 0 or self.enemy_reward_cap < 0:
+            raise ValueError('Enemy reward and cap must be nonnegative')
+        if type(self.terminate_on_no_progress) is not bool:
+            raise ValueError('terminate_on_no_progress must be boolean')
 
 
 class GameEnv(gym.Env[Pixels, int]):
@@ -89,6 +102,13 @@ class GameEnv(gym.Env[Pixels, int]):
         frame, info = self.emulator.reset()
         if (info['world'], info['level'], info['mode']) != (0, 0, 1) or info['time'] <= 0:
             raise PreparationError('start_state_mismatch', 'Reset did not produce active World 1-1 with a running timer.')
+        if self.config.enemy_reward and any(f'enemy_{field}_{slot}' not in info
+                for slot in range(5) for field in ('active', 'id', 'state')):
+            raise PreparationError('enemy_events_missing', 'Enemy reward requires verified NES enemy states.')
+        self.credited_enemies: set[int] = set()
+        self.enemy_reward_paid = 0.0
+        self.enemy_defeats = 0
+        self.components = dict.fromkeys(('progress', 'time', 'stall', 'death', 'completion', 'no_progress', 'enemy'), 0.)
         self.maximum = self._position(info)
         self.start_position = self.maximum
         self.previous = info
@@ -104,7 +124,25 @@ class GameEnv(gym.Env[Pixels, int]):
                 'screen_position': info['screen_page'] * 256 + info['screen_x'],
                 'max_progress': self.maximum - self.start_position,
                 'frames': self.frames, 'executed_frames': executed, 'reason': reason,
-                'game': info.copy()}
+                'game': info.copy(), 'reward_components': self.components.copy(),
+                'enemy_defeats': self.enemy_defeats}
+
+    def _defeats(self, info: dict[str, int]) -> int:
+        count = 0
+        for slot in range(5):
+            active, kind, state = (info.get(f'enemy_{field}_{slot}', 0)
+                                   for field in ('active', 'id', 'state'))
+            previous_active, previous_kind, previous_state = (self.previous.get(f'enemy_{field}_{slot}', 0)
+                                   for field in ('active', 'id', 'state'))
+            if active != 1 or previous_active != 1 or kind != previous_kind:
+                self.credited_enemies.discard(slot)
+                continue
+            # SMB World1-1: defeat bit5; stomped Goomba state4. Koopa shell != kill.
+            defeated = (bool(state & 0x20) and not previous_state & 0x20) or (kind == 6 and state == 4 and previous_state != 4)
+            if kind <= 0x14 and defeated and slot not in self.credited_enemies:
+                self.credited_enemies.add(slot)
+                count += 1
+        return count
 
     def step(self, action: int) -> tuple[Pixels, float, bool, bool, dict[str, Any]]:
         if self.finished or self.closed:
@@ -112,7 +150,8 @@ class GameEnv(gym.Env[Pixels, int]):
         if not self.action_space.contains(action):
             raise ValueError(f'Invalid action: {action}')
         mask = [int(button in ACTIONS[action]) for button in self.emulator.buttons]
-        reward = 0.0
+        self.components = dict.fromkeys(self.components, 0.)
+        self.enemy_defeats = 0
         reason = None
         terminated = truncated = False
         for executed in range(1, self.config.action_repeat + 1):
@@ -121,13 +160,13 @@ class GameEnv(gym.Env[Pixels, int]):
             # Inspect every emulator frame, before animation/respawn can create reward.
             if info['engine'] == 5:
                 reason, terminated = 'completion', True
-                reward += self.config.completion_reward
+                self.components['completion'] += self.config.completion_reward
             elif info['timer_expired']:
                 reason, terminated = 'game_timeout', True
-                reward += self.config.death_reward
+                self.components['death'] += self.config.death_reward
             elif info['engine'] in (6, 11) or info['lives'] < self.previous['lives']:
                 reason, terminated = 'death', True
-                reward += self.config.death_reward
+                self.components['death'] += self.config.death_reward
             elif (info['world'], info['level'], info['mode']) != (0, 0, 1):
                 reason, truncated = 'unexpected_game_state', True
             elif backend_done or backend_truncated:
@@ -138,9 +177,21 @@ class GameEnv(gym.Env[Pixels, int]):
                 progress = max(0, self._position(info) - self.maximum)
                 self.maximum = max(self.maximum, self._position(info))
                 self.stalled = 0 if progress else self.stalled + 1
-                reward += progress * self.config.progress_reward + self.config.survival_reward
+                self.components['progress'] += progress * self.config.progress_reward
+                self.components['time'] += self.config.survival_reward
+                if self.stalled > self.config.stall_grace_frames:
+                    self.components['stall'] += self.config.stall_reward
+                defeats = self._defeats(info)
+                self.enemy_defeats += defeats
+                earned = min(defeats * self.config.enemy_reward,
+                             max(0., self.config.enemy_reward_cap - self.enemy_reward_paid))
+                self.enemy_reward_paid += earned
+                self.components['enemy'] += earned
                 if self.stalled >= self.config.no_progress_frames:
-                    reason, truncated = 'no_progress', True
+                    reason = 'no_progress'
+                    terminated = self.config.terminate_on_no_progress
+                    truncated = not terminated
+                    self.components['no_progress'] += self.config.no_progress_reward
                 elif self.frames >= self.config.max_frames:
                     reason, truncated = 'external_limit', True
             self.previous = info
@@ -148,7 +199,7 @@ class GameEnv(gym.Env[Pixels, int]):
                 self.finished = True
                 break
         self.history.append(self._pixels(frame))
-        return np.stack(self.history), reward, terminated, truncated, self._info(info, reason, executed)
+        return np.stack(self.history), sum(self.components.values()), terminated, truncated, self._info(info, reason, executed)
 
     def describe(self) -> dict[str, Any]:
         return {'config': asdict(self.config), 'actions': [list(a) for a in ACTIONS],

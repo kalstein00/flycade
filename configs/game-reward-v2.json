@@ -1,0 +1,14 @@
+{
+  "progress_reward": 0.01,
+  "survival_reward": -0.001,
+  "death_reward": -10.0,
+  "completion_reward": 100.0,
+  "stall_reward": -0.005,
+  "stall_grace_frames": 60,
+  "no_progress_frames": 300,
+  "no_progress_reward": -10.0,
+  "terminate_on_no_progress": true,
+  "enemy_reward": 0.5,
+  "enemy_reward_cap": 5.0,
+  "max_frames": 18000
+}

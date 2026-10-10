@@ -1,0 +1,16 @@
+{
+  "updates": 100000,
+  "rollout_steps": 128,
+  "epochs": 2,
+  "state_dim": 8,
+  "propagation_steps": 2,
+  "seed": 7,
+  "learning_rate": 0.0001,
+  "gamma": 0.995,
+  "gae_lambda": 0.97,
+  "clip_ratio": 0.1,
+  "entropy_coefficient": 0.05,
+  "value_coefficient": 0.5,
+  "max_grad_norm": 0.5,
+  "evaluation_every_updates": 250
+}

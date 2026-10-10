@@ -67,3 +67,27 @@ def test_real_completion_replay_from_recorded_actions_file(tmp_path):
     event = json.loads(result.stdout)['last_transition']
     assert (event['reason'], event['terminated'], event['truncated']) == ('completion', True, False)
     assert event['frames'] == 1361
+
+
+def test_real_reward_v2_detects_stomps_without_using_score_as_kills(tmp_path):
+    from flycade.game import GameConfig, GameEnv
+    from flycade.nes import NesEmulator
+
+    assert cli('register-rom', ROM, '--home', tmp_path).returncode == 0
+    root = Path(__file__).parents[1]
+    config = GameConfig(**json.loads((root / 'configs/game-reward-v2.json').read_text()))
+    actions = json.loads((root / 'docs/validation/completion-actions.json').read_text())
+    defeats, enemy_reward, total = 0, 0., 0.
+    with GameEnv(NesEmulator(tmp_path), config) as env:
+        env.reset()
+        for action in actions:
+            _, reward, terminated, truncated, info = env.step(action)
+            defeats += info['enemy_defeats']
+            enemy_reward += info['reward_components']['enemy']
+            total += reward
+            assert reward == pytest.approx(sum(info['reward_components'].values()))
+            if terminated or truncated:
+                break
+    assert (info['reason'], info['frames']) == ('completion', 1361)
+    assert defeats == 2 and enemy_reward == 1.
+    assert total > 100
