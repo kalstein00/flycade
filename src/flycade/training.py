@@ -31,6 +31,8 @@ from flycade.recording import RecordingEmulator
 from flycade.rom import inspect_registration
 from flycade.training_fixture import FixtureEmulator
 from flycade.snapshot import publish_snapshot
+from flycade.observation import RolloutObserver, disable_observation
+from flycade.observation_config import validate_observation_rate
 
 
 @dataclass(frozen=True)
@@ -151,7 +153,7 @@ def optimize(policy: ConnectomePolicy, optimizer: torch.optim.Optimizer,
 def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
           game: GameConfig, device: str, fixture: bool = False, stop_after_updates: int | None = None,
            resume_state: dict[str, Any] | None = None,
-           initial_evaluation: dict[str, Any] | None = None) -> dict[str, Any]:
+           initial_evaluation: dict[str, Any] | None = None, observe_hz: int = 3) -> dict[str, Any]:
     if fixture and device != 'cpu':
         raise ValueError('Synthetic fixture requires --device cpu')
     if device == 'cuda' and not torch.cuda.is_available():
@@ -239,6 +241,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
     started = time.perf_counter()
     env: GameEnv | None = None
     recording: RecordingEmulator | None = None
+    observer: RolloutObserver | None = None
     try:
         if initial_evaluation is not None:
             from flycade.evaluation import EvaluationConfig, create_protocol
@@ -276,6 +279,14 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         report['graph_influence'] = graph_influence(policy, pixel_tensor(obs, device))
         if not report['graph_influence']['passed']:
             raise PreparationError('graph_no_influence', 'Controlled edge removal did not change policy distribution')
+        try:
+            if observe_hz:
+                observer = RolloutObserver(output, session, observe_hz, device)
+            else:
+                disable_observation(output, session)
+        except (OSError, ValueError) as exc:
+            report['observer_error'] = str(exc)
+        episode_step = 0
         with (output / 'transitions.jsonl').open('a') as transitions, (output / 'updates.jsonl').open('a') as updates:
             for update in range(start_updates, config.updates):
                 report['safe_boundary'] = False
@@ -283,12 +294,19 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                 for _ in range(config.rollout_steps):
                     if not env.observation_space.contains(obs):
                         raise ValueError('Invalid policy observation')
+                    observing = observer is not None and observer.due()
+                    observed = time.time()
+                    capture_started = time.perf_counter()
+                    raw = env.last_frame.copy() if observing and env.last_frame is not None else None
                     with torch.no_grad():
-                        distribution, value = policy(pixel_tensor(obs, device))
+                        distribution, value = policy(pixel_tensor(obs, device),
+                            observe=observer.capture if observing and observer else None)
                         sampled = distribution.sample()
                         action = int(sampled.item())
                         logp = float(distribution.log_prob(sampled).item())
+                    capture_seconds = time.perf_counter() - capture_started
                     following, reward, terminated, truncated, info = env.step(action)
+                    episode_step += 1
                     report['transitions'] += 1
                     report['emulator_frames'] += info['executed_frames']
                     if not all(np.isfinite(number) for number in (reward, logp, float(value.item()))):
@@ -309,11 +327,18 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                         0. if terminated else float(bootstrap.item()), terminated or truncated))
                     report['reward_sum'] += reward
                     report['max_progress'] = max(report['max_progress'], info['max_progress'])
+                    if observing and observer is not None and raw is not None:
+                        observer.submit(raw, obs.copy(), distribution.probs[0].cpu().tolist(), action,
+                            report, update, observed, episode_step,
+                            {'reward': reward, 'terminated': terminated, 'truncated': truncated,
+                             'reason': info['reason'], 'max_progress': info['max_progress'],
+                             'position': info['position']}, device, capture_seconds)
                     if terminated or truncated:
                         report['episodes'] += 1
                         outcomes = report['episode_outcomes']
                         outcomes[info['reason']] = outcomes.get(info['reason'], 0) + 1
                         obs, _ = env.reset()
+                        episode_step = 0
                     else:
                         obs = following
                 metrics = optimize(policy, optimizer, rollout, config, device)
@@ -356,6 +381,9 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
             report['recording_status'] = 'failed' if recording.error else 'complete'
             if recording.error:
                 print(recording.error, file=sys.stderr)
+        if observer is not None:
+            observer.close(report)
+            report['observer'] = dict(observer.stats)
         report['wall_seconds'] = time.perf_counter() - started
         report['peak_rss_bytes'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
         report['peak_cuda_allocated_bytes'] = torch.cuda.max_memory_allocated() if device == 'cuda' else 0
@@ -370,7 +398,8 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
 def train(home: Path, graph: Path, output: Path, config: TrainingConfig,
           game: GameConfig, device: str, fixture: bool = False,
           stop_after_updates: int | None = None,
-          initial_evaluation: dict[str, Any] | None = None) -> dict[str, Any]:
+          initial_evaluation: dict[str, Any] | None = None, observe_hz: int = 3) -> dict[str, Any]:
+    validate_observation_rate(observe_hz)
     if output.exists():
         raise PreparationError('output_exists', f'Refusing to overwrite Run {output}')
     if stop_after_updates is not None and stop_after_updates <= 0:
@@ -390,12 +419,13 @@ def train(home: Path, graph: Path, output: Path, config: TrainingConfig,
     output.mkdir(parents=True)
     with run_lock(output):
         return _train(home, graph, output, config, game, device, fixture, stop_after_updates,
-                      initial_evaluation=initial_evaluation)
+                      initial_evaluation=initial_evaluation, observe_hz=observe_hz)
 
 
-def resume(output: Path, home: Path, stop_after_updates: int | None = None) -> dict[str, Any]:
+def resume(output: Path, home: Path, stop_after_updates: int | None = None, observe_hz: int = 3) -> dict[str, Any]:
     if stop_after_updates is not None and stop_after_updates <= 0:
         raise ValueError('stop-after-updates must be positive')
+    validate_observation_rate(observe_hz)
     with run_lock(output):
         state = load_checkpoint(output, home)
         manifest = state['manifest']
@@ -403,4 +433,4 @@ def resume(output: Path, home: Path, stop_after_updates: int | None = None) -> d
         if state['progress']['updates'] >= config.updates:
             raise PreparationError('budget_completed', 'Run budget is already complete; no schedule restart')
         return _train(home, output / 'graph', output, config, GameConfig(**manifest['game']),
-                      manifest['device'], manifest['fixture'], stop_after_updates, state)
+                      manifest['device'], manifest['fixture'], stop_after_updates, state, observe_hz=observe_hz)

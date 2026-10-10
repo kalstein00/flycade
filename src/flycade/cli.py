@@ -5,6 +5,7 @@ from pathlib import Path
 
 from flycade.diagnostics import diagnose
 from flycade.errors import PreparationError
+from flycade.observation_config import OBSERVATION_RATES
 from flycade.rom import catalog, register_rom, inspect_registration
 
 
@@ -46,6 +47,7 @@ def main() -> int:
     training.add_argument('--fixture', action='store_true', help='Synthetic CPU evidence only')
     training.add_argument('--updates', type=int)
     training.add_argument('--rollout-steps', type=int)
+    training.add_argument('--observe-hz', type=int, choices=OBSERVATION_RATES, default=3)
     training.add_argument('--seed', type=int)
     training.add_argument('--training-config', type=Path)
     training.add_argument('--initial-evaluation-config', type=Path, help='Evaluate initial policy before first rollout (EvaluationConfig JSON)')
@@ -53,8 +55,12 @@ def main() -> int:
     training.add_argument('--stop-after-updates', type=int, help='Save and stop this session; preserve total budget')
     resume_parser = sub.add_parser('resume')
     resume_parser.add_argument('output', type=Path)
+    resume_parser.add_argument('--observe-hz', type=int, choices=OBSERVATION_RATES, default=3)
     resume_parser.add_argument('--home', type=Path, default=Path('.flycade'))
     resume_parser.add_argument('--stop-after-updates', type=int)
+    live = sub.add_parser('live')
+    live.add_argument('run', type=Path)
+    live.add_argument('--port', type=int, default=8766)
     history = sub.add_parser('history')
     history.add_argument('output', type=Path)
     history.add_argument('--serve', action='store_true', help='Read-only local browser playback')
@@ -108,6 +114,9 @@ def main() -> int:
         elif args.command == 'compare-evaluations':
             from flycade.evaluation import compare_evaluations
             report = compare_evaluations(args.run, args.evaluations)
+        elif args.command == 'live':
+            from flycade.live import serve_live
+            report = serve_live(args.run, args.port)
         elif args.command == 'history':
             from flycade.recording import recording_history
             if args.serve:
@@ -117,7 +126,7 @@ def main() -> int:
                 report = recording_history(args.output)
         elif args.command == 'resume':
             from flycade.training import resume
-            report = resume(args.output, args.home, args.stop_after_updates)
+            report = resume(args.output, args.home, args.stop_after_updates, args.observe_hz)
         elif args.command == 'train':
             from flycade.game import GameConfig
             from flycade.training import TrainingConfig, train
@@ -127,7 +136,7 @@ def main() -> int:
             game = GameConfig(**json.loads(args.config.read_text())) if args.config else GameConfig()
             report = train(args.home, args.graph, args.output, TrainingConfig(**settings),
                            game, args.device, args.fixture, args.stop_after_updates,
-                           json.loads(args.initial_evaluation_config.read_text()) if args.initial_evaluation_config else None)
+                           json.loads(args.initial_evaluation_config.read_text()) if args.initial_evaluation_config else None, args.observe_hz)
         else:
             from flycade.demo import demo
             from flycade.game import GameConfig

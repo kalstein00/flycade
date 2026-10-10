@@ -1,4 +1,5 @@
 """Pixel encoder -> directed fixed COO graph -> output-only actor/critic."""
+from collections.abc import Callable
 import json
 from pathlib import Path
 
@@ -38,7 +39,8 @@ class ConnectomePolicy(nn.Module):
         self.actor = nn.Linear(len(outputs) * state_dim, 7)
         self.critic = nn.Linear(len(outputs) * state_dim, 1)
 
-    def forward(self, pixels: Tensor, *, edge_scale: float = 1.) -> tuple[Categorical, Tensor]:
+    def forward(self, pixels: Tensor, *, edge_scale: float = 1.,
+                observe: Callable[[Tensor], None] | None = None) -> tuple[Categorical, Tensor]:
         """Batch of uint8 [B,stack,H,W,C]; optional uniform edge intervention."""
         if pixels.dtype != torch.uint8 or pixels.ndim != 5:
             raise ValueError('Expected uint8 [batch, stack, height, width, channels] pixels')
@@ -51,6 +53,8 @@ class ConnectomePolicy(nn.Module):
             dense = state.permute(1, 0, 2).reshape(self.nodes, -1)
             propagated = torch.sparse.mm(self.adjacency, dense) * edge_scale
             state = torch.tanh(propagated.reshape(self.nodes, batch, self.state_dim).permute(1, 0, 2) + drive)
+        if observe is not None:
+            observe(state)
         readout = state[:, self.outputs].reshape(batch, -1)
         return Categorical(logits=self.actor(readout)), self.critic(readout).squeeze(-1)
 

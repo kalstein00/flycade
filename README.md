@@ -205,3 +205,20 @@ uv run --offline --locked --extra graph --extra train flycade compare-evaluation
 대표 **결정론적 관전**은 별도 protocol로 `--mode deterministic --seeds 11`을 지정한다. 가장 확률이 큰 행동을 고르며 seed 하나만 허용한다. seed만 바꾼 결정론적 반복을 다양한 평가로 세지 않는다. `evaluate --realtime`은 이 모드에서 가능한 범위의 게임 속도(약 60 emulator fps)에 맞춘다. 화면 관전은 `history --serve`에서 완성된 짧은 영상을 재생한다. 확률적 평가·결정론적 관전·학습 기록은 화면에서 구별되며 평가 영상에 snapshot/protocol을 표시한다.
 
 평가는 기본 CPU·환경 1개·에피소드 순차 실행이다. `--device cuda`는 여유가 있을 때 명시한다. RAM/VRAM이 부족하면 학습을 Ctrl+C로 안전 저장·종료한 다음 평가하고 `resume`한다. 평가 명령 자체가 실행 중인 trainer를 중단하지는 않는다. 소요 시간·프로세스 peak RSS·인코더 peak RSS·PyTorch peak GPU allocation을 평가 보고서에 기록한다. GPU 전체 VRAM이나 동시 프로세스 합계의 측정값은 아니다. 평가용 녹화에 실패하면 결과를 실패로 표시하고 비교에서 제외한다.
+
+## 실시간 게임·회로 관찰
+
+학습은 기본으로 최대 **3 Hz**의 동기화 표본을 내보낸다. 다른 터미널에서 같은 Run의 관찰 서버를 열고 Windows 브라우저로 표시된 주소에 접속한다.
+
+```bash
+uv run --offline --locked --extra graph --extra train flycade live reports/my-run
+# 기본 주소: http://localhost:8766 · 포트 변경: --port 8770
+```
+
+게임·전처리 프레임 묶음·실제 회로 활성·행동 분포는 **실제 행동을 선택한 같은 forward**의 표본이다. 회로는 해부학 좌표가 아닌 고정 구조도이며 색은 최종 노드 상태 벡터의 산술평균이다. 표시 범위와 버전은 회로 아래에서 펼쳐 확인한다. 선택 행동과 확률 최댓값을 구별하며, 보상과 RAM 진행 거리는 **행동 적용 후 전이 결과**로 따로 표시한다.
+
+관찰 중에 브라우저를 닫거나 서버를 종료해도 trainer는 계속 실행된다. 다시 접속하면 최신 표본으로 복구한다. 표본이 오래되거나 연결이 끊기면 마지막 화면을 보존하고 지연·연결 상태를 표시한다. 학습 종료 후에는 종료·저장 상태를 표시한다. 관측이 없는 Run에는 데이터 없음이 표시된다. 서비스는 loopback 읽기 전용이며 외부 CDN이나 인터넷 연결이 필요 없다.
+
+`train`과 `resume`의 `--observe-hz 2|3|4|5`로 최대 표본 빈도를 선택하고 `--observe-hz 0`으로 끈다. 이것은 게임 속도나 학습 예산을 바꾸지 않는다. `live/latest.json`은 최신 완성 표본 하나만 유지하고 전송 대기도 1개로 제한한다. 느린 소비자에게 누적 재생하지 않는다. 과거 영상은 기존 `history --serve`에서 보며, 회로 표본의 과거 영상 동기 재생은 제공하지 않는다.
+
+실제 NES·RTX 5090 측정과 브라우저 검증 범위는 [T06 기록](docs/validation/T06.md)을 참고한다. 기존 Run은 코드 해시가 다르면 재개가 거부되므로 이번 소스로 새 Run을 만들어 사용한다.

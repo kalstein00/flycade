@@ -1,0 +1,208 @@
+{
+  "scope": "Short real NES / RTX 5090 measurements; not A5 10\u201315 minute or AC-12 one-hour acceptance.",
+  "comparison_runs": [
+    {
+      "run_id": "79fabe87-995e-4bf5-a34f-a38b57f800c8",
+      "evidence": "real NES on cuda",
+      "transitions": 1024,
+      "updates": 32,
+      "training_seconds": 9.844567101000393,
+      "transitions_per_second": 104.01676269705575,
+      "wall_seconds": 10.120209142000022,
+      "peak_rss_bytes": 2377265152,
+      "peak_cuda_allocated_bytes": 111489024,
+      "observer": {
+        "requested_hz": 3,
+        "queue_capacity": 1,
+        "history_capacity": 0,
+        "captured": 26,
+        "published": 26,
+        "dropped": 0,
+        "selected_forward_seconds": 0.25311005099774775,
+        "actual_hz": 2.7350271386629754,
+        "encode_seconds": 0.09913518199846294,
+        "error": null
+      },
+      "status": "completed",
+      "recording_error": null,
+      "hz": 3,
+      "latest_bytes": 72026
+    },
+    {
+      "run_id": "cb5abdb3-d484-45e7-aa29-24771acbad9e",
+      "evidence": "real NES on cuda",
+      "transitions": 1024,
+      "updates": 32,
+      "training_seconds": 8.686617772000318,
+      "transitions_per_second": 117.88247473034578,
+      "wall_seconds": 8.89731535699957,
+      "peak_rss_bytes": 2326896640,
+      "peak_cuda_allocated_bytes": 111488000,
+      "observer": null,
+      "status": "completed",
+      "recording_error": null,
+      "hz": 0,
+      "latest_bytes": 0
+    },
+    {
+      "run_id": "0630580b-0802-4925-bc2f-4d86065d53f2",
+      "evidence": "real NES on cuda",
+      "transitions": 1024,
+      "updates": 32,
+      "training_seconds": 8.550364185000035,
+      "transitions_per_second": 119.76098068388836,
+      "wall_seconds": 8.831538426999941,
+      "peak_rss_bytes": 2336137216,
+      "peak_cuda_allocated_bytes": 111489024,
+      "observer": {
+        "requested_hz": 2,
+        "queue_capacity": 1,
+        "history_capacity": 0,
+        "captured": 16,
+        "published": 16,
+        "dropped": 0,
+        "selected_forward_seconds": 0.15840561999903002,
+        "actual_hz": 1.9132120238388484,
+        "encode_seconds": 0.05582222400153114,
+        "error": null
+      },
+      "status": "completed",
+      "recording_error": null,
+      "hz": 2,
+      "latest_bytes": 75972
+    },
+    {
+      "run_id": "53dc3036-9b46-4398-aa54-40396381aaab",
+      "evidence": "real NES on cuda",
+      "transitions": 1024,
+      "updates": 32,
+      "training_seconds": 9.626515297999504,
+      "transitions_per_second": 106.37286373115705,
+      "wall_seconds": 9.925342096999884,
+      "peak_rss_bytes": 2331865088,
+      "peak_cuda_allocated_bytes": 111489024,
+      "observer": {
+        "requested_hz": 5,
+        "queue_capacity": 1,
+        "history_capacity": 0,
+        "captured": 42,
+        "published": 42,
+        "dropped": 0,
+        "selected_forward_seconds": 0.2655766110019613,
+        "actual_hz": 4.5209358064183425,
+        "encode_seconds": 0.11766937500124186,
+        "error": null
+      },
+      "status": "completed",
+      "recording_error": null,
+      "hz": 5,
+      "latest_bytes": 72629
+    }
+  ],
+  "final_confirmation": [
+    {
+      "run_id": "42f8eb9d-36ea-4377-bcc7-ca1e9e4c5006",
+      "evidence": "real NES on cuda",
+      "transitions": 1024,
+      "updates": 32,
+      "training_seconds": 8.646634781000103,
+      "transitions_per_second": 118.42757626933796,
+      "wall_seconds": 8.909747411000353,
+      "peak_rss_bytes": 2330624000,
+      "peak_cuda_allocated_bytes": 111489024,
+      "observer": {
+        "requested_hz": 3,
+        "queue_capacity": 1,
+        "history_capacity": 0,
+        "captured": 23,
+        "published": 23,
+        "dropped": 0,
+        "selected_forward_seconds": 0.19698292599969136,
+        "actual_hz": 2.718301840780673,
+        "encode_seconds": 0.08947162900130934,
+        "error": null
+      },
+      "status": "completed",
+      "recording_error": null,
+      "hz": 3,
+      "latest_bytes": 72240
+    }
+  ],
+  "browser": {
+    "engine": "Playwright Chromium headless on WSL/Linux; Windows browser itself not automated",
+    "captures": [
+      {
+        "viewport": [
+          1280,
+          720
+        ],
+        "sample_id": "5ab8a88e-5539-4a3b-9283-e75ad73effa9:2",
+        "status": "\uc5f0\uacb0\ub428 \u00b7 \ud559\uc2b5 \uc911",
+        "overflow": false
+      },
+      {
+        "viewport": [
+          1920,
+          1080
+        ],
+        "sample_id": "5ab8a88e-5539-4a3b-9283-e75ad73effa9:3",
+        "status": "\uc5f0\uacb0\ub428 \u00b7 \ud559\uc2b5 \uc911",
+        "overflow": false
+      },
+      {
+        "viewport": [
+          390,
+          844
+        ],
+        "sample_id": "5ab8a88e-5539-4a3b-9283-e75ad73effa9:4",
+        "status": "\uc5f0\uacb0\ub428 \u00b7 \ud559\uc2b5 \uc911",
+        "overflow": false
+      }
+    ]
+  },
+  "final_run_manifest": {
+    "run_id": "42f8eb9d-36ea-4377-bcc7-ca1e9e4c5006",
+    "device_name": "NVIDIA GeForce RTX 5090",
+    "graph_sha256": "97ea609f3c64c24ebfd90c73b4590878d437b5e67851dff1f60f9e74c730de7f",
+    "versions": {
+      "flycade": "0.1.0",
+      "gymnasium": "1.4.0",
+      "numpy": "2.5.3",
+      "pillow": "12.3.0",
+      "stable-retro": "1.0.1",
+      "torch": "2.10.0"
+    },
+    "code": {
+      "files": {
+        "__init__.py": "b21c242866043cf4c76505158aa55d92ee3ac72b30169b5364f6679686ca75a5",
+        "__main__.py": "1387805973f2d3e6251d74d656c8599178769ed5fbb6693982801a6b32cee706",
+        "checkpoint.py": "a04c89d108510bee6387eec921aca15f788c0ed49bf6e466fa6de2d67072febb",
+        "cli.py": "105f1271f196fc3637981c189da6331bc62cf8e1df7ee6685725d8803dc23b38",
+        "demo.py": "09dfedca0736cf377c3f3009ff6bc1db10c76e5af4b242af0c7ef332e5033ecf",
+        "diagnostics.py": "2c9428f5f709f51c4ff8b84e24e0fc888b8b2422080d91e417bc3d012d548684",
+        "errors.py": "6784cf5e06ea471663a8e9786500cec7b3080469303adce4653137f84f9736e4",
+        "evaluation.py": "cfa1c9136d216f416099cabfa86532b07e443be34cba70d16193270db21c7217",
+        "game.py": "9d04081d79513996196867950bc904bfe0d42a9ee3dc106458629a0840a38477",
+        "graph.py": "22f6e589c98363ffe142958d3a09d44a7222d879e9e2bb2663c02a97953343d1",
+        "history.py": "b93c99c1b343685e649b421ecde71cd562a18f641bc1890c23d73dfe5bd7e3ab",
+        "live.py": "91f613f19929c7760728d49ad4abec8ee40c0b3ce118995d6cdcbc7a0e0ad5cb",
+        "nes.py": "b81d2dbb0b82dd2532dbc8140eb5cd597a17df53d0714ac010a03493b0cba5d8",
+        "observation.py": "b9f6e6cc881fcb3bc5c816931253db38aa6c76002ca486187cb5a821548fea8d",
+        "observation_config.py": "d0018485c97480cb24fd04406bc53eb7b9107de3ffc381b80abe99fbe4f3291d",
+        "policy.py": "cc659e37ed199b80e65bfff14b5ffc1b1bfe0309489c33f4a1aa4d60ef417e9e",
+        "recording.py": "bdac8a63328b7fec816149e3f1b9c227dd32db0991bf1f0d4406ed060191cd1e",
+        "rom.py": "a8d33123cfc13a22a4c2a6a5c3ac7bb6261317ea948c1f3c54c248bacfdce8fe",
+        "snapshot.py": "acb4fdf85765a63a40cfb3e94dbc53b2492a63f63d26303c96d54e63df53ca9b",
+        "training.py": "8f08f0510154281cf200d82c69daed13db884f760159028ad444892288ccc1f5",
+        "training_fixture.py": "784f9ce4a985504739aff96ae60afb1d4ffdaebdcec812524704abe6e252c6c4"
+      },
+      "git_head": "2e728703d43926dedbd2a071c94cbd7d0324ee59",
+      "uv_lock_sha256": "08148cf94c6414f8a234b8bbf52e12350db2ba4ac8dda218618d2690d4ca9e05"
+    }
+  },
+  "screenshots": {
+    "t06-1920.png": "6af07f8f657a71020eb9bec192a460b04b00316e157be968dc2d2c4accf45abc",
+    "t06-1280.png": "d5f052391d2bed77f38ad512e379da2c3a139b5965371a45480dc3376a7a763e",
+    "t06-mobile.png": "abcaf2f8ed183b78708403de28379871be8e91ccaed267f625cd7d3d28407c5b"
+  }
+}
