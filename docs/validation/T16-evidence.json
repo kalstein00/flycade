@@ -1,0 +1,973 @@
+{
+  "summary": {
+    "sampling_interval_max_seconds": 1.0442216396331787,
+    "sampling_interval_p95_seconds": 1.0005333423614502,
+    "actual_seconds": 3608.685705189,
+    "started_unix": 1791631459.146696,
+    "final": {
+      "approx_kl": 0.0,
+      "budget": {
+        "events": [],
+        "original_updates": 100000,
+        "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved",
+        "total_updates": 100000
+      },
+      "checkpoint_id": "be8d18a9-81f3-41ae-b6ff-1eda69cf5093",
+      "clip_fraction": 0.0,
+      "contract": {
+        "actions": [
+          [],
+          [
+            "RIGHT"
+          ],
+          [
+            "RIGHT",
+            "A"
+          ],
+          [
+            "RIGHT",
+            "B"
+          ],
+          [
+            "RIGHT",
+            "B",
+            "A"
+          ],
+          [
+            "A"
+          ],
+          [
+            "LEFT"
+          ]
+        ],
+        "button_order": [
+          "B",
+          null,
+          "SELECT",
+          "START",
+          "UP",
+          "DOWN",
+          "LEFT",
+          "RIGHT",
+          "A"
+        ],
+        "config": {
+          "action_repeat": 4,
+          "color": "RGB",
+          "completion_reward": 100.0,
+          "death_reward": -10.0,
+          "frame_stack": 4,
+          "height": 84,
+          "max_frames": 18000,
+          "no_progress_frames": 600,
+          "progress_reward": 1.0,
+          "survival_reward": 0.0,
+          "width": 84
+        },
+        "frame_stack_order": "oldest to newest; last frame of each action repeat",
+        "observation_dtype": "uint8",
+        "observation_shape": [
+          4,
+          84,
+          84,
+          3
+        ],
+        "policy_input": "pixels only",
+        "resize": "Pillow bilinear",
+        "reward_unit": "per emulated frame"
+      },
+      "emulator_frames": 1756543,
+      "entropy": 1.1272453548372141e-07,
+      "environment_closed": true,
+      "episode_outcomes": {
+        "death": 11894,
+        "no_progress": 4
+      },
+      "episodes": 11898,
+      "evaluation_history": [
+        "a973fbb8-b965-418d-afde-70323b313d1a",
+        "43089bd4-a3ea-42c3-829c-26ef8b128eea",
+        "5f86f3c9-1036-4ae5-9efb-fbae1f64ba5f",
+        "76cf043c-1d33-42d6-9d9e-988b984afc75",
+        "baf67562-5487-4e84-9305-fadc59a90b06",
+        "26f6e404-095c-4d10-aa61-4ebbba7188f9",
+        "700ec7bb-e4d5-44ec-8155-c0970f134377",
+        "f08bd370-7011-4ca8-865c-854e3c030660",
+        "e6000e91-b36f-4e56-81d1-a869bae5bb7b",
+        "450e53c4-62fe-4e04-8f82-c2f90c2a2f77",
+        "4a1a5ec2-e716-4872-829c-f5b65743d42c",
+        "a8bc9448-ef7d-4015-bec1-941c137a524b",
+        "39722a9e-5665-43c8-9387-c084454df0ee",
+        "f0467a9a-1f12-4912-b496-19b09f03668f"
+      ],
+      "evaluation_seconds": 23.992586051997932,
+      "evaluation_worker_pid": 460039,
+      "evaluation_worker_reaped": true,
+      "evidence": "real NES on cuda",
+      "final_sha256": "25f2cdf85f50dec444e6d804072b18ed19e162e3c173242663535c262a4b6a9f",
+      "gradient_l2": {
+        "actor.bias": 2.1155448948206867e-08,
+        "actor.weight": 7.564122483927349e-07,
+        "critic.bias": 0.4778626561164856,
+        "critic.weight": 16.472442626953125,
+        "encoder.0.bias": 3.9578163623809814,
+        "encoder.0.weight": 20.95781135559082,
+        "encoder.4.bias": 1.835100531578064,
+        "encoder.4.weight": 8.357404708862305
+      },
+      "graph_influence": {
+        "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+        "intervention": "all edges removed; identical pixels and parameters",
+        "max_probability_delta": 0.01095724105834961,
+        "original_probabilities": [
+          [
+            0.13501065969467163,
+            0.1331796795129776,
+            0.13726885616779327,
+            0.149994358420372,
+            0.15055043995380402,
+            0.13946370780467987,
+            0.1545322835445404
+          ]
+        ],
+        "passed": true,
+        "removed_probabilities": [
+          [
+            0.14366517961025238,
+            0.14164121448993683,
+            0.14318563044071198,
+            0.14242911338806152,
+            0.14349770545959473,
+            0.14200611412525177,
+            0.1435750424861908
+          ]
+        ]
+      },
+      "initial_evaluation_id": "a973fbb8-b965-418d-afde-70323b313d1a",
+      "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+      "last_save": {
+        "checkpoint_id": "be8d18a9-81f3-41ae-b6ff-1eda69cf5093",
+        "completed_unix": 1791635065.5713384,
+        "transitions": 442112,
+        "updates": 13816
+      },
+      "loss": 0.12438946962356567,
+      "max_progress": 682,
+      "next_autosave_seconds": 3600,
+      "next_evaluation_update": 14000,
+      "nonfinite_count": 0,
+      "observer": {
+        "actual_hz": 2.9180816837646075,
+        "captured": 10528,
+        "dropped": 0,
+        "encode_seconds": 35.44831204009097,
+        "error": null,
+        "history_capacity": 0,
+        "published": 10528,
+        "queue_capacity": 1,
+        "requested_hz": 3,
+        "selected_forward_seconds": 33.22633943994879
+      },
+      "optimizer_steps": 27632,
+      "parameter_delta_l2": {
+        "actor.bias": 0.016563212499022484,
+        "actor.weight": 1.4631085395812988,
+        "critic.bias": 0.04102754592895508,
+        "critic.weight": 7.298009395599365,
+        "encoder.0.bias": 0.16110526025295258,
+        "encoder.0.weight": 2.370149612426758,
+        "encoder.4.bias": 3.349470615386963,
+        "encoder.4.weight": 62.60947036743164
+      },
+      "peak_cuda_allocated_bytes": 111489024,
+      "peak_rss_bytes": 2361274368,
+      "policy_loss": -1.862645149230957e-09,
+      "pruned_checkpoints": [
+        "d5f10db9-03cd-4cae-925d-8785928b1f02"
+      ],
+      "recording_error": null,
+      "recording_status": "complete",
+      "reward_sum": 3129140.0,
+      "run_id": "d1d96e17-e419-4c91-afb6-2a9820bd3c9a",
+      "safe_boundary": true,
+      "session_id": "6c905861-f288-49c5-8013-ca688bf0fb28",
+      "status": "saved",
+      "storage": {
+        "at_unix": 1791635065.8454652,
+        "errors": [],
+        "pruned_checkpoints": [],
+        "removed": [
+          "videos/6c905861-f288-49c5-8013-ca688bf0fb28-00478.webm"
+        ],
+        "status": "complete",
+        "trimmed_logs": []
+      },
+      "training_paused": false,
+      "training_seconds": 3583.756082207001,
+      "training_started_unix": 1791631457.6815457,
+      "transitions": 442112,
+      "transitions_per_second": 123.36553879742065,
+      "updates": 13816,
+      "value_loss": 0.24877893924713135,
+      "wall_seconds": 3612.020246156997,
+      "workers_alive": 0
+    },
+    "resource_samples": 3616,
+    "update_intervals": 13815,
+    "p95_update_seconds": 0.3363845899984881,
+    "save_stop_seconds": 2.2112688590023026,
+    "peak_tree_rss_bytes": 4019265536,
+    "peak_gpu_used_bytes": 3826253824,
+    "min_linux_available_bytes": 9927471104,
+    "min_windows_available_bytes": 7260966912,
+    "max_tree_swap_bytes": 0,
+    "swap_in_delta": 0,
+    "swap_out_delta": 0,
+    "browser_checks": [
+      {
+        "elapsed": 0.5982894250009849,
+        "updates_before": 4,
+        "updates_after": 8,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 300.91067118200226,
+        "updates_before": 1146,
+        "updates_after": 1149,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 601.4480312369997,
+        "updates_before": 2295,
+        "updates_after": 2298,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 901.838462644002,
+        "updates_before": 3467,
+        "updates_after": 3470,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 1202.2586155550016,
+        "updates_before": 4603,
+        "updates_after": 4606,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 1502.656486144002,
+        "updates_before": 5749,
+        "updates_after": 5751,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 1803.1656145939996,
+        "updates_before": 6881,
+        "updates_after": 6885,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 2103.7526287060027,
+        "updates_before": 8007,
+        "updates_after": 8009,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 2404.106755068002,
+        "updates_before": 9152,
+        "updates_after": 9156,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 2704.5961494870025,
+        "updates_before": 10306,
+        "updates_after": 10309,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 3005.024740236,
+        "updates_before": 11473,
+        "updates_after": 11476,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      },
+      {
+        "elapsed": 3305.4699938250014,
+        "updates_before": 12636,
+        "updates_after": 12640,
+        "node_inspection": true,
+        "reconnected": true,
+        "comparison_and_replay": true
+      }
+    ],
+    "evaluation_catalog": {
+      "run_id": "d1d96e17-e419-4c91-afb6-2a9820bd3c9a",
+      "protocols": [
+        {
+          "protocol_id": "7e0bd2eb10bb2fb73fd28442af3e6eef0e031498009be37a75f5b101a5bf712c",
+          "initial": "a973fbb8-b965-418d-afde-70323b313d1a",
+          "latest": "f0467a9a-1f12-4912-b496-19b09f03668f",
+          "best": "a973fbb8-b965-418d-afde-70323b313d1a",
+          "latest_snapshot": "a26f0933-f155-4721-9329-4c124494da07",
+          "best_snapshot": "initial",
+          "results": [
+            {
+              "evaluation_id": "a973fbb8-b965-418d-afde-70323b313d1a",
+              "run_id": "d1d96e17-e419-4c91-afb6-2a9820bd3c9a",
+              "snapshot_id": "initial",
+              "model_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+              "snapshot_updates": 0,
+              "protocol_id": "7e0bd2eb10bb2fb73fd28442af3e6eef0e031498009be37a75f5b101a5bf712c",
+              "created_unix": 1791631454.8674238,
+              "mode": "stochastic_evaluation",
+              "device": "cpu",
+              "status": "completed",
+              "training_paused": true,
+              "training_pause_reason": "sequential CPU evaluation; trainer waits at a safe boundary",
+              "execution": "one separate evaluation process; episodes sequential; no optimizer",
+              "evidence": "real NES on cpu",
+              "distance_unit": "pixels",
+              "reward_unit": "raw game reward",
+              "episodes": [
+                {
+                  "episode": 0,
+                  "seed": 11,
+                  "distance": 682,
+                  "reward": 682.0,
+                  "reason": "no_progress",
+                  "emulator_frames": 998,
+                  "transitions": 250,
+                  "terminated": false,
+                  "truncated": true
+                },
+                {
+                  "episode": 1,
+                  "seed": 22,
+                  "distance": 623,
+                  "reward": 613.0,
+                  "reason": "death",
+                  "emulator_frames": 1357,
+                  "transitions": 340,
+                  "terminated": true,
+                  "truncated": false
+                },
+                {
+                  "episode": 2,
+                  "seed": 33,
+                  "distance": 250,
+                  "reward": 240.0,
+                  "reason": "death",
+                  "emulator_frames": 213,
+                  "transitions": 54,
+                  "terminated": true,
+                  "truncated": false
+                }
+              ],
+              "videos": [
+                {
+                  "session_id": "a973fbb8-b965-418d-afde-70323b313d1a",
+                  "run_id": "d1d96e17-e419-4c91-afb6-2a9820bd3c9a",
+                  "created_unix": 1791631454.8674238,
+                  "start_updates": 0,
+                  "evaluation_id": "a973fbb8-b965-418d-afde-70323b313d1a",
+                  "snapshot_id": "initial",
+                  "model_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+                  "protocol_id": "7e0bd2eb10bb2fb73fd28442af3e6eef0e031498009be37a75f5b101a5bf712c",
+                  "mode": "stochastic_evaluation",
+                  "episode": 0,
+                  "seed": 11,
+                  "status": "complete",
+                  "file": "videos/a973fbb8-b965-418d-afde-70323b313d1a-00001.webm",
+                  "codec": "vp9",
+                  "crf": 45,
+                  "fps": 12,
+                  "audio": false,
+                  "width": 240,
+                  "height": 224,
+                  "session_frame_start": 0,
+                  "segment": 1,
+                  "frames": 180,
+                  "duration_seconds": 15.0,
+                  "bytes": 57845,
+                  "sha256": "e9ba4eabae523d4e1d324eaea7e3f2201ac2552bc0ff795ba07468758c65262b"
+                }
+              ],
+              "environment_closed": true,
+              "workers_alive": 0,
+              "realtime_requested": false,
+              "normalization": "pixels / 255; no running observation or reward statistics",
+              "limitations": "Small fixed seed sample; changing seeds does not diversify deterministic NES play.",
+              "evaluation_count": 3,
+              "completion_count": 0,
+              "completion_rate": 0.0,
+              "termination_counts": {
+                "no_progress": 1,
+                "death": 2
+              },
+              "distances": [
+                682,
+                623,
+                250
+              ],
+              "mean_distance": 518.3333333333334,
+              "median_distance": 623.0,
+              "min_distance": 250,
+              "max_distance": 682,
+              "rewards": [
+                682.0,
+                613.0,
+                240.0
+              ],
+              "recording_error": null,
+              "replay": {
+                "status": "complete",
+                "file": "observations.json.gz",
+                "format_version": 1,
+                "sha256": "ff455017242c286d0908986245f5d8ffa9eb48a3baf672e13dbaed5aca64acdc",
+                "bytes": 1276879,
+                "samples": 45,
+                "interval_emulator_frames": 20,
+                "maximum_samples": 45,
+                "maximum_uncompressed_sample_bytes": 16777216,
+                "error": null
+              },
+              "finished_unix": 1791631457.4829187,
+              "wall_seconds": 2.6741618939995533,
+              "peak_rss_bytes": 827985920,
+              "encoder_peak_rss_bytes": 586199040,
+              "peak_cuda_allocated_bytes": 0
+            },
+            {
+              "evaluation_id": "a8bc9448-ef7d-4015-bec1-941c137a524b",
+              "run_id": "d1d96e17-e419-4c91-afb6-2a9820bd3c9a",
+              "snapshot_id": "5d11476d-c2fd-41d3-a708-5436ca8fc048",
+              "model_sha256": "74a5a49e1eb1641e32a980f832ef32046c92ef2cefff1f3cc7e3cd73a3edbde0",
+              "snapshot_updates": 11000,
+              "protocol_id": "7e0bd2eb10bb2fb73fd28442af3e6eef0e031498009be37a75f5b101a5bf712c",
+              "created_unix": 1791634342.3487332,
+              "mode": "stochastic_evaluation",
+              "device": "cpu",
+              "status": "completed",
+              "training_paused": true,
+              "training_pause_reason": "sequential CPU evaluation; trainer waits at a safe boundary",
+              "execution": "one separate evaluation process; episodes sequential; no optimizer",
+              "evidence": "real NES on cpu",
+              "distance_unit": "pixels",
+              "reward_unit": "raw game reward",
+              "episodes": [
+                {
+                  "episode": 0,
+                  "seed": 11,
+                  "distance": 273,
+                  "reward": 263.0,
+                  "reason": "death",
+                  "emulator_frames": 147,
+                  "transitions": 37,
+                  "terminated": true,
+                  "truncated": false
+                },
+                {
+                  "episode": 1,
+                  "seed": 22,
+                  "distance": 273,
+                  "reward": 263.0,
+                  "reason": "death",
+                  "emulator_frames": 147,
+                  "transitions": 37,
+                  "terminated": true,
+                  "truncated": false
+                },
+                {
+                  "episode": 2,
+                  "seed": 33,
+                  "distance": 273,
+                  "reward": 263.0,
+                  "reason": "death",
+                  "emulator_frames": 147,
+                  "transitions": 37,
+                  "terminated": true,
+                  "truncated": false
+                }
+              ],
+              "videos": [
+                {
+                  "session_id": "a8bc9448-ef7d-4015-bec1-941c137a524b",
+                  "run_id": "d1d96e17-e419-4c91-afb6-2a9820bd3c9a",
+                  "created_unix": 1791634342.3487332,
+                  "start_updates": 11000,
+                  "evaluation_id": "a8bc9448-ef7d-4015-bec1-941c137a524b",
+                  "snapshot_id": "5d11476d-c2fd-41d3-a708-5436ca8fc048",
+                  "model_sha256": "74a5a49e1eb1641e32a980f832ef32046c92ef2cefff1f3cc7e3cd73a3edbde0",
+                  "protocol_id": "7e0bd2eb10bb2fb73fd28442af3e6eef0e031498009be37a75f5b101a5bf712c",
+                  "mode": "stochastic_evaluation",
+                  "episode": 0,
+                  "seed": 11,
+                  "status": "complete",
+                  "file": "videos/a8bc9448-ef7d-4015-bec1-941c137a524b-00001.webm",
+                  "codec": "vp9",
+                  "crf": 45,
+                  "fps": 12,
+                  "audio": false,
+                  "width": 240,
+                  "height": 224,
+                  "session_frame_start": 0,
+                  "segment": 1,
+                  "frames": 30,
+                  "duration_seconds": 2.5,
+                  "bytes": 13131,
+                  "sha256": "ff7797c37fe05854ba1a3faf9a17400c7493a40d25a35b7200add97063f69f09"
+                }
+              ],
+              "environment_closed": true,
+              "workers_alive": 0,
+              "realtime_requested": false,
+              "normalization": "pixels / 255; no running observation or reward statistics",
+              "limitations": "Small fixed seed sample; changing seeds does not diversify deterministic NES play.",
+              "evaluation_count": 3,
+              "completion_count": 0,
+              "completion_rate": 0.0,
+              "termination_counts": {
+                "death": 3
+              },
+              "distances": [
+                273,
+                273,
+                273
+              ],
+              "mean_distance": 273.0,
+              "median_distance": 273.0,
+              "min_distance": 273,
+              "max_distance": 273,
+              "rewards": [
+                263.0,
+                263.0,
+                263.0
+              ],
+              "recording_error": null,
+              "replay": {
+                "status": "complete",
+                "file": "observations.json.gz",
+                "format_version": 1,
+                "sha256": "0d681baddbd5d5c71f4339df0ecd794f1f81e495e03b9343e08aad900b761e76",
+                "bytes": 216299,
+                "samples": 8,
+                "interval_emulator_frames": 20,
+                "maximum_samples": 45,
+                "maximum_uncompressed_sample_bytes": 16777216,
+                "error": null
+              },
+              "finished_unix": 1791634342.9826198,
+              "wall_seconds": 0.6899504580032954,
+              "peak_rss_bytes": 2361274368,
+              "encoder_peak_rss_bytes": 586166272,
+              "peak_cuda_allocated_bytes": 0
+            },
+            {
+              "evaluation_id": "39722a9e-5665-43c8-9387-c084454df0ee",
+              "run_id": "d1d96e17-e419-4c91-afb6-2a9820bd3c9a",
+              "snapshot_id": "0b9b4dd7-ecc1-4706-baeb-f2ed2dac6a30",
+              "model_sha256": "feb853c36ca328c532f13a25f23e7180b5a8905250959b37a689d1f72a3ac1e4",
+              "snapshot_updates": 12000,
+              "protocol_id": "7e0bd2eb10bb2fb73fd28442af3e6eef0e031498009be37a75f5b101a5bf712c",
+              "created_unix": 1791634601.1145592,
+              "mode": "stochastic_evaluation",
+              "device": "cpu",
+              "status": "completed",
+              "training_paused": true,
+              "training_pause_reason": "sequential CPU evaluation; trainer waits at a safe boundary",
+              "execution": "one separate evaluation process; episodes sequential; no optimizer",
+              "evidence": "real NES on cpu",
+              "distance_unit": "pixels",
+              "reward_unit": "raw game reward",
+              "episodes": [
+                {
+                  "episode": 0,
+                  "seed": 11,
+                  "distance": 273,
+                  "reward": 263.0,
+                  "reason": "death",
+                  "emulator_frames": 147,
+                  "transitions": 37,
+                  "terminated": true,
+                  "truncated": false
+                },
+                {
+                  "episode": 1,
+                  "seed": 22,
+                  "distance": 273,
+                  "reward": 263.0,
+                  "reason": "death",
+                  "emulator_frames": 147,
+                  "transitions": 37,
+                  "terminated": true,
+                  "truncated": false
+                },
+                {
+                  "episode": 2,
+                  "seed": 33,
+                  "distance": 273,
+                  "reward": 263.0,
+                  "reason": "death",
+                  "emulator_frames": 147,
+                  "transitions": 37,
+                  "terminated": true,
+                  "truncated": false
+                }
+              ],
+              "videos": [
+                {
+                  "session_id": "39722a9e-5665-43c8-9387-c084454df0ee",
+                  "run_id": "d1d96e17-e419-4c91-afb6-2a9820bd3c9a",
+                  "created_unix": 1791634601.1145592,
+                  "start_updates": 12000,
+                  "evaluation_id": "39722a9e-5665-43c8-9387-c084454df0ee",
+                  "snapshot_id": "0b9b4dd7-ecc1-4706-baeb-f2ed2dac6a30",
+                  "model_sha256": "feb853c36ca328c532f13a25f23e7180b5a8905250959b37a689d1f72a3ac1e4",
+                  "protocol_id": "7e0bd2eb10bb2fb73fd28442af3e6eef0e031498009be37a75f5b101a5bf712c",
+                  "mode": "stochastic_evaluation",
+                  "episode": 0,
+                  "seed": 11,
+                  "status": "complete",
+                  "file": "videos/39722a9e-5665-43c8-9387-c084454df0ee-00001.webm",
+                  "codec": "vp9",
+                  "crf": 45,
+                  "fps": 12,
+                  "audio": false,
+                  "width": 240,
+                  "height": 224,
+                  "session_frame_start": 0,
+                  "segment": 1,
+                  "frames": 30,
+                  "duration_seconds": 2.5,
+                  "bytes": 13131,
+                  "sha256": "b9d1c8e13b39575963d1b1c934ee148e9b20c7dba71cca0730ad1999dc1a81a9"
+                }
+              ],
+              "environment_closed": true,
+              "workers_alive": 0,
+              "realtime_requested": false,
+              "normalization": "pixels / 255; no running observation or reward statistics",
+              "limitations": "Small fixed seed sample; changing seeds does not diversify deterministic NES play.",
+              "evaluation_count": 3,
+              "completion_count": 0,
+              "completion_rate": 0.0,
+              "termination_counts": {
+                "death": 3
+              },
+              "distances": [
+                273,
+                273,
+                273
+              ],
+              "mean_distance": 273.0,
+              "median_distance": 273.0,
+              "min_distance": 273,
+              "max_distance": 273,
+              "rewards": [
+                263.0,
+                263.0,
+                263.0
+              ],
+              "recording_error": null,
+              "replay": {
+                "status": "complete",
+                "file": "observations.json.gz",
+                "format_version": 1,
+                "sha256": "0d829c19c1e554861c52d8e159a8f0ab661abd3891c70b17ebd45a5fb18c8b0f",
+                "bytes": 216347,
+                "samples": 8,
+                "interval_emulator_frames": 20,
+                "maximum_samples": 45,
+                "maximum_uncompressed_sample_bytes": 16777216,
+                "error": null
+              },
+              "finished_unix": 1791634601.8010056,
+              "wall_seconds": 0.7383049749987549,
+              "peak_rss_bytes": 2361274368,
+              "encoder_peak_rss_bytes": 586616832,
+              "peak_cuda_allocated_bytes": 0
+            },
+            {
+              "evaluation_id": "f0467a9a-1f12-4912-b496-19b09f03668f",
+              "run_id": "d1d96e17-e419-4c91-afb6-2a9820bd3c9a",
+              "snapshot_id": "a26f0933-f155-4721-9329-4c124494da07",
+              "model_sha256": "39bbeb6b1c5a8a4a37c1d8a71210e93b3d3f17fa180d2394ad3153874bbdaf0d",
+              "snapshot_updates": 13000,
+              "protocol_id": "7e0bd2eb10bb2fb73fd28442af3e6eef0e031498009be37a75f5b101a5bf712c",
+              "created_unix": 1791634855.7380128,
+              "mode": "stochastic_evaluation",
+              "device": "cpu",
+              "status": "completed",
+              "training_paused": true,
+              "training_pause_reason": "sequential CPU evaluation; trainer waits at a safe boundary",
+              "execution": "one separate evaluation process; episodes sequential; no optimizer",
+              "evidence": "real NES on cpu",
+              "distance_unit": "pixels",
+              "reward_unit": "raw game reward",
+              "episodes": [
+                {
+                  "episode": 0,
+                  "seed": 11,
+                  "distance": 273,
+                  "reward": 263.0,
+                  "reason": "death",
+                  "emulator_frames": 147,
+                  "transitions": 37,
+                  "terminated": true,
+                  "truncated": false
+                },
+                {
+                  "episode": 1,
+                  "seed": 22,
+                  "distance": 273,
+                  "reward": 263.0,
+                  "reason": "death",
+                  "emulator_frames": 147,
+                  "transitions": 37,
+                  "terminated": true,
+                  "truncated": false
+                },
+                {
+                  "episode": 2,
+                  "seed": 33,
+                  "distance": 273,
+                  "reward": 263.0,
+                  "reason": "death",
+                  "emulator_frames": 147,
+                  "transitions": 37,
+                  "terminated": true,
+                  "truncated": false
+                }
+              ],
+              "videos": [
+                {
+                  "session_id": "f0467a9a-1f12-4912-b496-19b09f03668f",
+                  "run_id": "d1d96e17-e419-4c91-afb6-2a9820bd3c9a",
+                  "created_unix": 1791634855.7380128,
+                  "start_updates": 13000,
+                  "evaluation_id": "f0467a9a-1f12-4912-b496-19b09f03668f",
+                  "snapshot_id": "a26f0933-f155-4721-9329-4c124494da07",
+                  "model_sha256": "39bbeb6b1c5a8a4a37c1d8a71210e93b3d3f17fa180d2394ad3153874bbdaf0d",
+                  "protocol_id": "7e0bd2eb10bb2fb73fd28442af3e6eef0e031498009be37a75f5b101a5bf712c",
+                  "mode": "stochastic_evaluation",
+                  "episode": 0,
+                  "seed": 11,
+                  "status": "complete",
+                  "file": "videos/f0467a9a-1f12-4912-b496-19b09f03668f-00001.webm",
+                  "codec": "vp9",
+                  "crf": 45,
+                  "fps": 12,
+                  "audio": false,
+                  "width": 240,
+                  "height": 224,
+                  "session_frame_start": 0,
+                  "segment": 1,
+                  "frames": 30,
+                  "duration_seconds": 2.5,
+                  "bytes": 13131,
+                  "sha256": "abeb9e5d76521dd9b44eed34f6778c63d520d149ae6aab9d44446c02825dbd42"
+                }
+              ],
+              "environment_closed": true,
+              "workers_alive": 0,
+              "realtime_requested": false,
+              "normalization": "pixels / 255; no running observation or reward statistics",
+              "limitations": "Small fixed seed sample; changing seeds does not diversify deterministic NES play.",
+              "evaluation_count": 3,
+              "completion_count": 0,
+              "completion_rate": 0.0,
+              "termination_counts": {
+                "death": 3
+              },
+              "distances": [
+                273,
+                273,
+                273
+              ],
+              "mean_distance": 273.0,
+              "median_distance": 273.0,
+              "min_distance": 273,
+              "max_distance": 273,
+              "rewards": [
+                263.0,
+                263.0,
+                263.0
+              ],
+              "recording_error": null,
+              "replay": {
+                "status": "complete",
+                "file": "observations.json.gz",
+                "format_version": 1,
+                "sha256": "5b4d53224ce9e2a4c363d175d14edf35138dca5f6043da9824b4a559423c2113",
+                "bytes": 216367,
+                "samples": 8,
+                "interval_emulator_frames": 20,
+                "maximum_samples": 45,
+                "maximum_uncompressed_sample_bytes": 16777216,
+                "error": null
+              },
+              "finished_unix": 1791634856.3928,
+              "wall_seconds": 0.712833268000395,
+              "peak_rss_bytes": 2361274368,
+              "encoder_peak_rss_bytes": 586452992,
+              "peak_cuda_allocated_bytes": 0
+            }
+          ],
+          "ranking_rule": "completion rate, then mean distance; keep incumbent on ties"
+        }
+      ],
+      "note": "Small fixed-seed samples; no general learning-success claim.",
+      "references": {
+        "pins": [],
+        "best": [],
+        "latest": [
+          "a26f0933-f155-4721-9329-4c124494da07"
+        ]
+      },
+      "model_kind": "connectome",
+      "parameter_count": 1724040,
+      "training_budget": {
+        "total_updates": 100000,
+        "original_updates": 100000,
+        "events": [],
+        "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+      },
+      "training_config": {
+        "autosave_seconds": 600,
+        "clip_ratio": 0.2,
+        "entropy_coefficient": 0.01,
+        "epochs": 2,
+        "evaluation_every_updates": 1000,
+        "evaluation_timeout_seconds": 120,
+        "gae_lambda": 0.95,
+        "gamma": 0.99,
+        "keep_checkpoints": 3,
+        "learning_rate": 0.0003,
+        "max_grad_norm": 0.5,
+        "model_kind": "connectome",
+        "propagation_steps": 2,
+        "rollout_steps": 32,
+        "seed": 7,
+        "state_dim": 8,
+        "updates": 100000,
+        "value_coefficient": 0.5
+      }
+    },
+    "manual_restart": "pending; no WSL/PC restart performed by this script",
+    "windows_browser": "pending; Playwright Chromium in WSL is not a Windows screen acceptance",
+    "orphan_children": []
+  },
+  "budgets": {
+    "process_tree_peak_rss_bytes": 6442450944,
+    "pytorch_peak_allocated_bytes": 536870912,
+    "system_gpu_used_bytes": 8589934592,
+    "windows_available_min_bytes": 6442450944,
+    "linux_available_min_bytes": 4294967296,
+    "sustained_swap_allowed": false,
+    "min_transitions_per_second": 80,
+    "max_p95_update_seconds": 1.0,
+    "max_save_stop_seconds": 5.0
+  },
+  "checks": {
+    "at_least_one_hour": true,
+    "tree_rss": true,
+    "torch_vram": true,
+    "system_gpu": true,
+    "linux_free": true,
+    "windows_free": true,
+    "throughput": true,
+    "update_p95": true,
+    "save_stop": true,
+    "no_process_swap_observed": true,
+    "no_orphan_children": true
+  },
+  "memory_windows": [
+    {
+      "start_seconds": 0,
+      "samples": 591,
+      "trainer_rss_median_bytes": 2357964800
+    },
+    {
+      "start_seconds": 600,
+      "samples": 596,
+      "trainer_rss_median_bytes": 2361810944.0
+    },
+    {
+      "start_seconds": 1200,
+      "samples": 596,
+      "trainer_rss_median_bytes": 2361810944.0
+    },
+    {
+      "start_seconds": 1800,
+      "samples": 595,
+      "trainer_rss_median_bytes": 2361810944
+    },
+    {
+      "start_seconds": 2400,
+      "samples": 596,
+      "trainer_rss_median_bytes": 2361966592.0
+    },
+    {
+      "start_seconds": 3000,
+      "samples": 596,
+      "trainer_rss_median_bytes": 2361966592.0
+    }
+  ],
+  "outcomes": {
+    "initial": {
+      "snapshot_updates": 0,
+      "distances": [
+        682,
+        623,
+        250
+      ],
+      "mean_distance": 518.3333333333334,
+      "completion_count": 0,
+      "evaluation_count": 3,
+      "termination_counts": {
+        "no_progress": 1,
+        "death": 2
+      }
+    },
+    "latest": {
+      "snapshot_updates": 13000,
+      "distances": [
+        273,
+        273,
+        273
+      ],
+      "mean_distance": 273.0,
+      "completion_count": 0,
+      "evaluation_count": 3,
+      "termination_counts": {
+        "death": 3
+      }
+    }
+  },
+  "limitations": [
+    "Resource peaks are observed maxima at the reported sampling interval; torch allocator and trainer ru_maxrss also report lifetime peaks.",
+    "Windows browser and actual WSL/PC restart require user confirmation.",
+    "Three fixed seeds and a time-limited run do not establish generalization or model superiority."
+  ]
+}
