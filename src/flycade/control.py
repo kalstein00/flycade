@@ -90,7 +90,8 @@ class SaveControl:
         self.state['state'] = state
         self.publish()
         with (self.run / 'save-events.jsonl').open('a') as log:
-            log.write(json.dumps(self.state) + '\n')
+            from flycade.storage import append_log, storage_policy
+            append_log(log, self.state, storage_policy(self.run)['log_bytes'])
         print(f'Save {state}: {self.state.get("reason", "")} (last recovery: {self.state.get("last_save")})', file=sys.stderr)
 
     def poll(self, stop: bool = False, automatic_due: bool = False) -> None:

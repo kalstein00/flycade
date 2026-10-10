@@ -103,6 +103,11 @@ async function loadEvaluations() {
     for(const row of result.evaluations)select.add(new Option((row.snapshot_id==='initial'?'초기':row.snapshot_updates+' 갱신')+' · '+new Date(row.created_unix*1000).toLocaleString('ko-KR')+' · '+row.status,row.evaluation_id));
     const requested=new URLSearchParams(location.search).get('evaluation');
     if(result.evaluations.some(row=>row.evaluation_id===requested))select.value=requested;
+    else if(requested) {
+      select.selectedIndex=-1;selectedEvaluation='';
+      clearPanels('평가 기록 없음 · 정리되었거나 누락된 평가입니다. 남아 있는 평가를 목록에서 선택하세요.');
+      return;
+    }
     selectEvaluation();
   } catch {if(current===version)clearPanels('평가 목록을 읽지 못했습니다. 로컬 서버 연결을 확인하고 새로고침하세요.');}
 }

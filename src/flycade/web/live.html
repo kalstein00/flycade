@@ -10,6 +10,7 @@
 <p class="freshness"><span id="received">수신된 표본 없음</span><span id="lag">지연 —</span><span id="frequency">표본 빈도 —</span></p>
 <div class="operations" aria-label="학습 저장 상태"><strong id="operation" role="status">저장 상태 확인 중</strong><span id="recovery"></span><span id="reset-notice"></span><span>학습 제어는 CLI에서 · 영상 일시정지는 학습을 중단하지 않습니다.</span></div>
 <div id="recovery-notice"><p id="rollback" role="status"></p><details id="recovery-details" hidden><summary>복구 후보와 오류</summary><pre id="recovery-errors"></pre></details></div>
+<details id="storage-info"><summary>저장 공간 · <strong id="storage-summary">확인 중</strong></summary><p id="storage-policy"></p><p id="storage-result" role="status"></p><p>초기·최고·최신 평가와 사용자 보존본의 영상·관찰 이력은 유지합니다. 학습 영상은 최근 구간만 남습니다. CLI의 storage로 설정·정리하고 pin-checkpoint로 보존하세요.</p></details>
 <main id="view"><p class="empty">아직 관측 데이터가 없습니다. 학습이 첫 표본을 보내면 게임과 회로가 함께 표시됩니다.</p></main>
 <template id="sample-template">
 <div class="observation">

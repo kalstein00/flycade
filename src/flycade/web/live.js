@@ -38,6 +38,13 @@ function operation(control) {
   $('#recovery').textContent=recovery?.state==='failed'?'복구 가능한 정상본 없음':saved?`마지막 복구 시점 ${time(saved.completed_unix)} · update ${number(saved.updates)} · ${number(saved.transitions)}전이`:'정상 저장본 없음';
   $('#reset-notice').textContent=control.reset ? '세션 시작: 새 에피소드 · 누적 학습 진도 유지' : '';
 }
+function storageInformation(info) {
+  if (!info || info.error) {$('#storage-summary').textContent='확인 실패';$('#storage-result').textContent=info?.error || '저장 공간 정보를 읽을 수 없습니다.';return;}
+  $('#storage-summary').textContent=`남은 공간 ${number(info.free_bytes/1024**3,2)} GiB${info.low_space?' · 공간 부족':''}`;
+  const p=info.policy,c=info.cleanup;
+  $('#storage-policy').textContent=`최근 평가 ${p.keep_evaluations}개 + 보호본 · 학습 영상 ${p.keep_videos}개 · 로그별 ${number(p.log_bytes/1024**2,2)} MiB`;
+  $('#storage-result').textContent=c.status==='failed'?`정리 실패 · ${(c.errors||[]).join(' / ')} · 마지막 정상 저장본을 확인하세요.`:c.status==='not_run'?'아직 정리한 내역 없음':`최근 정리 ${time(c.at_unix)} · 삭제 ${(c.removed||[]).length}건 · 로그 축소 ${(c.trimmed_logs||[]).length}건`;
+}
 function runInformation(info) {
   if (!info) return;
   const lineage=info.lineage, budget=info.budget;
@@ -143,6 +150,7 @@ async function poll() {
       $('#evaluation-link').href='/replay?'+new URLSearchParams({run:selectedRun});
       $('#model-kind').textContent=next.model_kind==='cnn'?'모델: CNN PPO':'모델: 커넥톰 PPO';
       operation(next.control);
+      storageInformation(next.storage);
       runInformation(next.run_info);
       current=next;runID=next.run_id;lastReceived=Date.now()/1000;
       $('#run').textContent=next.run_id.slice(0,8);$('#run').title=next.run_id;

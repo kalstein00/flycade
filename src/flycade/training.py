@@ -83,8 +83,8 @@ class TrainingConfig:
 
 
 def log_row(log: TextIO, row: dict[str, Any]) -> None:
-    log.write(json.dumps(row, allow_nan=False) + '\n')
-    log.flush()
+    from flycade.storage import append_log, storage_policy
+    append_log(log, row, storage_policy(Path(log.name).parent)['log_bytes'])
 
 
 def pixel_tensor(obs: Pixels, device: str) -> Tensor:
@@ -300,6 +300,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                 config.evaluation_timeout_seconds, report, control, lambda: control.poll(stop_requested))
             report['initial_evaluation_id'] = evaluation['evaluation_id']
             report['evaluation_history'].append(evaluation['evaluation_id'])
+            report['evaluation_history'] = report['evaluation_history'][-100:]
         report['training_started_unix'] = time.time()
         learning_started = time.perf_counter()
         recording = RecordingEmulator(FixtureEmulator() if fixture else NesEmulator(home), output,
@@ -342,8 +343,9 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
             report['checkpoint_id'] = metadata['checkpoint_id']
             report['final_sha256'] = digest(output / 'final.pt')
             control.complete(metadata, report)
-            from flycade.retention import prune_checkpoints
-            report['pruned_checkpoints'] = prune_checkpoints(output, config.keep_checkpoints)
+            from flycade.storage import cleanup_storage
+            report['storage'] = cleanup_storage(output)
+            report['pruned_checkpoints'] = report['storage'].get('pruned_checkpoints', [])
 
         def periodic_evaluation() -> None:
             nonlocal learning_started
@@ -366,6 +368,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
             learning_started += paused_seconds
             report['evaluation_seconds'] = report.get('evaluation_seconds', 0.) + paused_seconds
             report['evaluation_history'].append(evaluation['evaluation_id'])
+            report['evaluation_history'] = report['evaluation_history'][-100:]
             report['next_evaluation_update'] = due + (int((report['updates'] - due) / config.evaluation_every_updates) + 1) * config.evaluation_every_updates
             write_json(output / 'report.json', report)
 
@@ -472,6 +475,8 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         if observer is not None:
             observer.close(report)
             report['observer'] = dict(observer.stats)
+        from flycade.storage import cleanup_storage
+        report['storage'] = cleanup_storage(output)
         report['wall_seconds'] = time.perf_counter() - started
         report['peak_rss_bytes'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
         report['peak_cuda_allocated_bytes'] = torch.cuda.max_memory_allocated() if device == 'cuda' else 0

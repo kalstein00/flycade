@@ -265,3 +265,5 @@ uv run --offline --locked --extra train flycade resume reports/daily-001
 평가 영상 탐색과 실제 회로·정책 입력·행동의 동기 재생, 고정 평가 최신 관측은 [T13 시간 대응·상한·검증](docs/validation/T13.md)을 참고하세요.
 
 동일 조건의 별도 CNN Run은 `train --model-kind cnn`으로 시작합니다. `compare-runs RUN_A RUN_B`는 모델별 초기 대비 거리·완료율·사망 변화와 예산/설정 차이를 보고합니다. [T14 비교 조건과 실제 미개선 결과](docs/validation/T14.md)를 참고하세요.
+
+Run별 저장 공간과 보존 정책은 `storage RUN`으로 확인합니다. 최근 평가·영상·로그를 제한하고 초기·최고·사용자 보존본을 보호하는 방법과 오프라인 절차는 [T15 안내](docs/validation/T15.md)를 참고하세요.

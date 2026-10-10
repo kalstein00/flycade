@@ -82,7 +82,15 @@ def evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device:
              realtime: bool = False, training_paused: bool = False) -> dict[str, Any]:
     evaluation_id = str(uuid.uuid4())
     with evaluation_lease(run, evaluation_id, selection) as snapshot_id:
-        return _evaluate(run, snapshot_id, protocol_path, home, device, realtime, training_paused, evaluation_id)
+        result = _evaluate(run, snapshot_id, protocol_path, home, device, realtime, training_paused, evaluation_id)
+    if not training_paused:
+        from flycade.storage import manage_storage
+        try:
+            result['storage'] = manage_storage(run, apply=True)
+        except PreparationError as exc:
+            if exc.code != 'run_busy':
+                raise
+    return result
 
 
 def _evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device: str,
@@ -135,6 +143,8 @@ def _evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device
         recorder = RecordingEmulator(FixtureEmulator() if manifest['fixture'] else NesEmulator(home),
                                      output, video_session, max_video_frames=protocol['video_seconds'] * 12)
         env = GameEnv(recorder, GameConfig(**protocol['game']))
+        from flycade.storage import append_log, storage_policy
+        trace_limit = storage_policy(run)['log_bytes']
         with (output / 'transitions.jsonl').open('x') as trace:
             for episode, seed in enumerate(protocol['seeds']):
                 random.seed(seed)
@@ -163,10 +173,10 @@ def _evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device
                             raise PreparationError('nonfinite_evaluation', 'Nonfinite evaluation reward')
                         if info['reason'] in ('position_discontinuity', 'unexpected_game_state', 'backend_end_unclassified'):
                             raise PreparationError('game_contract_violation', f"Invalid evaluation transition: {info['reason']}")
-                        trace.write(json.dumps({'episode': episode, 'seed': seed, 'transition': transitions,
+                        append_log(trace, {'episode': episode, 'seed': seed, 'transition': transitions,
                             'action': action, 'reward': reward, 'terminated': terminated, 'truncated': truncated,
                             'max_progress': info['max_progress'], 'executed_frames': info['executed_frames'],
-                            'reason': info['reason']}, allow_nan=False) + '\n')
+                            'reason': info['reason']}, trace_limit)
                         if realtime:
                             delay = info['frames'] / 60 - (time.perf_counter() - episode_started)
                             if delay > 0:

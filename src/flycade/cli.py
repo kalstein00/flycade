@@ -87,6 +87,12 @@ def main() -> int:
     save.add_argument('run', type=Path)
     save.add_argument('--stop', action='store_true')
     save.add_argument('--wait-seconds', type=float, default=30)
+    storage = sub.add_parser('storage')
+    storage.add_argument('run', type=Path)
+    storage.add_argument('--apply', action='store_true')
+    storage.add_argument('--keep-evaluations', type=int)
+    storage.add_argument('--keep-videos', type=int)
+    storage.add_argument('--log-bytes', type=int)
     status = sub.add_parser('status')
     status.add_argument('run', type=Path)
     live = sub.add_parser('live')
@@ -178,6 +184,10 @@ def main() -> int:
         elif args.command == 'save':
             from flycade.control import request_save
             report = request_save(args.run, args.stop, args.wait_seconds)
+        elif args.command == 'storage':
+            from flycade.storage import manage_storage
+            report = manage_storage(args.run, args.apply, keep_evaluations=args.keep_evaluations,
+                                    keep_videos=args.keep_videos, log_bytes=args.log_bytes)
         elif args.command == 'status':
             from flycade.control import run_status
             report = run_status(args.run)

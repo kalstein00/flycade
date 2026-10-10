@@ -7,9 +7,11 @@ from test_training_cli import prepared_graph
 
 
 def protected_files(run):
+    # Evaluation may update ranking/retention metadata; all learning-state bytes stay immutable.
     return {str(path.relative_to(run)): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in run.rglob('*') if path.is_file()
-            and path.name not in ('checkpoint-references.json', 'evaluation-index.json', '.references.lock')
+            and path.name not in ('checkpoint-references.json', 'evaluation-index.json', '.references.lock',
+                                  'storage-status.json', 'storage-policy.json')
             and not any(part in ('evaluations', 'protocols', 'evaluation-leases') for part in path.relative_to(run).parts)}
 
 
