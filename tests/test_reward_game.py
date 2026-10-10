@@ -80,3 +80,17 @@ def test_enabled_enemy_reward_rejects_missing_signals_and_invalid_costs():
                    {'terminate_on_no_progress': 'yes'}, {'enemy_reward': float('nan')}):
         with pytest.raises(ValueError):
             GameConfig(**config)
+
+
+def test_fall_below_playfield_is_terminal_before_respawn_or_extra_progress():
+    frames = [event(player_y_high=1), event(44, player_y_high=0),
+              event(48, player_y_high=1), event(52, player_y_high=2)]
+    with GameEnv(SyntheticEmulator(frames), GameConfig(action_repeat=1, progress_reward=.01)) as env:
+        env.reset()
+        assert not env.step(4)[2]  # Above the screen during a high jump is not a fall.
+        assert not env.step(4)[2]
+        _, reward, term, trunc, info = env.step(4)
+        assert (term, trunc, info['reason']) == (True, False, 'death')
+        assert reward == -10
+        assert info['reward_components']['progress'] == 0
+        assert info['max_progress'] == 8

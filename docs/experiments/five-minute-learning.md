@@ -1,0 +1,56 @@
+# 5분 학습 구간과 추락 판정 수정
+
+사용자 요청: 정체·사망과 점프 해제/재입력·화면별 행동을 진단하고, 학습은5분 단위로 수행한다. 실패를 숨기지 않고 결과로 다음 설정을 판단한다. 반복적인 에이전트 폴링 대신 완료 시 `codex queue`로 이어간다.
+
+## 재현과 발견
+
+[구조화된 진단](fall-diagnosis.json). reward-v2-001의 최종 평가3개 에피소드 행동을 실제 NES에서 재생했다. 모든 전이의 최대 전진 거리와 종료 사유가 원본과 일치했다. 진단 스크립트는 `reports/reward-v2-001/diagnosis`에 결과를 남겼고, 해당 실행 소스/lock을 `reports/reward-v2-001/source`에 보존했다.
+
+- seed11: 파이프 앞에서 정체. 점프 버튼을44번 해제했으며 최대 연속 유지52프레임. 버튼을 전혀 해제하지 않는 고장은 아니다. 마지막 지상 구간에서는 A를 계속 눌러 재점프가 지연된 사례가 있다.
+- seed22: 파이프를 넘은 후 적과 충돌해 사망. 점프 해제21회, 최대 유지36프레임.
+- seed33: 낭떠러지 추락. 1012프레임에 `player_y_high=2`가 됐지만 환경은1268프레임까지 사망 판정을 미뤘다. 복귀 불가능한256프레임(60fps 기준4.27초) 동안 전이가 계속됐고 화면 밖 이동도 전진 거리/보상에 포함됐다.
+- 실제 화면별 행동4 확률의 범위 차이는 에피소드별 약8.3~9.8%p였다. 화면 입력을 완전히 무시하는 정책은 아니지만, 이 수치만으로 유용한 장애물 인식을 배웠다고 판단하지 않는다.
+
+[파이프 정체](fall-screens/episode-0.png), [파이프 위 점프](fall-screens/episode-1.png), [추락 후 화면](fall-screens/episode-2.png). 이미지와 RAM/전이 기록을 함께 확인했으며 마지막 화면의 적을 플레이어로 혼동하지 않는다.
+
+원인 후보는 버튼 해제 부족, 화면에 둔감한 정책, 사망 신호 지연이었다. 직접 재현된 사망 신호 지연부터 수정한다. 자동 점프나 특정 버튼 강제 선택은 추가하지 않는다.
+
+## 수정과 검증
+
+지원하는 World1-1에서 플레이어가 화면 아래로 떨어지는 `player_y_high>=2`를 death terminal로 처리한다. 이 행동 집합에는 DOWN이 없어 수직 파이프 진입이 없고, 구름 보너스 출구도 지원 범위 밖이다. 게임 상태 범위 확인 이후에 적용하며 완주·게임 시간 초과 판정의 우선순위는 유지한다. 화면 위로 올라간 high0은 사망이 아니다.
+
+[SMB의 PlayerHole 루틴](https://github.com/pgattic/smb1-disasm/blob/master/engine/game-mode/routine/player-control.asm)은 high2부터 낭떠러지 처리를 시작하고, 음악/더 아래 위치를 기다린 뒤 lose-life 루틴으로 이동한다. 기존 환경은 마지막 engine/lives 변화만 기다렸다.
+
+환경 경계의 회귀 테스트가 기존 코드에서 실패함을 확인한 뒤 수정했다. 실제 NES의 저장된 추락 입력(`docs/validation/fall-actions.json`)은1012프레임에서 즉시 death로 종료되고, 이전1211px의 화면 밖 추가 거리를 인정하지 않는다. 기존 완주1361프레임과 적 처치2회, high0 점프 보호를 포함해 관련10개 테스트를 통과했다.
+
+보상 계수·모델·학습률·탐색 설정은 reward-v2와 동일하게 두고 종료 판정만 수정한다. 환경 코드 호환성 때문에 이번 첫 구간은 새 Run으로 시작한다. 그 이후에는 같은 Run의 checkpoint·optimizer·누적 진도를 이어간다. 옛 평가와의 거리 직접 비교에는 판정 변경의 영향이 있으므로 새 Run 안에서 동일 프로토콜의 초기/구간 시작/최종 평가를 비교한다.
+
+## 실행
+
+새 Run(기본300초):
+
+```bash
+uv run --offline --locked --extra graph --extra train python scripts/reward_trial.py \
+  --output reports/five-minute-001 --queue-thread "$CODEX_THREAD_ID"
+```
+
+같은 학습의 다음5분:
+
+```bash
+uv run --offline --locked --extra graph --extra train python scripts/reward_trial.py \
+  --resume-run reports/five-minute-001/run --output reports/five-minute-002 \
+  --queue-thread "$CODEX_THREAD_ID"
+```
+
+각 구간 출력은 새 디렉터리에 기록하고 원래 Run은 유지한다. `starting_catalog`에 시작 전 평가를 보존한다. 300초는 재개 시작부터의 세션 벽시계이며 주기 평가/준비 시간을 포함하고 안전 저장에는 약간의 추가 시간이 필요하다. 실제 학습 시간은 별도 기록한다. 초기 평가와 첫1 update 준비 시간은 세션에 포함되지 않는다. 이후 구간에서는 초기화를 다시 하지 않는다.
+
+실제 Windows 화면과 WSL 재시작 인수는 #17의 별도 미완료 항목으로 유지한다. 5분 성과 확인을1시간 안정성 인수로 대체하거나, 그 반대로 대체하지 않는다.
+
+진단 재현 명령(수정 전 소스와 정책을 고정):
+
+```bash
+PYTHONPATH="$PWD/reports/reward-v2-001/source/src" .venv/bin/python \
+  reports/reward-v2-001/diagnosis/reproduce.py
+```
+
+Standards 리뷰: hard0, heuristic0. Spec 리뷰: 지적0. 관련 환경/실제NES10개, 구간CLI3개 통과, mypy38개 소스 통과. 전체 회귀와 실제5분 성과는 실행 후 기록한다.

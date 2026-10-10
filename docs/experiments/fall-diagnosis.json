@@ -1,0 +1,90 @@
+{
+  "episodes": [
+    {
+      "episode": 0,
+      "exact_trace_reproduced": true,
+      "distance": 859,
+      "reason": "no_progress",
+      "max_a_hold_frames": 52,
+      "a_release_count": 44,
+      "probability_range_by_action": [
+        0.027222953736782074,
+        0.04412028193473816,
+        0.058436330407857895,
+        0.023979824036359787,
+        0.09284961223602295,
+        0.05193093419075012,
+        0.0289059616625309
+      ],
+      "last_actions": {
+        "4": 45,
+        "6": 6,
+        "5": 6,
+        "3": 9,
+        "0": 6,
+        "2": 3
+      }
+    },
+    {
+      "episode": 1,
+      "exact_trace_reproduced": true,
+      "distance": 652,
+      "reason": "death",
+      "max_a_hold_frames": 36,
+      "a_release_count": 21,
+      "probability_range_by_action": [
+        0.026858247816562653,
+        0.02905374765396118,
+        0.0385450255125761,
+        0.0238356776535511,
+        0.0830567479133606,
+        0.03643489256501198,
+        0.024786390364170074
+      ],
+      "last_actions": {
+        "3": 4,
+        "4": 43,
+        "5": 8,
+        "6": 5,
+        "2": 5,
+        "0": 6,
+        "1": 4
+      }
+    },
+    {
+      "episode": 2,
+      "exact_trace_reproduced": true,
+      "distance": 1211,
+      "reason": "death",
+      "max_a_hold_frames": 52,
+      "a_release_count": 61,
+      "probability_range_by_action": [
+        0.026655957102775574,
+        0.053328126668930054,
+        0.06330270506441593,
+        0.023784123361110687,
+        0.09835225343704224,
+        0.056188952177762985,
+        0.03020961955189705
+      ],
+      "last_actions": {
+        "0": 2,
+        "1": 11,
+        "4": 49,
+        "2": 2,
+        "3": 3,
+        "6": 6,
+        "5": 2
+      }
+    }
+  ],
+  "fall": {
+    "first_irrecoverable_frame": 1012,
+    "old_death_frame": 1268,
+    "delay_frames": 256,
+    "delay_seconds_at_60fps": 4.266666666666667,
+    "old_distance": 1211,
+    "first_below_screen_position": 1126
+  },
+  "method": "Exact recorded evaluation actions replayed in actual NES; all original transition distances/endings matched. No training or policy mutation during diagnosis."
+}

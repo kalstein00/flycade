@@ -48,3 +48,13 @@ def test_trial_refuses_to_overwrite_an_existing_run(tmp_path):
     assert result.returncode == 2 and 'Run already exists' in result.stderr
     assert marker.read_text() == 'existing experiment'
     assert not (tmp_path / 'ready.json').exists()
+
+
+def test_trial_rejects_missing_resume_run_without_creating_output(tmp_path):
+    import subprocess
+    import sys
+    output = tmp_path / 'segment'
+    result = subprocess.run([sys.executable, 'scripts/reward_trial.py', '--output', str(output),
+                             '--resume-run', str(tmp_path / 'missing')], capture_output=True, text=True)
+    assert result.returncode == 2 and 'Resume Run is missing' in result.stderr
+    assert not output.exists()

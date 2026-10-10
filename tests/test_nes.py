@@ -91,3 +91,19 @@ def test_real_reward_v2_detects_stomps_without_using_score_as_kills(tmp_path):
     assert (info['reason'], info['frames']) == ('completion', 1361)
     assert defeats == 2 and enemy_reward == 1.
     assert total > 100
+
+
+def test_real_fall_ends_before_death_music_and_stops_rewarding_forward_drift(tmp_path):
+    assert cli('register-rom', ROM, '--home', tmp_path / 'home').returncode == 0
+    root = Path(__file__).parents[1]
+    result = cli('demo', '--home', tmp_path / 'home', '--output', tmp_path / 'fall',
+                 '--steps', 317, '--actions-file', root / 'docs/validation/fall-actions.json',
+                 '--config', root / 'configs/game-reward-v2.json')
+    assert result.returncode == 0, result.stdout + result.stderr
+    event = json.loads(result.stdout)['last_transition']
+    assert (event['reason'], event['terminated'], event['truncated']) == ('death', True, False)
+    assert event['frames'] == 1012
+    assert event['game']['player_y_high'] == 2
+    assert event['game']['engine'] == 8  # Previously waited until frame1268 for engine6.
+    assert event['max_progress'] < 1100  # Previously credited1211px, including offscreen drift.
+    assert event['reward_components']['death'] == -10

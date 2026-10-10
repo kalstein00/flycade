@@ -169,6 +169,11 @@ class GameEnv(gym.Env[Pixels, int]):
                 self.components['death'] += self.config.death_reward
             elif (info['world'], info['level'], info['mode']) != (0, 0, 1):
                 reason, truncated = 'unexpected_game_state', True
+            elif info.get('player_y_high', 1) >= 2:
+                # World1-1, no DOWN/pipe entry: below-screen fall is irreversible.
+                # The engine waits for death music before decrementing lives.
+                reason, terminated = 'death', True
+                self.components['death'] += self.config.death_reward
             elif backend_done or backend_truncated:
                 reason, truncated = 'backend_end_unclassified', True
             elif abs(self._position(info) - self._position(self.previous)) > 16:
