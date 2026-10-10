@@ -219,7 +219,7 @@ uv run --offline --locked --extra graph --extra train flycade live reports/my-ru
 
 관찰 중에 브라우저를 닫거나 서버를 종료해도 trainer는 계속 실행된다. 다시 접속하면 최신 표본으로 복구한다. 표본이 오래되거나 연결이 끊기면 마지막 화면을 보존하고 지연·연결 상태를 표시한다. 학습 종료 후에는 종료·저장 상태를 표시한다. 관측이 없는 Run에는 데이터 없음이 표시된다. 서비스는 loopback 읽기 전용이며 외부 CDN이나 인터넷 연결이 필요 없다.
 
-`train`과 `resume`의 `--observe-hz 2|3|4|5`로 최대 표본 빈도를 선택하고 `--observe-hz 0`으로 끈다. 이것은 게임 속도나 학습 예산을 바꾸지 않는다. `live/latest.json`은 최신 완성 표본 하나만 유지하고 전송 대기도 1개로 제한한다. 느린 소비자에게 누적 재생하지 않는다. 과거 영상은 기존 `history --serve`에서 보며, 회로 표본의 과거 영상 동기 재생은 제공하지 않는다.
+`train`과 `resume`의 `--observe-hz 2|3|4|5`로 최대 표본 빈도를 선택하고 `--observe-hz 0`으로 끈다. 이것은 게임 속도나 학습 예산을 바꾸지 않는다. `live/latest.json`은 최신 완성 표본 하나만 유지하고 전송 대기도 1개로 제한한다. 느린 소비자에게 누적 재생하지 않는다. 학습 기록 영상은 `history --serve`에서 본다. 새 평가 영상은 **평가 관찰·이력**에서 저장된 회로 표본과 함께 재생한다.
 
 실제 NES·RTX 5090 측정과 브라우저 검증 범위는 [T06 기록](docs/validation/T06.md)을 참고한다. 기존 Run은 코드 해시가 다르면 재개가 거부되므로 이번 소스로 새 Run을 만들어 사용한다.
 
@@ -261,3 +261,5 @@ uv run --offline --locked --extra train flycade resume reports/daily-001
 라이브 회로에서 노드(Enter/Space 가능)나 뉴런 표를 선택하면 원본 ID·알려진 종류·모델 활성 평균을 볼 수 있습니다. 표시군/연결 필터·확대·입력 프레임·짧은 활동 이력은 브라우저 안에서만 바뀝니다. `live RUN_A --run RUN_B`로 명시한 Run 사이를 전환합니다. [관찰 범위와 이력 상한·검증](docs/validation/T11.md).
 
 주기 평가와 초기·최근·최고본 비교는 [T12 운영·검증](docs/validation/T12.md)을 참고하세요. `live RUN` 화면의 **평가 비교**에서 저장된 짧은 영상과 시드별 성과를 확인합니다.
+
+평가 영상 탐색과 실제 회로·정책 입력·행동의 동기 재생, 고정 평가 최신 관측은 [T13 시간 대응·상한·검증](docs/validation/T13.md)을 참고하세요.

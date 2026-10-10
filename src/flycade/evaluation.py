@@ -19,6 +19,7 @@ from flycade.game import ACTIONS, GameConfig, GameEnv
 from flycade.graph import digest
 from flycade.nes import NesEmulator
 from flycade.recording import RecordingEmulator
+from flycade.replay import EvaluationReplay
 from flycade.snapshot import load_snapshot
 from flycade.training_fixture import FixtureEmulator
 
@@ -123,7 +124,9 @@ def _evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device
     atomic_json(output / 'report.json', report)
     env: GameEnv | None = None
     recorder: RecordingEmulator | None = None
+    replay: EvaluationReplay | None = None
     try:
+        replay = EvaluationReplay(run, output, report, protocol['video_seconds'], device)
         video_session = {'session_id': evaluation_id, 'run_id': manifest['run_id'],
             'created_unix': report['created_unix'], 'start_updates': snapshot['updates'],
             'evaluation_id': evaluation_id, 'snapshot_id': snapshot['snapshot_id'],
@@ -144,9 +147,15 @@ def _evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device
                 episode_started = time.perf_counter()
                 with torch.inference_mode():
                     while True:
-                        distribution, _ = policy(torch.from_numpy(obs).unsqueeze(0).to(device))
+                        observing = replay.due(episode, env.frames)
+                        observed = time.time()
+                        distribution, _ = policy(torch.from_numpy(obs).unsqueeze(0).to(device),
+                                                 observe=replay.capture if observing else None)
                         action = int(torch.multinomial(distribution.probs.cpu(), 1, generator=sampler).item() if protocol['mode'] == 'stochastic'
                                      else distribution.probs.argmax(dim=-1).item())
+                        if observing and env.last_frame is not None:
+                            replay.append(env.last_frame, obs, distribution.probs[0].cpu().tolist(), action,
+                                          env.frames, transitions, observed, seed, protocol['mode'])
                         obs, reward, terminated, truncated, info = env.step(action)
                         reward_sum += reward
                         transitions += 1
@@ -193,6 +202,10 @@ def _evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device
             if recorder.error:
                 report.update(status='failed', error=recorder.error)
         report['videos'] = [json.loads(path.read_text()) for path in sorted((output / 'videos').glob('*.json'))]
+        if replay is not None:
+            report['replay'] = replay.close(report['videos'])
+            if report['replay']['status'] != 'complete':
+                report.update(status='failed', error=report['replay']['error'])
         report['finished_unix'] = time.time()
         report['wall_seconds'] = time.perf_counter() - started
         report['peak_rss_bytes'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024

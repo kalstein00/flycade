@@ -139,6 +139,7 @@ async function poll() {
       if (!current || next.generation!==current.generation || next.sequence!==current.sequence || next.status!==current.status) await render(next);
       if(selection!==selectionVersion)return;
       $('#compare-link').href='/compare?'+new URLSearchParams({run:selectedRun});
+      $('#evaluation-link').href='/replay?'+new URLSearchParams({run:selectedRun});
       operation(next.control);
       runInformation(next.run_info);
       current=next;runID=next.run_id;lastReceived=Date.now()/1000;

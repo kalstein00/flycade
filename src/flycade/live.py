@@ -79,6 +79,21 @@ def serve_live(run: Path, port: int = 8766, additional_runs: list[Path] | None =
                 envelope['selected_worker'] = worker
                 body = json.dumps(envelope, allow_nan=False).encode()
                 content_type = 'application/json'
+            elif request.path in ('/api/replay', '/api/evaluation-live', '/api/evaluation-streams'):
+                from flycade.replay_reader import evaluation_streams, read_replay
+                query = parse_qs(request.query)
+                replay_run = registry.get(query.get('run', [default_id])[0])
+                if replay_run is None:
+                    self.send_error(404, 'Unknown Run')
+                    return
+                try:
+                    result = ({'evaluations': evaluation_streams(replay_run)} if request.path == '/api/evaluation-streams'
+                              else read_replay(replay_run, query.get('evaluation', [''])[0], request.path == '/api/evaluation-live'))
+                    body = json.dumps(result, allow_nan=False).encode()
+                except (OSError, ValueError, KeyError) as exc:
+                    self.send_error(404, str(exc))
+                    return
+                content_type = 'application/json'
             elif request.path in ('/api/evaluations', '/api/video'):
                 from flycade.evaluation_index import evaluation_catalog
                 query = parse_qs(request.query)
@@ -105,8 +120,8 @@ def serve_live(run: Path, port: int = 8766, additional_runs: list[Path] | None =
                     return
                 body = json.dumps(catalog, allow_nan=False).encode()
                 content_type = 'application/json'
-            elif request.path in ('/', '/compare', '/live.js', '/live.css', '/inspector.js', '/compare.js', '/compare.css'):
-                filename = {'/': 'live.html', '/compare': 'compare.html'}.get(request.path, request.path[1:])
+            elif request.path in ('/', '/compare', '/live.js', '/live.css', '/inspector.js', '/compare.js', '/compare.css', '/replay', '/replay.js', '/replay.css'):
+                filename = {'/': 'live.html', '/compare': 'compare.html', '/replay': 'replay.html'}.get(request.path, request.path[1:])
                 body = (assets / filename).read_bytes()
                 content_type = {'.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css'}[Path(filename).suffix]
             else:

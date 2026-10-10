@@ -1,0 +1,395 @@
+{
+  "first": {
+    "run_id": "2b059070-58c2-44ab-bfc2-c268a2150f2f",
+    "session_id": "e4c85b76-5031-4b7c-b757-5043b6414069",
+    "evidence": "real NES on cuda",
+    "status": "running",
+    "transitions": 64,
+    "emulator_frames": 256,
+    "updates": 2,
+    "optimizer_steps": 4,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 273.0,
+    "max_progress": 273,
+    "safe_boundary": true,
+    "environment_closed": false,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "budget": {
+      "total_updates": 4,
+      "original_updates": 4,
+      "events": [],
+      "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+    },
+    "next_autosave_seconds": 600,
+    "evaluation_history": [
+      "bb2c86c4-d639-42b3-863a-6e5e39b44277",
+      "67e95a25-da5e-4994-96c4-d02ac2a5170a"
+    ],
+    "next_evaluation_update": 4,
+    "training_paused": false,
+    "evaluation_worker_pid": 289517,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "bb2c86c4-d639-42b3-863a-6e5e39b44277",
+    "training_started_unix": 1791626076.8108296,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.13501065969467163,
+          0.1331796795129776,
+          0.13726885616779327,
+          0.149994358420372,
+          0.15055043995380402,
+          0.13946370780467987,
+          0.1545322835445404
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14366517961025238,
+          0.14164121448993683,
+          0.14318563044071198,
+          0.14242911338806152,
+          0.14349770545959473,
+          0.14200611412525177,
+          0.1435750424861908
+        ]
+      ],
+      "max_probability_delta": 0.01095724105834961,
+      "passed": true
+    },
+    "loss": 1129.958984375,
+    "policy_loss": -0.0600958988070488,
+    "value_loss": 2260.07470703125,
+    "entropy": 1.8355159759521484,
+    "approx_kl": 0.01716931164264679,
+    "clip_fraction": 0.40625,
+    "gradient_l2": {
+      "encoder.0.weight": 415.43365478515625,
+      "encoder.0.bias": 64.17769622802734,
+      "encoder.4.weight": 42.91419219970703,
+      "encoder.4.bias": 14.29537582397461,
+      "actor.weight": 1.2835140228271484,
+      "actor.bias": 0.11667797714471817,
+      "critic.weight": 434.7386169433594,
+      "critic.bias": 39.65480041503906
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.025002749636769295,
+      "encoder.0.bias": 0.0024972851388156414,
+      "encoder.4.weight": 1.4257261753082275,
+      "encoder.4.bias": 0.12797248363494873,
+      "actor.weight": 0.1771138608455658,
+      "actor.bias": 0.001657371874898672,
+      "critic.weight": 0.12321729958057404,
+      "critic.bias": 0.0011878740042448044
+    },
+    "training_seconds": 1.538871635999385,
+    "transitions_per_second": 41.58891391772041,
+    "checkpoint_id": "1aaf6e4c-e45b-4790-8944-f290b596cb97",
+    "final_sha256": "d190f7932f42bfc196808961d642d707bc8b8b17ffb8fd1cf1bd4ef61a239d19",
+    "last_save": {
+      "checkpoint_id": "1aaf6e4c-e45b-4790-8944-f290b596cb97",
+      "updates": 2,
+      "transitions": 64,
+      "completed_unix": 1791626078.505265
+    },
+    "pruned_checkpoints": [],
+    "evaluation_seconds": 4.2800674450008955
+  },
+  "resumed": {
+    "approx_kl": 0.019635438919067383,
+    "budget": {
+      "events": [],
+      "original_updates": 4,
+      "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved",
+      "total_updates": 4
+    },
+    "checkpoint_id": "63ac042c-0a66-4c76-b0ca-3d445f79d20b",
+    "clip_fraction": 0.34375,
+    "contract": {
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "config": {
+        "action_repeat": 4,
+        "color": "RGB",
+        "completion_reward": 100.0,
+        "death_reward": -10.0,
+        "frame_stack": 4,
+        "height": 84,
+        "max_frames": 18000,
+        "no_progress_frames": 600,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "width": 84
+      },
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "observation_dtype": "uint8",
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "policy_input": "pixels only",
+      "resize": "Pillow bilinear",
+      "reward_unit": "per emulated frame"
+    },
+    "emulator_frames": 509,
+    "entropy": 1.4826991558074951,
+    "environment_closed": true,
+    "episode_outcomes": {
+      "death": 1
+    },
+    "episodes": 1,
+    "evaluation_history": [
+      "bb2c86c4-d639-42b3-863a-6e5e39b44277",
+      "67e95a25-da5e-4994-96c4-d02ac2a5170a",
+      "a217ea3b-7a56-44fc-b940-a79c348fdd07"
+    ],
+    "evaluation_seconds": 8.247999272000015,
+    "evaluation_worker_pid": 289676,
+    "evaluation_worker_reaped": true,
+    "evidence": "real NES on cuda",
+    "final_sha256": "f0833060965e55bba39970cd9cbfcc4bf74609d6f2ad39f9e86f12d6772c5191",
+    "gradient_l2": {
+      "actor.bias": 0.1489463597536087,
+      "actor.weight": 2.0640194416046143,
+      "critic.bias": 25.14820098876953,
+      "critic.weight": 349.64837646484375,
+      "encoder.0.bias": 86.89892578125,
+      "encoder.0.weight": 564.8653564453125,
+      "encoder.4.bias": 9.417834281921387,
+      "encoder.4.weight": 34.26349639892578
+    },
+    "graph_influence": {
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "intervention": "all edges removed; identical pixels and parameters",
+      "max_probability_delta": 0.15590013563632965,
+      "original_probabilities": [
+        [
+          0.05465149134397507,
+          0.29768502712249756,
+          0.08982033282518387,
+          0.10808386653661728,
+          0.12555931508541107,
+          0.05880194529891014,
+          0.2653980255126953
+        ]
+      ],
+      "passed": true,
+      "removed_probabilities": [
+        [
+          0.1435597985982895,
+          0.1417848914861679,
+          0.1431547999382019,
+          0.1424102932214737,
+          0.14349427819252014,
+          0.1419074982404709,
+          0.14368844032287598
+        ]
+      ]
+    },
+    "initial_evaluation_id": "bb2c86c4-d639-42b3-863a-6e5e39b44277",
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "last_save": {
+      "checkpoint_id": "63ac042c-0a66-4c76-b0ca-3d445f79d20b",
+      "completed_unix": 1791626091.5083036,
+      "transitions": 128,
+      "updates": 4
+    },
+    "loss": 604.1748046875,
+    "max_progress": 273,
+    "next_autosave_seconds": 600,
+    "next_evaluation_update": 6,
+    "nonfinite_count": 0,
+    "observer": {
+      "actual_hz": 0.1833083496518037,
+      "captured": 2,
+      "dropped": 0,
+      "encode_seconds": 0.012284272002943908,
+      "error": null,
+      "history_capacity": 0,
+      "published": 2,
+      "queue_capacity": 1,
+      "requested_hz": 3,
+      "selected_forward_seconds": 0.09619638500043948
+    },
+    "optimizer_steps": 8,
+    "parameter_delta_l2": {
+      "actor.bias": 0.002340549835935235,
+      "actor.weight": 0.25301578640937805,
+      "critic.bias": 0.002285333350300789,
+      "critic.weight": 0.23450905084609985,
+      "encoder.0.bias": 0.005464059766381979,
+      "encoder.0.weight": 0.055773135274648666,
+      "encoder.4.bias": 0.24297356605529785,
+      "encoder.4.weight": 2.7341134548187256
+    },
+    "peak_cuda_allocated_bytes": 111783936,
+    "peak_rss_bytes": 2348486656,
+    "policy_loss": -0.019612886011600494,
+    "pruned_checkpoints": [
+      "1aaf6e4c-e45b-4790-8944-f290b596cb97"
+    ],
+    "recording_error": null,
+    "recording_status": "complete",
+    "resume_reset": {
+      "frames": 0,
+      "max_progress": 0,
+      "stack_frames_equal": true
+    },
+    "resumed_from": "daf02c81-96d2-494c-8323-402caba238bc",
+    "reward_sum": 516.0,
+    "run_id": "2b059070-58c2-44ab-bfc2-c268a2150f2f",
+    "safe_boundary": true,
+    "session_id": "a6a5d70e-6ea4-41b3-b6eb-ac4077d79a74",
+    "status": "completed",
+    "training_paused": false,
+    "training_seconds": 3.248900233000313,
+    "training_started_unix": 1791626085.5053065,
+    "transitions": 128,
+    "transitions_per_second": 39.397947249920264,
+    "updates": 4,
+    "value_loss": 1208.41845703125,
+    "wall_seconds": 6.188011996999194,
+    "workers_alive": 0
+  },
+  "timing": [
+    {
+      "evaluation_id": "bb2c86c4-d639-42b3-863a-6e5e39b44277",
+      "snapshot_id": "initial",
+      "samples": 45,
+      "compressed_bytes": 1276831,
+      "video_bytes": 57845,
+      "first_video_pts": 0.0,
+      "last_video_pts": 14.917,
+      "last_sample_seconds": 14.666666666666666,
+      "frame_action_mapping_verified": true
+    },
+    {
+      "evaluation_id": "67e95a25-da5e-4994-96c4-d02ac2a5170a",
+      "snapshot_id": "1aaf6e4c-e45b-4790-8944-f290b596cb97",
+      "samples": 45,
+      "compressed_bytes": 1275408,
+      "video_bytes": 47937,
+      "first_video_pts": 0.0,
+      "last_video_pts": 14.917,
+      "last_sample_seconds": 14.666666666666666,
+      "frame_action_mapping_verified": true
+    },
+    {
+      "evaluation_id": "a217ea3b-7a56-44fc-b940-a79c348fdd07",
+      "snapshot_id": "71cebe92-b7f9-4cb9-8403-ffd3aa8a9049",
+      "samples": 11,
+      "compressed_bytes": 302340,
+      "video_bytes": 15890,
+      "first_video_pts": 0.0,
+      "last_video_pts": 3.417,
+      "last_sample_seconds": 3.3333333333333335,
+      "frame_action_mapping_verified": true
+    }
+  ],
+  "browser_errors": [],
+  "limits": "4 update integration run, evaluation interval 2 override; not learning improvement; game-clock sampling approximately 3Hz, VP9 12fps"
+}

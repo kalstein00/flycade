@@ -43,6 +43,14 @@ function render(side) {
   if (row.snapshot_id === group.latest_snapshot) labels.push('최근 평가본');
   if ((catalog.references?.pins || []).includes(row.snapshot_id)) labels.push('사용자 보존본');
   panel.querySelector('.protection').textContent = labels.length ? '보호 참조: '+labels.join(' · ') : '일반 평가 이력';
+  const circuit = $('#'+side+'-circuit');
+  circuit.replaceChildren();
+  if (row.replay?.status === 'complete') {
+    const link = document.createElement('a');
+    link.textContent = '회로 이력과 함께 재생';
+    link.href = '/replay?'+new URLSearchParams({run:catalog.run_id,evaluation:row.evaluation_id});
+    circuit.append(link);
+  } else circuit.textContent = row.replay?.error ? '회로 기록 실패 · '+row.replay.error : '회로 관측 데이터 없음';
   const clip = row.videos[0];
   panel.querySelector('.video-status').textContent = clip ? '첫 평가 에피소드의 짧은 영상 · 전체 평가 결과는 아래 표에 표시됩니다.' : '저장된 영상 없음 · 평가 결과는 아래 표에서 확인하세요.';
   if (clip) video.src = '/api/video?'+new URLSearchParams({run:catalog.run_id,file:'evaluations/'+row.evaluation_id+'/'+clip.file});

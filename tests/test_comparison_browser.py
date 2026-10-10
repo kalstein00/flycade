@@ -34,7 +34,7 @@ def test_compare_initial_latest_best_without_mixing_live_circuit(tmp_path):
             assert page.locator('#right-episodes tbody tr').count() == 3
             assert page.locator('#right-completion').inner_text().endswith('/ 3')
             assert page.locator('#circuit').count() == 0
-            expect(page.locator('#right-circuit')).to_have_text('회로 관측 데이터 없음')
+            expect(page.locator('#right-circuit')).to_have_text('회로 이력과 함께 재생')
             video = page.locator('#right-video')
             video.evaluate('(v) => v.play()')
             page.wait_for_function('() => document.querySelector("#right-video").currentTime > 0')
