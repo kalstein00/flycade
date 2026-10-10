@@ -97,3 +97,17 @@ FLYCADE_TEST_ROM='roms/Super Mario Bros. (Japan, USA).nes' uv run pytest
 설치와 ROM 등록 이후 `uv run --offline --locked flycade ...`로 오프라인 실행할 수 있다. 최초 설치에는 패키지 접근이 필요하다.
 
 실측 결과와 A1/AC-01 판정은 [검증 기록](docs/validation/A1.md), RAM 필드 출처와 한계는 [integration 설명](src/flycade/integration/README.md)을 참고한다.
+
+## 고정 커넥톰 데이터 준비 (A2)
+
+FlyWire v783·annotation v2.1.0의 실제 부분 그래프를 준비한다. 출처 해시, ID 대응, 영역 합산 후 임계값, 방향성 입출력 도달성, 전처리 RAM·시간을 함께 기록한다.
+
+```bash
+uv sync --locked --extra graph
+uv run --extra graph flycade fetch-graph-data
+uv run --offline --locked --extra graph flycade prepare-graph --config configs/graph-visual.json --output .flycade/graphs/visual-001
+uv run --offline --locked --extra graph flycade inspect-graph .flycade/graphs/visual-001 --cache .flycade/data/v783
+uv run --extra graph pytest
+```
+
+설정·출력 형식·출처·라이선스·오류 대응은 [데이터 준비 안내](docs/graph-preparation.md), fixture와 실제 데이터의 구분된 검증 결과는 [A2 기록](docs/validation/A2.md)을 참고한다. `graph` extra를 설치하지 않은 환경에서는 그래프 통합 테스트를 건너뛴다.

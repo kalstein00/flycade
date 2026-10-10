@@ -1,0 +1,129 @@
+{
+  "artifacts": {
+    "config.json": "315b857a315fa04c5f24623f62ccae495688c2675a8c08efb19036a9c6ec5e20",
+    "edge_index.npy": "4efc3e2e681cd8f61da2beadc03b8cc29c06b385ada307aace8ed8c2470f1232",
+    "nodes.json": "879899529648fcbdbfbd57a40ab32cb8e4899b3c00952463b0cf01cf246fbf18",
+    "report.json": "744bd4fb4dc2bb9cbaa0f5ac337e38a130179fdde3bd5382132c0cbfa08f23e2",
+    "sources.json": "3dd79fc2571121b84a26179076cf6a2dda46e95b22802b101a88aa6c32976cb1",
+    "syn_count.npy": "57d28c8be6be384f0c117aa453c1137eb2e7c45493cef527b15caf91cf8753da",
+    "weight.npy": "04a0951cf78f492b501506fe8ea1e6bc581c6c019d84d0e7b401b05401248eb6"
+  },
+  "config": "configs/graph-visual.json",
+  "graph_sha256": "97ea609f3c64c24ebfd90c73b4590878d437b5e67851dff1f60f9e74c730de7f",
+  "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "report": {
+    "assumptions": {
+      "direction": "presynaptic to postsynaptic",
+      "normalization": "none; weight = synapse count as float64",
+      "randomness": "none; ascending numeric IDs and lexicographic edge indices",
+      "seed": 0,
+      "self_loops": "drop",
+      "sign": "nonnegative structural weights; neurotransmitter does not establish sign",
+      "threshold": "sum all neuropils per directed neuron pair, then filter"
+    },
+    "connectivity": {
+      "definition": "directed paths from any input to any output",
+      "example_path": [
+        "720575940620354008",
+        "720575940605262880",
+        "720575940599755718"
+      ],
+      "input_count": 1579,
+      "input_reach_fraction": 0.9702343255224826,
+      "inputs_reaching_output_count": 1532,
+      "output_count": 1463,
+      "output_reach_fraction": 0.9952153110047847,
+      "outputs_reached_count": 1456
+    },
+    "counts": {
+      "eligible_edges": 2700513,
+      "eligible_synapses": 34153566,
+      "excluded_neurons": 134633,
+      "excluded_pair_edges": 15083973,
+      "excluded_synapses": 54282611,
+      "source_neurons": 139255,
+      "source_pair_edges": 15091983,
+      "source_pair_synapses": 54492922,
+      "source_region_edges": 16847997,
+      "source_synapses": 54492922,
+      "used_edges": 8010,
+      "used_neurons": 4622,
+      "used_synapses": 210311
+    },
+    "coverage": {
+      "annotation_neurons": 139255,
+      "annotation_outside_proofread": 0,
+      "contracted": false,
+      "neuron_fraction": 0.03319090876449678,
+      "proofread_without_annotation": 0,
+      "selection": "induced subgraph of selected proofread neurons",
+      "synapse_fraction": 0.0038594186599133
+    },
+    "implementation_sha256": "22f6e589c98363ffe142958d3a09d44a7222d879e9e2bb2663c02a97953343d1",
+    "python": "3.12.9",
+    "tools": {
+      "duckdb": "1.4.4",
+      "flycade": "0.1.0",
+      "numpy": "2.5.3",
+      "pyarrow": "23.0.1"
+    }
+  },
+  "runs": [
+    {
+      "duckdb_memory_limit": "512MB",
+      "measurement_scope": "Linux CLI process peak RSS; preparation includes source hashing, excludes download",
+      "peak_rss_bytes": 2187984896,
+      "preprocessing_seconds": 6.848659931000043,
+      "threads": 1
+    },
+    {
+      "duckdb_memory_limit": "512MB",
+      "measurement_scope": "Linux CLI process peak RSS; preparation includes source hashing, excludes download",
+      "peak_rss_bytes": 2215907328,
+      "preprocessing_seconds": 6.333590518000051,
+      "threads": 1
+    }
+  ],
+  "scope": "A2 / AC-02; actual fixed FlyWire files, separate CLI processes; no training claim",
+  "source_manifest": "src/flycade/data/flywire-v783.json",
+  "verification": {
+    "cache_reuse": {
+      "dataset": "FlyWire FAFB",
+      "files": {
+        "annotations": {
+          "path": ".flycade/data/v783/Supplemental_file1_neuron_annotations.tsv",
+          "sha256": "30be6c73975a70c56d930e27911f36455d3886e15abf383b78edd2a5d679e0b6",
+          "status": "cached"
+        },
+        "connections": {
+          "path": ".flycade/data/v783/proofread_connections_783.feather",
+          "sha256": "24f960ae3e7d4f8cd30db3b62e99fb5179cc3d1e76d8c155bfb441e9737d3faf",
+          "status": "cached"
+        },
+        "neurons": {
+          "path": ".flycade/data/v783/proofread_root_ids_783.npy",
+          "sha256": "7c7b7e818e9232e5ab64793d52ba20574dbe9da3a6509fbc74193b0f259a01be",
+          "status": "cached"
+        }
+      },
+      "release": "783.0"
+    },
+    "deterministic_artifacts_equal": true,
+    "graph_identity_equal": true,
+    "inspection_with_sources": true,
+    "review": {
+      "spec": "0 findings",
+      "standards": "1 duplication finding resolved and re-reviewed; 0 remaining"
+    },
+    "tests": {
+      "command": "uv run --locked --extra graph pytest -q",
+      "passed": 15,
+      "seconds": 5.51,
+      "skipped": 3
+    },
+    "typecheck": {
+      "command": "uv run --locked --extra graph mypy src",
+      "result": "Success: no issues found in 10 source files"
+    }
+  }
+}

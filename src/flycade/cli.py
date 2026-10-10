@@ -27,6 +27,17 @@ def main() -> int:
     action_args.add_argument('--actions', default='0,1,2,3,4,5,6')
     action_args.add_argument('--actions-file', type=Path)
     demo_parser.add_argument('--config', type=Path)
+    graph_parser = sub.add_parser('prepare-graph')
+    graph_parser.add_argument('--cache', type=Path, default=Path('.flycade/data/v783'))
+    graph_parser.add_argument('--source-manifest', type=Path)
+    graph_parser.add_argument('--config', type=Path, required=True)
+    graph_parser.add_argument('--output', type=Path, required=True)
+    graph_inspect = sub.add_parser('inspect-graph')
+    graph_inspect.add_argument('output', type=Path)
+    graph_inspect.add_argument('--cache', type=Path)
+    graph_fetch = sub.add_parser('fetch-graph-data')
+    graph_fetch.add_argument('--cache', type=Path, default=Path('.flycade/data/v783'))
+    graph_fetch.add_argument('--source-manifest', type=Path)
     args = parser.parse_args()
     try:
         if args.command == 'diagnose':
@@ -35,6 +46,15 @@ def main() -> int:
             report = catalog()
         elif args.command == 'register-rom':
             report = register_rom(args.rom, args.home)
+        elif args.command == 'fetch-graph-data':
+            from flycade.graph import DEFAULT_SOURCE, fetch_graph_data
+            report = fetch_graph_data(args.cache, args.source_manifest or DEFAULT_SOURCE)
+        elif args.command == 'inspect-graph':
+            from flycade.graph import inspect_graph
+            report = inspect_graph(args.output, args.cache)
+        elif args.command == 'prepare-graph':
+            from flycade.graph import DEFAULT_SOURCE, prepare_graph
+            report = prepare_graph(args.cache, args.source_manifest or DEFAULT_SOURCE, args.config, args.output)
         elif args.command == 'inspect':
             report = inspect_registration(args.home)
         else:

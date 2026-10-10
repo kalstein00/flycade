@@ -1,0 +1,8 @@
+{
+  "selection": {"cell_types": ["L1", "Mi1", "T4a"]},
+  "inputs": {"cell_types": ["L1"]},
+  "outputs": {"cell_types": ["T4a"]},
+  "min_synapses": 5,
+  "self_loops": "drop",
+  "seed": 0
+}

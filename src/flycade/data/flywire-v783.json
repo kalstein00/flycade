@@ -1,0 +1,53 @@
+{
+  "access": "Public HTTPS, no account or live CAVE/Codex queries required",
+  "annotation_commit": "ebd66db2596fcc39c6950fb54ea3efa00f7fe8a0",
+  "annotation_release": "v2.1.0",
+  "dataset": "FlyWire FAFB",
+  "files": {
+    "annotations": {
+      "citation": "Schlegel et al. (2024), Whole-brain annotation and multi-connectome cell typing of Drosophila, doi:10.1038/s41586-024-07686-5",
+      "license": "CC-BY-4.0 (associated publication and supplementary material)",
+      "license_note": "The v2.1.0 GitHub tree has no separate LICENSE file; the associated open-access publication provides the license basis.",
+      "license_source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11446831/",
+      "name": "Supplemental_file1_neuron_annotations.tsv",
+      "required_columns": [
+        "root_id",
+        "cell_type",
+        "super_class"
+      ],
+      "sha256": "30be6c73975a70c56d930e27911f36455d3886e15abf383b78edd2a5d679e0b6",
+      "size_bytes": 27015208,
+      "url": "https://raw.githubusercontent.com/flyconnectome/flywire_annotations/ebd66db2596fcc39c6950fb54ea3efa00f7fe8a0/supplemental_files/Supplemental_file1_neuron_annotations.tsv"
+    },
+    "connections": {
+      "citation": "FlyWire Consortium (2024), FlyWire Whole-brain Connectome Connectivity Data, version 783.0, doi:10.5281/zenodo.10676866; Dorkenwald et al. (2024), doi:10.1038/s41586-024-07558-y",
+      "license": "CC-BY-4.0",
+      "license_source": "https://zenodo.org/api/records/10676866",
+      "name": "proofread_connections_783.feather",
+      "required_columns": [
+        "pre_pt_root_id",
+        "post_pt_root_id",
+        "neuropil",
+        "syn_count"
+      ],
+      "sha256": "24f960ae3e7d4f8cd30db3b62e99fb5179cc3d1e76d8c155bfb441e9737d3faf",
+      "size_bytes": 852022274,
+      "upstream_md5": "f48f972d262323a102aed49af1396b8a",
+      "url": "https://zenodo.org/api/records/10676866/files/proofread_connections_783.feather/content"
+    },
+    "neurons": {
+      "citation": "FlyWire Consortium (2024), FlyWire Whole-brain Connectome Connectivity Data, version 783.0, doi:10.5281/zenodo.10676866; Dorkenwald et al. (2024), doi:10.1038/s41586-024-07558-y",
+      "license": "CC-BY-4.0",
+      "license_source": "https://zenodo.org/api/records/10676866",
+      "name": "proofread_root_ids_783.npy",
+      "required_columns": [
+        "one-dimensional integer NPY array"
+      ],
+      "sha256": "7c7b7e818e9232e5ab64793d52ba20574dbe9da3a6509fbc74193b0f259a01be",
+      "size_bytes": 1114168,
+      "upstream_md5": "e0e6c19732fd8c7a4e39a2d170105421",
+      "url": "https://zenodo.org/api/records/10676866/files/proofread_root_ids_783.npy/content"
+    }
+  },
+  "release": "783.0"
+}

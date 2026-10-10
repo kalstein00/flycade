@@ -12,6 +12,12 @@ dependencies = ["stable-retro==1.0.1", "gymnasium==1.4.0", "numpy==2.5.3", "pill
 [project.scripts]
 flycade = "flycade.cli:main"
 
+[project.optional-dependencies]
+graph = [
+    "duckdb==1.4.4",
+    "pyarrow==23.0.1",
+]
+
 [dependency-groups]
 dev = ["pytest==9.1.1", "mypy==2.4.0"]
 
