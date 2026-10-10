@@ -58,6 +58,12 @@ def main() -> int:
     resume_parser.add_argument('--observe-hz', type=int, choices=OBSERVATION_RATES, default=3)
     resume_parser.add_argument('--home', type=Path, default=Path('.flycade'))
     resume_parser.add_argument('--stop-after-updates', type=int)
+    save = sub.add_parser('save')
+    save.add_argument('run', type=Path)
+    save.add_argument('--stop', action='store_true')
+    save.add_argument('--wait-seconds', type=float, default=30)
+    status = sub.add_parser('status')
+    status.add_argument('run', type=Path)
     live = sub.add_parser('live')
     live.add_argument('run', type=Path)
     live.add_argument('--port', type=int, default=8766)
@@ -114,6 +120,12 @@ def main() -> int:
         elif args.command == 'compare-evaluations':
             from flycade.evaluation import compare_evaluations
             report = compare_evaluations(args.run, args.evaluations)
+        elif args.command == 'save':
+            from flycade.control import request_save
+            report = request_save(args.run, args.stop, args.wait_seconds)
+        elif args.command == 'status':
+            from flycade.control import run_status
+            report = run_status(args.run)
         elif args.command == 'live':
             from flycade.live import serve_live
             report = serve_live(args.run, args.port)

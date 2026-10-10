@@ -6,6 +6,7 @@ import os
 import platform
 import random
 import tempfile
+import time
 import uuid
 from contextlib import contextmanager
 from pathlib import Path
@@ -26,7 +27,7 @@ STATE_CONTRACT = {
     'scaler': None, 'hidden_state': None, 'discounted_environment_returns': None,
     'sampler': 'torch global RNG; full rollout batch, no shuffle',
     'rollout': 'consumed before save; never restored',
-    'periodic_save_or_evaluation': None,
+    'periodic_save_or_evaluation': 'next_autosave_seconds in cumulative training time; preserved across sessions',
     'reset': 'new episode; emulator, frame stack, action, position, timers and episode accumulators reset',
 }
 
@@ -113,7 +114,7 @@ def save_checkpoint(output: Path, state: dict[str, Any]) -> dict[str, Any]:
                 'file': f'checkpoints/{checkpoint_id}.pt', 'sha256': checksum,
                 'manifest_sha256': digest(output / 'run.json'),
                 'run_id': state['manifest']['run_id'], 'session_id': state['progress']['session_id'],
-                'updates': state['progress']['updates']}
+                'updates': state['progress']['updates'], 'saved_unix': time.time()}
     atomic_json(destination.with_suffix('.json'), metadata)
     # The single authoritative commit point. An interrupted save cannot replace it partially.
     atomic_json(output / 'latest.json', metadata)
@@ -173,6 +174,8 @@ def load_checkpoint(output: Path, home: Path) -> dict[str, Any]:
                 or state['progress']['run_id'] != manifest['run_id']
                 or not state['progress']['safe_boundary']):
             reject('Checkpoint identity or state contract differs')
+        state['progress']['last_save'] = {'checkpoint_id': identifier, 'updates': metadata['updates'],
+            'transitions': state['progress']['transitions'], 'completed_unix': metadata['saved_unix']}
         return state
     except (OSError, KeyError, ValueError, TypeError) as exc:
         raise PreparationError('checkpoint_incompatible', f'Missing or invalid checkpoint/artifact: {exc}') from exc

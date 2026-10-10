@@ -3,6 +3,7 @@ import os
 import select
 import shutil
 import subprocess
+import signal
 import time
 from pathlib import Path
 from typing import Any
@@ -112,7 +113,10 @@ class RecordingEmulator:
 
     def _abort(self) -> None:
         if self.process is not None:
-            self.process.kill()
+            try:
+                os.killpg(self.process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
             self.process.wait(timeout=10)
             if self.process.stdin is not None:
                 self.process.stdin.close()

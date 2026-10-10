@@ -211,3 +211,90 @@ def test_active_browser_close_does_not_stop_or_change_training(tmp_path):
         other = off['model'][name]
         assert torch.equal(parameter.to_dense() if parameter.is_sparse else parameter,
                            other.to_dense() if other.is_sparse else other)
+
+
+def test_browser_tracks_real_manual_save_stop_and_resume(tmp_path):
+    from playwright.sync_api import expect
+    from test_daily_cli import wait_report
+    graph = prepared_graph(tmp_path)
+    run = tmp_path / 'daily-browser'
+    trainer = subprocess.Popen([sys.executable, '-m', 'flycade', 'train', '--fixture', '--device', 'cpu',
+        '--graph', str(graph), '--output', str(run), '--updates', '10000', '--rollout-steps', '64'],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    service = None
+    try:
+        wait_report(run, lambda r: r['updates'] > 0, trainer)
+        service, url = start_service(run)
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch()
+            page = browser.new_page(viewport={'width': 1280, 'height': 720})
+            page.goto(url)
+            expect(page.locator('#operation')).to_contain_text('저장 전')
+            request = cli('save', run, '--wait-seconds', 0)
+            assert request.returncode == 0, request.stdout + request.stderr
+            expect(page.locator('#operation')).to_contain_text('저장 완료', timeout=20000)
+            assert trainer.poll() is None
+            assert 'update' in page.locator('#recovery').inner_text()
+            stopped = cli('save', run, '--stop')
+            assert stopped.returncode == 0, stopped.stdout + stopped.stderr
+            trainer.communicate(timeout=30)
+            expect(page.locator('#operation')).to_contain_text('종료 완료')
+            result = cli('resume', run, '--stop-after-updates', 1)
+            assert result.returncode == 0, result.stdout + result.stderr
+            expect(page.locator('#reset-notice')).to_contain_text('새 에피소드')
+            browser.close()
+    finally:
+        if trainer.poll() is None:
+            trainer.kill()
+            trainer.communicate(timeout=10)
+        if service is not None:
+            service.terminate()
+            service.communicate(timeout=10)
+
+
+def test_stop_cleanup_is_visible_until_encoder_finishes(tmp_path):
+    import os
+    import shutil
+    from pathlib import Path
+    from playwright.sync_api import expect
+    from test_daily_cli import wait_report
+    graph = prepared_graph(tmp_path)
+    run = tmp_path / 'closing'
+    executables = tmp_path / 'bin'
+    executables.mkdir()
+    (executables / 'git').symlink_to(shutil.which('git'))
+    encoder = executables / 'ffmpeg'
+    encoder.write_text(f'#!{sys.executable}\nimport sys,time\nsys.stdin.buffer.read()\ntime.sleep(3)\nsys.exit(1)\n')
+    encoder.chmod(0o755)
+    trainer = subprocess.Popen([sys.executable, '-m', 'flycade', 'train', '--fixture', '--device', 'cpu',
+        '--graph', str(graph), '--output', str(run), '--updates', '10000', '--rollout-steps', '16'],
+        env={**os.environ, 'PATH': str(executables)}, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    service = None
+    try:
+        wait_report(run, lambda r: r['updates'] > 0, trainer)
+        service, url = start_service(run)
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch()
+            page = browser.new_page(viewport={'width': 1280, 'height': 720})
+            page.goto(url)
+            page.wait_for_selector('[data-sample-id]')
+            result = cli('save', run, '--stop', '--wait-seconds', 0)
+            assert result.returncode == 0, result.stdout + result.stderr
+            expect(page.locator('#operation')).to_contain_text('종료 정리 중', timeout=10000)
+            expect(page.locator('#operation')).to_contain_text('대기')
+            expect(page.locator('#status')).to_have_text('저장 완료 · 종료 정리 중')
+            screenshots = os.environ.get('FLYCADE_SCREENSHOTS')
+            if screenshots:
+                path = Path(screenshots)
+                path.mkdir(parents=True, exist_ok=True)
+                page.screenshot(path=str(path / 'closing-fixture.png'), full_page=True)
+            trainer.communicate(timeout=30)
+            expect(page.locator('#operation')).to_contain_text('종료 완료')
+            browser.close()
+    finally:
+        if trainer.poll() is None:
+            trainer.kill()
+            trainer.communicate(timeout=10)
+        if service is not None:
+            service.terminate()
+            service.communicate(timeout=10)

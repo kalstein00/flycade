@@ -9,10 +9,21 @@ const terminal = {disabled:'관측 꺼짐 · 데이터 없음', completed:'학�
 function status() {
   const now = Date.now() / 1000;
   let message = !connected ? '연결 끊김 · 재연결 중' : current?.status === 'no_data' ? '관측 데이터 없음' : terminal[current?.status];
+  if (connected && current?.control?.state === 'complete' && current.control.stop && current.control.active) message = '저장 완료 · 종료 정리 중';
   if (!message) message = current?.sample ? (now - current.sample.observed_unix > 2 ? '표본 지연 · 마지막 표본' : '연결됨 · 학습 중') : '연결됨 · 첫 표본 대기';
   $('#status').textContent = message;
   $('#received').textContent = lastReceived ? `마지막 수신 ${time(lastReceived)}` : '수신된 표본 없음';
   $('#lag').textContent = current?.sample ? `표본 경과 ${number(now - current.sample.observed_unix, 1)}초` : '지연 —';
+}
+function operation(control) {
+  if (!control) {$('#operation').textContent='저장 상태 확인 불가';return;}
+  const labels={idle:'학습 중 · 저장 전',waiting_boundary:'저장 요청 접수 · 안전 경계 대기',saving:'체크포인트 저장 중',complete:control.active?(control.stop?'저장 완료 · 종료 정리 중':'저장 완료 · 학습 계속'):'저장 완료 · 종료 완료',failed:'저장 또는 학습 실패',trainer_stopped:'프로세스 종료 · 마지막 정상본 확인 필요'};
+  $('#operation').textContent=control.pending_request ? '저장 요청 전송 · 접수 대기' : labels[control.state] || control.state;
+  if(control.delay_seconds) $('#operation').textContent+=` · 대기 ${number(control.delay_seconds,1)}초`;
+  if(control.error) $('#operation').textContent+=` · ${control.error}`;
+  const saved=control.last_save;
+  $('#recovery').textContent=saved?`마지막 복구 시점 ${time(saved.completed_unix)} · update ${number(saved.updates)} · ${number(saved.transitions)}전이`:'정상 저장본 없음';
+  $('#reset-notice').textContent=control.reset ? '세션 시작: 새 에피소드 · 누적 학습 진도 유지' : '';
 }
 function circuit(root, graph, sample) {
   const svg = $('#circuit', root), ns = 'http://www.w3.org/2000/svg';
@@ -89,6 +100,7 @@ async function poll() {
     const next=await response.json();
     if (accepts(next)) {
       if (!current || next.generation!==current.generation || next.sequence!==current.sequence || next.status!==current.status) await render(next);
+      operation(next.control);
       current=next;runID=next.run_id;lastReceived=Date.now()/1000;
       $('#run').textContent=next.run_id.slice(0,8);$('#run').title=next.run_id;
       $('#session').textContent=next.session_id?.slice(0,8)||'—';$('#session').title=next.session_id||'';

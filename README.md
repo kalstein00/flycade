@@ -157,7 +157,7 @@ uv run --offline --locked --extra graph --extra train flycade train \
 uv run --offline --locked --extra graph --extra train flycade resume reports/my-run
 ```
 
-재개는 같은 Run에 새 세션을 만들며 모델·optimizer·난수·누적 진도를 이어받는다. **게임은 새 에피소드**로 시작한다. 전체 예산이 끝난 Run의 재개는 거부한다. 예산 연장·과거 분기·주기 자동 저장은 후속 범위다. `latest.json`이 가리키는 정상 체크포인트를 사용하며, 이전 정상본도 `checkpoints/`에 남긴다. 기존 A3의 단순 `final.pt` snapshot은 전체 재개 형식과 달라 지원하지 않는다.
+재개는 같은 Run에 새 세션을 만들며 모델·optimizer·난수·누적 진도를 이어받는다. **게임은 새 에피소드**로 시작한다. 전체 예산이 끝난 Run의 재개는 거부한다. 예산 연장·과거 분기는 후속 범위다. 자동 저장은 기본 누적 학습600초마다 수행한다. `latest.json`이 가리키는 정상 체크포인트를 사용하며, 이전 정상본도 `checkpoints/`에 남긴다. 기존 A3의 단순 `final.pt` snapshot은 전체 재개 형식과 달라 지원하지 않는다.
 
 학습 플레이는 기본으로 **VP9 WebM, 12fps, CRF 45, 원본 게임 크기, 무음**으로 녹화한다. `ffmpeg`의 `libvpx-vp9` 인코더가 필요하다(Ubuntu: `sudo apt install ffmpeg`). 실제 게임 프레임 5장마다 1장을 스트리밍하고, 최대 60초씩 나눠 저장한다. 녹화 오류는 보고서의 `recording_error`로 알리고 학습 저장은 계속한다. 완성된 영상은 자동 삭제하지 않으므로 디스크 사용량을 확인한다.
 
@@ -234,4 +234,18 @@ uv run --offline --locked --extra train flycade train \
   --initial-evaluation-config configs/evaluation-small.json --observe-hz 3
 ```
 
-이 자원 측정은1시간 안정성이나 게임 클리어를 보장하지 않는다. 자동 저장과 주기 평가는 다음 운영 단계에서 추가한다.
+이 자원 측정은1시간 안정성이나 게임 클리어를 보장하지 않는다. 자동 저장은 기본600초이며 주기 평가는 후속 단계에서 추가한다.
+
+
+## 매일 저장하고 이어 학습하기
+
+```bash
+# 별도 터미널: 저장 후 계속 / 저장 후 종료 / 상태 조회
+uv run --offline --locked --extra train flycade save reports/daily-001
+uv run --offline --locked --extra train flycade save reports/daily-001 --stop
+uv run --offline --locked --extra train flycade status reports/daily-001
+# 다음 실행: 같은 Run, 새 세션과 새 게임 에피소드
+uv run --offline --locked --extra train flycade resume reports/daily-001
+```
+
+학습 JSON의 `autosave_seconds`(기본600)로 주기를 설정한다. 요청은 다음 rollout/optimizer 완료 경계에서 저장하며 CLI·브라우저에서 접수/대기/저장/완료와 마지막 복구 시점을 확인한다. `save --stop`은 환경과 인코더 종료까지 기다린다. 자동 저장 주기와 누적 예산은 재개할 때 보존한다. `--wait-seconds 0`으로 요청만 보내거나 대기 시간을 바꿀 수 있다. 실제 실행·실패 처리·매일 절차는 [T08 운영 기록](docs/validation/T08.md)을 참조한다.

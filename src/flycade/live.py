@@ -36,6 +36,11 @@ def serve_live(run: Path, port: int = 8766) -> dict[str, Any]:
                 except (OSError, ValueError, KeyError):
                     self.send_error(503, 'Observation temporarily unavailable')
                     return
+                from flycade.control import run_status
+                try:
+                    envelope['control'] = run_status(run)
+                except (OSError, ValueError, KeyError):
+                    envelope['control'] = None
                 body = json.dumps(envelope, allow_nan=False).encode()
                 content_type = 'application/json'
             elif self.path in ('/', '/live.js', '/live.css'):

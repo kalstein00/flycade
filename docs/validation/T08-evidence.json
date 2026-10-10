@@ -1,0 +1,551 @@
+{
+  "manual": {
+    "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+    "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+    "active": true,
+    "state": "complete",
+    "last_save": {
+      "checkpoint_id": "bb5b3a64-0024-4565-ba95-37922ae46289",
+      "updates": 20,
+      "transitions": 640,
+      "completed_unix": 1791613190.0111918
+    },
+    "reset": "new episode; learning state preserved",
+    "updated_unix": 1791613190.0112014,
+    "stop": false,
+    "request_id": "85f041d0-abb7-447c-9d25-4f4aaefe76c8",
+    "requested_unix": 1791613189.5843651,
+    "reason": "manual",
+    "completed_unix": 1791613190.0111918
+  },
+  "stop": {
+    "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+    "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+    "active": false,
+    "state": "complete",
+    "last_save": {
+      "checkpoint_id": "37d6645d-8162-4d35-b3bf-e3ab603a7614",
+      "updates": 26,
+      "transitions": 832,
+      "completed_unix": 1791613191.6223106
+    },
+    "reset": "new episode; learning state preserved",
+    "updated_unix": 1791613191.796563,
+    "stop": true,
+    "request_id": "15b9f1a8-8c55-4ef3-8db8-2d08d33c0a81",
+    "requested_unix": 1791613191.3133898,
+    "reason": "manual",
+    "completed_unix": 1791613191.6223106
+  },
+  "resume": {
+    "output": "/home/kalstein/vscode/flycade/reports/t08-daily-003/run",
+    "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+    "session_id": "fee87684-0c00-4ab7-886e-8de523740f3a",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 960,
+    "emulator_frames": 3829,
+    "updates": 30,
+    "optimizer_steps": 60,
+    "episodes": 9,
+    "episode_outcomes": {
+      "no_progress": 2,
+      "death": 7
+    },
+    "reward_sum": 3115.0,
+    "max_progress": 682,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "next_autosave_seconds": 10,
+    "training_paused": false,
+    "evaluation_worker_pid": 142008,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "6d2d3b63-cdfc-41bb-9546-8aa95f61951f",
+    "training_started_unix": 1791613194.0164783,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.00010756007395684719,
+          0.9985587000846863,
+          0.00016529805725440383,
+          5.968010100332322e-06,
+          0.0010903795482590795,
+          6.945924542378634e-05,
+          2.655425305420067e-06
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14356958866119385,
+          0.14223405718803406,
+          0.14311689138412476,
+          0.14222882688045502,
+          0.14361752569675446,
+          0.14187416434288025,
+          0.14335894584655762
+        ]
+      ],
+      "max_probability_delta": 0.8563246726989746,
+      "passed": true
+    },
+    "loss": 1448.9168701171875,
+    "policy_loss": -1.0058283805847168e-06,
+    "value_loss": 2897.833740234375,
+    "entropy": 0.002918411046266556,
+    "approx_kl": 0.0,
+    "clip_fraction": 0.0,
+    "gradient_l2": {
+      "encoder.0.weight": 1915.2469482421875,
+      "encoder.0.bias": 305.5955810546875,
+      "encoder.4.weight": 111.72422790527344,
+      "encoder.4.bias": 17.227252960205078,
+      "actor.weight": 0.0009950451785698533,
+      "actor.bias": 2.853105434041936e-05,
+      "critic.weight": 1721.43212890625,
+      "critic.bias": 50.143455505371094
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.21284060180187225,
+      "encoder.0.bias": 0.020240934565663338,
+      "encoder.4.weight": 8.418103218078613,
+      "encoder.4.bias": 0.6995584964752197,
+      "actor.weight": 0.5254723429679871,
+      "actor.bias": 0.00524606229737401,
+      "critic.weight": 0.7312583923339844,
+      "critic.bias": 0.007117590866982937
+    },
+    "training_seconds": 9.978707275999113,
+    "transitions_per_second": 96.20484632403253,
+    "checkpoint_id": "d680a009-a39c-4360-9c93-06f802bc83be",
+    "final_sha256": "7647610ee0e2afaa6e76a25e92c4882c3876b4840773b87c625b20f802e7e14c",
+    "last_save": {
+      "checkpoint_id": "d680a009-a39c-4360-9c93-06f802bc83be",
+      "updates": 30,
+      "transitions": 960,
+      "completed_unix": 1791613195.9913464
+    },
+    "resumed_from": "37d6645d-8162-4d35-b3bf-e3ab603a7614",
+    "resume_reset": {
+      "frames": 0,
+      "max_progress": 0,
+      "stack_frames_equal": true
+    },
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 4,
+      "published": 4,
+      "dropped": 0,
+      "selected_forward_seconds": 0.09626527500040538,
+      "actual_hz": 1.9926813238725007,
+      "encode_seconds": 0.021765872999822022,
+      "error": null
+    },
+    "wall_seconds": 2.0949912309988576,
+    "peak_rss_bytes": 2386259968,
+    "peak_cuda_allocated_bytes": 111783936
+  },
+  "browser_operation": "\uc800\uc7a5 \uc644\ub8cc \u00b7 \uc885\ub8cc \uc644\ub8cc",
+  "browser_recovery": "\ub9c8\uc9c0\ub9c9 \ubcf5\uad6c \uc2dc\uc810 \uc624\ud6c4 3:19:55 \u00b7 update 30 \u00b7 960\uc804\uc774",
+  "browser_reset": "\uc138\uc158 \uc2dc\uc791: \uc0c8 \uc5d0\ud53c\uc18c\ub4dc \u00b7 \ub204\uc801 \ud559\uc2b5 \uc9c4\ub3c4 \uc720\uc9c0",
+  "save_events": [
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "waiting_boundary",
+      "last_save": null,
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613185.342169,
+      "stop": false,
+      "request_id": "867b64b6-efc0-455c-9c88-ea5016d1158d",
+      "requested_unix": 1791613185.342161,
+      "reason": "automatic"
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "saving",
+      "last_save": null,
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613185.526718,
+      "stop": false,
+      "request_id": "867b64b6-efc0-455c-9c88-ea5016d1158d",
+      "requested_unix": 1791613185.342161,
+      "reason": "automatic"
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "complete",
+      "last_save": {
+        "checkpoint_id": "64756dfc-a03a-45d7-b35e-49c949cb52ac",
+        "updates": 4,
+        "transitions": 128,
+        "completed_unix": 1791613185.6712255
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613185.6712317,
+      "stop": false,
+      "request_id": "867b64b6-efc0-455c-9c88-ea5016d1158d",
+      "requested_unix": 1791613185.342161,
+      "reason": "automatic",
+      "completed_unix": 1791613185.6712255
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "waiting_boundary",
+      "last_save": {
+        "checkpoint_id": "64756dfc-a03a-45d7-b35e-49c949cb52ac",
+        "updates": 4,
+        "transitions": 128,
+        "completed_unix": 1791613185.6712255
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613187.3462884,
+      "stop": false,
+      "request_id": "5b628d2c-0330-4ef8-bc36-3cc138171a3a",
+      "requested_unix": 1791613187.3462818,
+      "reason": "automatic",
+      "completed_unix": 1791613185.6712255
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "saving",
+      "last_save": {
+        "checkpoint_id": "64756dfc-a03a-45d7-b35e-49c949cb52ac",
+        "updates": 4,
+        "transitions": 128,
+        "completed_unix": 1791613185.6712255
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613187.4583607,
+      "stop": false,
+      "request_id": "5b628d2c-0330-4ef8-bc36-3cc138171a3a",
+      "requested_unix": 1791613187.3462818,
+      "reason": "automatic",
+      "completed_unix": 1791613185.6712255
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "complete",
+      "last_save": {
+        "checkpoint_id": "c7017fe7-2832-454b-b7b1-762a068226b8",
+        "updates": 11,
+        "transitions": 352,
+        "completed_unix": 1791613187.5838223
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613187.5838284,
+      "stop": false,
+      "request_id": "5b628d2c-0330-4ef8-bc36-3cc138171a3a",
+      "requested_unix": 1791613187.3462818,
+      "reason": "automatic",
+      "completed_unix": 1791613187.5838223
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "waiting_boundary",
+      "last_save": {
+        "checkpoint_id": "c7017fe7-2832-454b-b7b1-762a068226b8",
+        "updates": 11,
+        "transitions": 352,
+        "completed_unix": 1791613187.5838223
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613189.3405864,
+      "stop": false,
+      "request_id": "150683d7-6b3a-4b6f-807d-2de595c157ce",
+      "requested_unix": 1791613189.3405814,
+      "reason": "automatic",
+      "completed_unix": 1791613187.5838223
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "saving",
+      "last_save": {
+        "checkpoint_id": "c7017fe7-2832-454b-b7b1-762a068226b8",
+        "updates": 11,
+        "transitions": 352,
+        "completed_unix": 1791613187.5838223
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613189.397966,
+      "stop": false,
+      "request_id": "150683d7-6b3a-4b6f-807d-2de595c157ce",
+      "requested_unix": 1791613189.3405814,
+      "reason": "automatic",
+      "completed_unix": 1791613187.5838223
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "complete",
+      "last_save": {
+        "checkpoint_id": "fc5f4fc0-f4dc-4387-8473-ce10ac2e01a1",
+        "updates": 19,
+        "transitions": 608,
+        "completed_unix": 1791613189.5337164
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613189.5337229,
+      "stop": false,
+      "request_id": "150683d7-6b3a-4b6f-807d-2de595c157ce",
+      "requested_unix": 1791613189.3405814,
+      "reason": "automatic",
+      "completed_unix": 1791613189.5337164
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "waiting_boundary",
+      "last_save": {
+        "checkpoint_id": "fc5f4fc0-f4dc-4387-8473-ce10ac2e01a1",
+        "updates": 19,
+        "transitions": 608,
+        "completed_unix": 1791613189.5337164
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613189.5887191,
+      "stop": false,
+      "request_id": "85f041d0-abb7-447c-9d25-4f4aaefe76c8",
+      "requested_unix": 1791613189.5843651,
+      "reason": "manual",
+      "completed_unix": 1791613189.5337164
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "saving",
+      "last_save": {
+        "checkpoint_id": "fc5f4fc0-f4dc-4387-8473-ce10ac2e01a1",
+        "updates": 19,
+        "transitions": 608,
+        "completed_unix": 1791613189.5337164
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613189.8777983,
+      "stop": false,
+      "request_id": "85f041d0-abb7-447c-9d25-4f4aaefe76c8",
+      "requested_unix": 1791613189.5843651,
+      "reason": "manual",
+      "completed_unix": 1791613189.5337164
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "complete",
+      "last_save": {
+        "checkpoint_id": "bb5b3a64-0024-4565-ba95-37922ae46289",
+        "updates": 20,
+        "transitions": 640,
+        "completed_unix": 1791613190.0111918
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613190.0112014,
+      "stop": false,
+      "request_id": "85f041d0-abb7-447c-9d25-4f4aaefe76c8",
+      "requested_unix": 1791613189.5843651,
+      "reason": "manual",
+      "completed_unix": 1791613190.0111918
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "waiting_boundary",
+      "last_save": {
+        "checkpoint_id": "bb5b3a64-0024-4565-ba95-37922ae46289",
+        "updates": 20,
+        "transitions": 640,
+        "completed_unix": 1791613190.0111918
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613191.3224664,
+      "stop": true,
+      "request_id": "15b9f1a8-8c55-4ef3-8db8-2d08d33c0a81",
+      "requested_unix": 1791613191.3133898,
+      "reason": "manual",
+      "completed_unix": 1791613190.0111918
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "saving",
+      "last_save": {
+        "checkpoint_id": "bb5b3a64-0024-4565-ba95-37922ae46289",
+        "updates": 20,
+        "transitions": 640,
+        "completed_unix": 1791613190.0111918
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613191.490071,
+      "stop": true,
+      "request_id": "15b9f1a8-8c55-4ef3-8db8-2d08d33c0a81",
+      "requested_unix": 1791613191.3133898,
+      "reason": "manual",
+      "completed_unix": 1791613190.0111918
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "c62e0b44-2c13-44af-9fb8-647982feb347",
+      "active": true,
+      "state": "complete",
+      "last_save": {
+        "checkpoint_id": "37d6645d-8162-4d35-b3bf-e3ab603a7614",
+        "updates": 26,
+        "transitions": 832,
+        "completed_unix": 1791613191.6223106
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613191.6223161,
+      "stop": true,
+      "request_id": "15b9f1a8-8c55-4ef3-8db8-2d08d33c0a81",
+      "requested_unix": 1791613191.3133898,
+      "reason": "manual",
+      "completed_unix": 1791613191.6223106
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "fee87684-0c00-4ab7-886e-8de523740f3a",
+      "active": true,
+      "state": "waiting_boundary",
+      "last_save": {
+        "checkpoint_id": "37d6645d-8162-4d35-b3bf-e3ab603a7614",
+        "updates": 26,
+        "transitions": 832,
+        "completed_unix": 1791613191.5610118
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613195.847312,
+      "stop": true,
+      "request_id": "72aba8aa-6317-41da-b6b0-514ba6a2afb0",
+      "requested_unix": 1791613195.8473048,
+      "reason": "stop"
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "fee87684-0c00-4ab7-886e-8de523740f3a",
+      "active": true,
+      "state": "saving",
+      "last_save": {
+        "checkpoint_id": "37d6645d-8162-4d35-b3bf-e3ab603a7614",
+        "updates": 26,
+        "transitions": 832,
+        "completed_unix": 1791613191.5610118
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613195.854672,
+      "stop": true,
+      "request_id": "72aba8aa-6317-41da-b6b0-514ba6a2afb0",
+      "requested_unix": 1791613195.8473048,
+      "reason": "stop"
+    },
+    {
+      "run_id": "c4fc6aea-70c2-4034-ac0e-ddf2d6cdc88e",
+      "session_id": "fee87684-0c00-4ab7-886e-8de523740f3a",
+      "active": true,
+      "state": "complete",
+      "last_save": {
+        "checkpoint_id": "d680a009-a39c-4360-9c93-06f802bc83be",
+        "updates": 30,
+        "transitions": 960,
+        "completed_unix": 1791613195.9913464
+      },
+      "reset": "new episode; learning state preserved",
+      "updated_unix": 1791613195.991352,
+      "stop": true,
+      "request_id": "72aba8aa-6317-41da-b6b0-514ba6a2afb0",
+      "requested_unix": 1791613195.8473048,
+      "reason": "stop",
+      "completed_unix": 1791613195.9913464
+    }
+  ]
+}

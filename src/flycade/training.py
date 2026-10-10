@@ -23,6 +23,7 @@ from torch import Tensor
 from flycade.checkpoint import (FORMAT, capture_rng, load_checkpoint, restore_rng,
                                 run_lock, save_checkpoint, sync_directory)
 from flycade.errors import PreparationError
+from flycade.control import SaveControl
 from flycade.game import GameConfig, GameEnv, Pixels
 from flycade.graph import digest, inspect_graph, write_json
 from flycade.nes import NesEmulator
@@ -50,6 +51,8 @@ class TrainingConfig:
     entropy_coefficient: float = 0.01
     value_coefficient: float = 0.5
     max_grad_norm: float = 0.5
+    autosave_seconds: float = 600
+    evaluation_timeout_seconds: float = 120
 
     def __post_init__(self) -> None:
         for name in ('updates', 'rollout_steps', 'epochs', 'state_dim', 'propagation_steps'):
@@ -64,6 +67,10 @@ class TrainingConfig:
                 raise ValueError(f'{name} must be finite and nonnegative')
         if not 0 < self.gamma <= 1 or not 0 <= self.gae_lambda <= 1 or not 0 < self.clip_ratio < 1:
             raise ValueError('Invalid discount, GAE lambda or PPO clip ratio')
+        if not np.isfinite(self.autosave_seconds) or self.autosave_seconds <= 0:
+            raise ValueError('autosave_seconds must be finite and positive')
+        if not np.isfinite(self.evaluation_timeout_seconds) or self.evaluation_timeout_seconds <= 0:
+            raise ValueError('evaluation_timeout_seconds must be finite and positive')
         if self.learning_rate == 0 or self.max_grad_norm == 0:
             raise ValueError('learning_rate and max_grad_norm must be positive')
 
@@ -228,6 +235,10 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
     sessions = output / 'sessions'
     sessions.mkdir(exist_ok=True)
     write_json(sessions / f"{report['session_id']}.json", session)
+    report.setdefault('next_autosave_seconds', config.autosave_seconds)
+    control = SaveControl(output, session, report)
+    if resume_state is not None:
+        print('Resumed learning state; new episode (interrupted episode is not counted).', file=sys.stderr)
     start_updates = report['updates']
     previous_seconds = report.get('training_seconds', 0.)
     stop_requested = False
@@ -250,12 +261,31 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
             report.update(status='evaluating_initial', training_paused=True)
             write_json(output / 'report.json', report)
             print('Initial evaluation: training waits before first rollout; separate CPU process.', file=sys.stderr)
-            result = subprocess.run([sys.executable, '-m', 'flycade', 'evaluate', str(output),
+            from flycade.workers import kill_worker
+            worker = subprocess.Popen([sys.executable, '-m', 'flycade', 'evaluate', str(output),
                 '--snapshot', 'initial', '--protocol', str(protocol), '--home', str(home),
-                '--device', 'cpu', '--training-paused'], capture_output=True, text=True, start_new_session=True)
-            if result.returncode != 0:
-                raise PreparationError('initial_evaluation_failed', result.stdout + result.stderr)
-            evaluation = json.loads(result.stdout)
+                '--device', 'cpu', '--training-paused'], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                text=True, start_new_session=True)
+            report['evaluation_worker_pid'] = worker.pid
+            deadline = time.monotonic() + config.evaluation_timeout_seconds
+            try:
+                while True:
+                    control.poll(stop_requested)
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        raise PreparationError('evaluation_timeout', 'Initial evaluator exceeded bounded wait; no rollout started, initial policy retained')
+                    try:
+                        stdout, stderr = worker.communicate(timeout=min(.1, remaining))
+                        break
+                    except subprocess.TimeoutExpired:
+                        continue
+                if worker.returncode != 0:
+                    raise PreparationError('initial_evaluation_failed', stdout + stderr)
+                evaluation = json.loads(stdout)
+            finally:
+                if worker.poll() is None:
+                    kill_worker(worker)
+                report['evaluation_worker_reaped'] = worker.poll() is not None
             report.update(initial_evaluation_id=evaluation['evaluation_id'], status='running', training_paused=False)
         report['training_started_unix'] = time.time()
         learning_started = time.perf_counter()
@@ -286,6 +316,19 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                 disable_observation(output, session)
         except (OSError, ValueError) as exc:
             report['observer_error'] = str(exc)
+        def persist() -> None:
+            assert env is not None
+            control.saving()
+            if report['training_seconds'] >= report['next_autosave_seconds']:
+                report['next_autosave_seconds'] += (int((report['training_seconds'] - report['next_autosave_seconds']) / config.autosave_seconds) + 1) * config.autosave_seconds
+            metadata = save_checkpoint(output, {'model': policy.state_dict(),
+                'optimizer': optimizer.state_dict(), 'progress': report, 'manifest': manifest,
+                **capture_rng(env, device)})
+            publish_snapshot(output, policy.state_dict(), manifest, metadata['checkpoint_id'], report['updates'])
+            report['checkpoint_id'] = metadata['checkpoint_id']
+            report['final_sha256'] = digest(output / 'final.pt')
+            control.complete(metadata, report)
+
         episode_step = 0
         with (output / 'transitions.jsonl').open('a') as transitions, (output / 'updates.jsonl').open('a') as updates:
             for update in range(start_updates, config.updates):
@@ -306,6 +349,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                         logp = float(distribution.log_prob(sampled).item())
                     capture_seconds = time.perf_counter() - capture_started
                     following, reward, terminated, truncated, info = env.step(action)
+                    control.poll(stop_requested, previous_seconds + time.perf_counter() - learning_started >= report['next_autosave_seconds'])
                     episode_step += 1
                     report['transitions'] += 1
                     report['emulator_frames'] += info['executed_frames']
@@ -351,18 +395,17 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                 report['transitions_per_second'] = report['transitions'] / report['training_seconds']
                 log_row(updates, report)
                 write_json(output / 'report.json', report)
-                if stop_requested or (stop_after_updates is not None and update + 1 - start_updates >= stop_after_updates):
+                control.poll(stop_requested)
+                if control.pending is not None and not control.pending['stop']:
+                    persist()
+                if stop_requested or (control.pending is not None and control.pending['stop']) or (stop_after_updates is not None and update + 1 - start_updates >= stop_after_updates):
                     break
         report['parameter_delta_l2'] = {name: float((p.detach() - initial_parameters[name]).norm())
                                         for name, p in policy.named_parameters()}
         if not all(delta > 0 for delta in report['parameter_delta_l2'].values()):
             raise PreparationError('parameters_unchanged', 'At least one declared trainable parameter did not change')
-        metadata = save_checkpoint(output, {'model': policy.state_dict(),
-            'optimizer': optimizer.state_dict(), 'progress': report, 'manifest': manifest,
-            **capture_rng(env, device)})
-        publish_snapshot(output, policy.state_dict(), manifest, metadata['checkpoint_id'], report['updates'])
-        report['checkpoint_id'] = metadata['checkpoint_id']
-        report['final_sha256'] = digest(output / 'final.pt')
+        control.poll(True)
+        persist()
         if digest(output / 'initial.pt') != report['initial_sha256']:
             raise ValueError('Protected initial policy changed')
         report['status'] = 'completed' if report['updates'] == config.updates else 'saved'
@@ -391,6 +434,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         session.update(end_updates=report['updates'], status=report['status'],
                        checkpoint_id=report.get('checkpoint_id'), recording_error=report.get('recording_error'))
         write_json(sessions / f"{report['session_id']}.json", session)
+        control.close(report.get('error'))
         signal.signal(signal.SIGINT, previous_signal)
     return {'output': str(output.resolve()), **report}
 
