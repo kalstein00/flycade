@@ -1,0 +1,134 @@
+{
+  "run": "/home/kalstein/vscode/flycade/reports/five-minute-001/run",
+  "wall_seconds": 302.62613452000005,
+  "learning_seconds": 295.9631894339982,
+  "start_update": 1,
+  "final_update": 307,
+  "before": {
+    "snapshot_updates": 0,
+    "distances": [
+      682,
+      555,
+      250
+    ],
+    "mean_distance": 495.6666666666667,
+    "completion_count": 0,
+    "evaluation_count": 3,
+    "termination_counts": {
+      "no_progress": 2,
+      "death": 1
+    }
+  },
+  "after": {
+    "snapshot_updates": 307,
+    "distances": [
+      629,
+      682,
+      268
+    ],
+    "mean_distance": 526.3333333333334,
+    "completion_count": 0,
+    "evaluation_count": 3,
+    "termination_counts": {
+      "death": 2,
+      "no_progress": 1
+    }
+  },
+  "mean_distance_delta": 30.666666666666686,
+  "last_rollout_action_counts": [
+    13,
+    6,
+    25,
+    55,
+    8,
+    17,
+    4
+  ],
+  "last_rollout_mean_probabilities": [
+    0.061121979291783646,
+    0.07200895316782407,
+    0.16463887225836515,
+    0.4356578921433538,
+    0.03577046247664839,
+    0.1987610406940803,
+    0.03204080024443101
+  ],
+  "last_rollout_entropy": 1.5653826284517653,
+  "training_episode_outcomes": {
+    "death": 157,
+    "no_progress": 88
+  },
+  "reward_components": {
+    "completion": 0.0,
+    "death": -1570.0,
+    "enemy": 96.0,
+    "no_progress": -880.0,
+    "progress": 1441.6299999994214,
+    "stall": -166.7850000000106,
+    "time": -156.5749999999978
+  },
+  "status": "saved",
+  "checkpoint_id": "9a2fe54c-b6f3-4f1a-a85a-2f92cb4a2420",
+  "limitations": [
+    "One training seed and three fixed evaluation seeds; no generalization claim.",
+    "Fall termination changed; old v2 distance included offscreen drift, so compare within the new protocol."
+  ],
+  "distance_change_percent": 6.186953597848022,
+  "evaluation_history": [
+    {
+      "snapshot_updates": 0,
+      "distances": [
+        682,
+        555,
+        250
+      ],
+      "mean_distance": 495.6666666666667,
+      "termination_counts": {
+        "no_progress": 2,
+        "death": 1
+      }
+    },
+    {
+      "snapshot_updates": 250,
+      "distances": [
+        564,
+        556,
+        684
+      ],
+      "mean_distance": 601.3333333333334,
+      "termination_counts": {
+        "no_progress": 3
+      }
+    },
+    {
+      "snapshot_updates": 307,
+      "distances": [
+        629,
+        682,
+        268
+      ],
+      "mean_distance": 526.3333333333334,
+      "termination_counts": {
+        "death": 2,
+        "no_progress": 1
+      }
+    }
+  ],
+  "action_counts": [
+    2576,
+    5308,
+    7383,
+    6164,
+    7075,
+    7600,
+    3190
+  ],
+  "enemy_defeats": 192,
+  "saved_checks": {
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "recording_status": "complete"
+  },
+  "interpretation": "Small mean distance increase over initial, but regression from the intermediate250-update evaluation. No completion, more evaluation deaths; not stable improvement. No complete action collapse. No additional training started in this analysis."
+}
