@@ -1,0 +1,1404 @@
+{
+  "results": [
+    {
+      "updates": 0,
+      "snapshot": "initial",
+      "episodes": [
+        {
+          "seed": 11,
+          "distance": 682,
+          "reason": "no_progress",
+          "frames": 698,
+          "actions": {
+            "5": 29,
+            "0": 22,
+            "1": 20,
+            "3": 26,
+            "4": 25,
+            "2": 25,
+            "6": 28
+          },
+          "jump_releases": 42
+        },
+        {
+          "seed": 22,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 1023,
+          "actions": {
+            "6": 43,
+            "0": 38,
+            "2": 32,
+            "5": 52,
+            "4": 40,
+            "1": 25,
+            "3": 26
+          },
+          "jump_releases": 64
+        },
+        {
+          "seed": 33,
+          "distance": 250,
+          "reason": "death",
+          "frames": 213,
+          "actions": {
+            "3": 10,
+            "0": 9,
+            "2": 6,
+            "5": 7,
+            "1": 8,
+            "4": 6,
+            "6": 8
+          },
+          "jump_releases": 12
+        },
+        {
+          "seed": 101,
+          "distance": 261,
+          "reason": "death",
+          "frames": 179,
+          "actions": {
+            "3": 9,
+            "1": 3,
+            "2": 10,
+            "4": 2,
+            "5": 11,
+            "6": 5,
+            "0": 5
+          },
+          "jump_releases": 12
+        },
+        {
+          "seed": 102,
+          "distance": 682,
+          "reason": "no_progress",
+          "frames": 1228,
+          "actions": {
+            "0": 47,
+            "1": 48,
+            "3": 47,
+            "2": 41,
+            "5": 38,
+            "6": 47,
+            "4": 39
+          },
+          "jump_releases": 73
+        },
+        {
+          "seed": 103,
+          "distance": 243,
+          "reason": "death",
+          "frames": 315,
+          "actions": {
+            "2": 16,
+            "6": 11,
+            "0": 12,
+            "1": 7,
+            "4": 10,
+            "3": 9,
+            "5": 14
+          },
+          "jump_releases": 16
+        },
+        {
+          "seed": 104,
+          "distance": 682,
+          "reason": "no_progress",
+          "frames": 983,
+          "actions": {
+            "3": 43,
+            "2": 41,
+            "5": 30,
+            "4": 36,
+            "1": 25,
+            "0": 41,
+            "6": 30
+          },
+          "jump_releases": 64
+        },
+        {
+          "seed": 105,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 717,
+          "actions": {
+            "1": 32,
+            "5": 26,
+            "4": 25,
+            "2": 28,
+            "0": 23,
+            "3": 26,
+            "6": 20
+          },
+          "jump_releases": 45
+        },
+        {
+          "seed": 106,
+          "distance": 668,
+          "reason": "death",
+          "frames": 959,
+          "actions": {
+            "4": 45,
+            "0": 18,
+            "2": 31,
+            "1": 35,
+            "5": 26,
+            "6": 40,
+            "3": 45
+          },
+          "jump_releases": 57
+        },
+        {
+          "seed": 107,
+          "distance": 683,
+          "reason": "no_progress",
+          "frames": 1019,
+          "actions": {
+            "0": 31,
+            "2": 49,
+            "3": 43,
+            "5": 27,
+            "6": 43,
+            "4": 36,
+            "1": 26
+          },
+          "jump_releases": 60
+        },
+        {
+          "seed": 108,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 655,
+          "actions": {
+            "2": 24,
+            "0": 32,
+            "5": 30,
+            "4": 26,
+            "1": 24,
+            "3": 21,
+            "6": 7
+          },
+          "jump_releases": 43
+        },
+        {
+          "seed": 109,
+          "distance": 248,
+          "reason": "death",
+          "frames": 257,
+          "actions": {
+            "4": 10,
+            "3": 10,
+            "6": 13,
+            "5": 9,
+            "2": 8,
+            "0": 8,
+            "1": 7
+          },
+          "jump_releases": 20
+        },
+        {
+          "seed": 110,
+          "distance": 251,
+          "reason": "death",
+          "frames": 255,
+          "actions": {
+            "2": 10,
+            "0": 10,
+            "6": 10,
+            "5": 12,
+            "4": 12,
+            "1": 6,
+            "3": 4
+          },
+          "jump_releases": 14
+        },
+        {
+          "seed": 111,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 1150,
+          "actions": {
+            "6": 53,
+            "5": 38,
+            "0": 37,
+            "1": 36,
+            "3": 48,
+            "2": 32,
+            "4": 44
+          },
+          "jump_releases": 65
+        },
+        {
+          "seed": 112,
+          "distance": 258,
+          "reason": "death",
+          "frames": 223,
+          "actions": {
+            "0": 8,
+            "6": 7,
+            "1": 9,
+            "4": 11,
+            "5": 6,
+            "3": 9,
+            "2": 6
+          },
+          "jump_releases": 12
+        },
+        {
+          "seed": 113,
+          "distance": 250,
+          "reason": "death",
+          "frames": 215,
+          "actions": {
+            "6": 8,
+            "0": 12,
+            "2": 12,
+            "5": 7,
+            "4": 9,
+            "1": 4,
+            "3": 2
+          },
+          "jump_releases": 9
+        },
+        {
+          "seed": 114,
+          "distance": 251,
+          "reason": "death",
+          "frames": 229,
+          "actions": {
+            "5": 6,
+            "6": 10,
+            "3": 11,
+            "1": 7,
+            "2": 6,
+            "4": 9,
+            "0": 9
+          },
+          "jump_releases": 17
+        },
+        {
+          "seed": 115,
+          "distance": 858,
+          "reason": "death",
+          "frames": 1335,
+          "actions": {
+            "5": 44,
+            "0": 44,
+            "6": 49,
+            "2": 51,
+            "1": 42,
+            "3": 58,
+            "4": 46
+          },
+          "jump_releases": 83
+        },
+        {
+          "seed": 116,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 878,
+          "actions": {
+            "4": 30,
+            "5": 21,
+            "0": 25,
+            "6": 48,
+            "1": 32,
+            "2": 32,
+            "3": 32
+          },
+          "jump_releases": 48
+        },
+        {
+          "seed": 117,
+          "distance": 682,
+          "reason": "no_progress",
+          "frames": 893,
+          "actions": {
+            "2": 32,
+            "3": 40,
+            "4": 35,
+            "0": 25,
+            "5": 27,
+            "6": 42,
+            "1": 23
+          },
+          "jump_releases": 57
+        },
+        {
+          "seed": 118,
+          "distance": 683,
+          "reason": "no_progress",
+          "frames": 1239,
+          "actions": {
+            "2": 54,
+            "5": 41,
+            "6": 53,
+            "0": 34,
+            "4": 47,
+            "1": 45,
+            "3": 36
+          },
+          "jump_releases": 81
+        },
+        {
+          "seed": 119,
+          "distance": 251,
+          "reason": "death",
+          "frames": 231,
+          "actions": {
+            "0": 5,
+            "3": 13,
+            "4": 7,
+            "5": 7,
+            "2": 10,
+            "1": 5,
+            "6": 11
+          },
+          "jump_releases": 13
+        },
+        {
+          "seed": 120,
+          "distance": 682,
+          "reason": "no_progress",
+          "frames": 1017,
+          "actions": {
+            "3": 37,
+            "4": 44,
+            "6": 34,
+            "0": 31,
+            "5": 45,
+            "2": 37,
+            "1": 27
+          },
+          "jump_releases": 61
+        }
+      ]
+    },
+    {
+      "updates": 250,
+      "snapshot": "aee9c823-1be9-4a7a-b5af-4ae895ec5ebe",
+      "episodes": [
+        {
+          "seed": 11,
+          "distance": 564,
+          "reason": "no_progress",
+          "frames": 853,
+          "actions": {
+            "6": 48,
+            "3": 51,
+            "5": 19,
+            "4": 39,
+            "2": 45,
+            "0": 11,
+            "1": 1
+          },
+          "jump_releases": 53
+        },
+        {
+          "seed": 22,
+          "distance": 556,
+          "reason": "no_progress",
+          "frames": 871,
+          "actions": {
+            "6": 54,
+            "4": 36,
+            "2": 36,
+            "5": 25,
+            "1": 1,
+            "3": 49,
+            "0": 17
+          },
+          "jump_releases": 53
+        },
+        {
+          "seed": 33,
+          "distance": 684,
+          "reason": "no_progress",
+          "frames": 823,
+          "actions": {
+            "3": 66,
+            "4": 42,
+            "2": 39,
+            "6": 36,
+            "0": 10,
+            "5": 10,
+            "1": 3
+          },
+          "jump_releases": 57
+        },
+        {
+          "seed": 101,
+          "distance": 682,
+          "reason": "no_progress",
+          "frames": 853,
+          "actions": {
+            "3": 55,
+            "6": 45,
+            "2": 53,
+            "4": 38,
+            "5": 12,
+            "0": 10,
+            "1": 1
+          },
+          "jump_releases": 61
+        },
+        {
+          "seed": 102,
+          "distance": 234,
+          "reason": "death",
+          "frames": 291,
+          "actions": {
+            "0": 5,
+            "2": 12,
+            "4": 15,
+            "3": 19,
+            "6": 16,
+            "5": 5,
+            "1": 1
+          },
+          "jump_releases": 19
+        },
+        {
+          "seed": 103,
+          "distance": 683,
+          "reason": "no_progress",
+          "frames": 1025,
+          "actions": {
+            "2": 50,
+            "6": 49,
+            "0": 16,
+            "3": 57,
+            "4": 59,
+            "5": 21,
+            "1": 5
+          },
+          "jump_releases": 57
+        },
+        {
+          "seed": 104,
+          "distance": 682,
+          "reason": "death",
+          "frames": 729,
+          "actions": {
+            "3": 49,
+            "2": 43,
+            "4": 36,
+            "6": 31,
+            "1": 2,
+            "0": 10,
+            "5": 12
+          },
+          "jump_releases": 46
+        },
+        {
+          "seed": 105,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 860,
+          "actions": {
+            "1": 5,
+            "4": 44,
+            "3": 55,
+            "2": 47,
+            "0": 10,
+            "6": 37,
+            "5": 17
+          },
+          "jump_releases": 56
+        },
+        {
+          "seed": 106,
+          "distance": 218,
+          "reason": "death",
+          "frames": 281,
+          "actions": {
+            "4": 12,
+            "2": 14,
+            "3": 18,
+            "5": 9,
+            "6": 16,
+            "0": 2
+          },
+          "jump_releases": 18
+        },
+        {
+          "seed": 107,
+          "distance": 268,
+          "reason": "death",
+          "frames": 195,
+          "actions": {
+            "3": 13,
+            "2": 15,
+            "0": 3,
+            "5": 5,
+            "6": 9,
+            "4": 4
+          },
+          "jump_releases": 13
+        },
+        {
+          "seed": 108,
+          "distance": 858,
+          "reason": "death",
+          "frames": 665,
+          "actions": {
+            "2": 43,
+            "3": 38,
+            "6": 21,
+            "4": 39,
+            "1": 4,
+            "5": 12,
+            "0": 10
+          },
+          "jump_releases": 40
+        },
+        {
+          "seed": 109,
+          "distance": 682,
+          "reason": "no_progress",
+          "frames": 1296,
+          "actions": {
+            "4": 69,
+            "3": 68,
+            "6": 69,
+            "2": 66,
+            "0": 19,
+            "1": 7,
+            "5": 26
+          },
+          "jump_releases": 88
+        },
+        {
+          "seed": 110,
+          "distance": 255,
+          "reason": "death",
+          "frames": 263,
+          "actions": {
+            "2": 10,
+            "0": 3,
+            "6": 14,
+            "3": 12,
+            "4": 17,
+            "5": 7,
+            "1": 3
+          },
+          "jump_releases": 17
+        },
+        {
+          "seed": 111,
+          "distance": 1371,
+          "reason": "death",
+          "frames": 1581,
+          "actions": {
+            "6": 78,
+            "0": 18,
+            "5": 32,
+            "3": 109,
+            "2": 73,
+            "4": 76,
+            "1": 10
+          },
+          "jump_releases": 95
+        },
+        {
+          "seed": 112,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 761,
+          "actions": {
+            "4": 38,
+            "6": 42,
+            "5": 11,
+            "3": 46,
+            "2": 40,
+            "0": 8,
+            "1": 6
+          },
+          "jump_releases": 48
+        },
+        {
+          "seed": 113,
+          "distance": 629,
+          "reason": "death",
+          "frames": 661,
+          "actions": {
+            "6": 37,
+            "2": 40,
+            "4": 31,
+            "0": 13,
+            "3": 31,
+            "5": 13,
+            "1": 1
+          },
+          "jump_releases": 38
+        },
+        {
+          "seed": 114,
+          "distance": 251,
+          "reason": "death",
+          "frames": 225,
+          "actions": {
+            "5": 3,
+            "6": 15,
+            "3": 17,
+            "4": 10,
+            "2": 9,
+            "1": 1,
+            "0": 2
+          },
+          "jump_releases": 14
+        },
+        {
+          "seed": 115,
+          "distance": 683,
+          "reason": "no_progress",
+          "frames": 1175,
+          "actions": {
+            "3": 81,
+            "0": 17,
+            "5": 25,
+            "6": 50,
+            "2": 65,
+            "1": 7,
+            "4": 49
+          },
+          "jump_releases": 69
+        },
+        {
+          "seed": 116,
+          "distance": 682,
+          "reason": "death",
+          "frames": 885,
+          "actions": {
+            "4": 40,
+            "5": 17,
+            "6": 54,
+            "2": 45,
+            "0": 10,
+            "3": 53,
+            "1": 3
+          },
+          "jump_releases": 52
+        },
+        {
+          "seed": 117,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 763,
+          "actions": {
+            "2": 35,
+            "3": 59,
+            "4": 37,
+            "6": 44,
+            "5": 10,
+            "1": 2,
+            "0": 4
+          },
+          "jump_releases": 47
+        },
+        {
+          "seed": 118,
+          "distance": 556,
+          "reason": "no_progress",
+          "frames": 894,
+          "actions": {
+            "2": 46,
+            "3": 53,
+            "6": 48,
+            "0": 7,
+            "5": 22,
+            "4": 43,
+            "1": 5
+          },
+          "jump_releases": 59
+        },
+        {
+          "seed": 119,
+          "distance": 859,
+          "reason": "no_progress",
+          "frames": 1360,
+          "actions": {
+            "3": 74,
+            "4": 79,
+            "5": 28,
+            "2": 71,
+            "6": 67,
+            "1": 11,
+            "0": 10
+          },
+          "jump_releases": 87
+        },
+        {
+          "seed": 120,
+          "distance": 683,
+          "reason": "no_progress",
+          "frames": 1494,
+          "actions": {
+            "3": 86,
+            "4": 73,
+            "6": 76,
+            "5": 42,
+            "0": 17,
+            "2": 75,
+            "1": 5
+          },
+          "jump_releases": 91
+        }
+      ]
+    },
+    {
+      "updates": 307,
+      "snapshot": "9a2fe54c-b6f3-4f1a-a85a-2f92cb4a2420",
+      "episodes": [
+        {
+          "seed": 11,
+          "distance": 629,
+          "reason": "death",
+          "frames": 631,
+          "actions": {
+            "5": 28,
+            "0": 14,
+            "3": 67,
+            "1": 13,
+            "2": 24,
+            "4": 7,
+            "6": 5
+          },
+          "jump_releases": 37
+        },
+        {
+          "seed": 22,
+          "distance": 682,
+          "reason": "no_progress",
+          "frames": 770,
+          "actions": {
+            "6": 8,
+            "3": 74,
+            "2": 27,
+            "5": 49,
+            "1": 9,
+            "0": 21,
+            "4": 5
+          },
+          "jump_releases": 50
+        },
+        {
+          "seed": 33,
+          "distance": 268,
+          "reason": "death",
+          "frames": 147,
+          "actions": {
+            "3": 19,
+            "5": 4,
+            "2": 6,
+            "1": 4,
+            "4": 2,
+            "0": 1,
+            "6": 1
+          },
+          "jump_releases": 7
+        },
+        {
+          "seed": 101,
+          "distance": 269,
+          "reason": "death",
+          "frames": 147,
+          "actions": {
+            "3": 18,
+            "5": 7,
+            "2": 8,
+            "0": 2,
+            "1": 2
+          },
+          "jump_releases": 10
+        },
+        {
+          "seed": 102,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 746,
+          "actions": {
+            "0": 20,
+            "1": 15,
+            "3": 73,
+            "5": 40,
+            "2": 30,
+            "6": 4,
+            "4": 5
+          },
+          "jump_releases": 41
+        },
+        {
+          "seed": 103,
+          "distance": 683,
+          "reason": "no_progress",
+          "frames": 1013,
+          "actions": {
+            "2": 53,
+            "3": 96,
+            "0": 19,
+            "1": 14,
+            "5": 50,
+            "4": 13,
+            "6": 9
+          },
+          "jump_releases": 56
+        },
+        {
+          "seed": 104,
+          "distance": 684,
+          "reason": "no_progress",
+          "frames": 802,
+          "actions": {
+            "3": 78,
+            "2": 40,
+            "5": 43,
+            "4": 8,
+            "6": 5,
+            "1": 9,
+            "0": 18
+          },
+          "jump_releases": 48
+        },
+        {
+          "seed": 105,
+          "distance": 264,
+          "reason": "death",
+          "frames": 173,
+          "actions": {
+            "1": 5,
+            "5": 7,
+            "3": 16,
+            "4": 2,
+            "2": 11,
+            "0": 2,
+            "6": 1
+          },
+          "jump_releases": 10
+        },
+        {
+          "seed": 106,
+          "distance": 683,
+          "reason": "no_progress",
+          "frames": 829,
+          "actions": {
+            "4": 8,
+            "0": 9,
+            "3": 107,
+            "2": 32,
+            "5": 34,
+            "1": 14,
+            "6": 4
+          },
+          "jump_releases": 51
+        },
+        {
+          "seed": 107,
+          "distance": 859,
+          "reason": "no_progress",
+          "frames": 1096,
+          "actions": {
+            "3": 129,
+            "0": 17,
+            "5": 42,
+            "2": 60,
+            "4": 8,
+            "6": 5,
+            "1": 13
+          },
+          "jump_releases": 70
+        },
+        {
+          "seed": 108,
+          "distance": 682,
+          "reason": "no_progress",
+          "frames": 877,
+          "actions": {
+            "2": 45,
+            "3": 82,
+            "5": 48,
+            "4": 11,
+            "0": 17,
+            "1": 14,
+            "6": 3
+          },
+          "jump_releases": 57
+        },
+        {
+          "seed": 109,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 658,
+          "actions": {
+            "2": 30,
+            "3": 68,
+            "6": 7,
+            "5": 32,
+            "0": 11,
+            "1": 8,
+            "4": 9
+          },
+          "jump_releases": 43
+        },
+        {
+          "seed": 110,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 662,
+          "actions": {
+            "2": 28,
+            "0": 9,
+            "3": 69,
+            "5": 40,
+            "4": 5,
+            "1": 11,
+            "6": 4
+          },
+          "jump_releases": 49
+        },
+        {
+          "seed": 111,
+          "distance": 556,
+          "reason": "no_progress",
+          "frames": 744,
+          "actions": {
+            "2": 28,
+            "5": 37,
+            "6": 9,
+            "3": 75,
+            "0": 15,
+            "1": 16,
+            "4": 6
+          },
+          "jump_releases": 46
+        },
+        {
+          "seed": 112,
+          "distance": 683,
+          "reason": "no_progress",
+          "frames": 1171,
+          "actions": {
+            "0": 29,
+            "3": 128,
+            "5": 57,
+            "2": 51,
+            "1": 21,
+            "4": 5,
+            "6": 2
+          },
+          "jump_releases": 64
+        },
+        {
+          "seed": 113,
+          "distance": 642,
+          "reason": "death",
+          "frames": 549,
+          "actions": {
+            "5": 26,
+            "2": 34,
+            "4": 6,
+            "1": 5,
+            "3": 51,
+            "6": 3,
+            "0": 13
+          },
+          "jump_releases": 30
+        },
+        {
+          "seed": 114,
+          "distance": 555,
+          "reason": "no_progress",
+          "frames": 659,
+          "actions": {
+            "5": 36,
+            "6": 3,
+            "3": 71,
+            "1": 12,
+            "4": 8,
+            "2": 25,
+            "0": 10
+          },
+          "jump_releases": 46
+        },
+        {
+          "seed": 115,
+          "distance": 683,
+          "reason": "no_progress",
+          "frames": 931,
+          "actions": {
+            "3": 102,
+            "5": 42,
+            "0": 23,
+            "2": 37,
+            "1": 18,
+            "4": 6,
+            "6": 5
+          },
+          "jump_releases": 54
+        },
+        {
+          "seed": 116,
+          "distance": 682,
+          "reason": "no_progress",
+          "frames": 896,
+          "actions": {
+            "1": 13,
+            "5": 43,
+            "0": 11,
+            "2": 48,
+            "3": 97,
+            "4": 7,
+            "6": 5
+          },
+          "jump_releases": 55
+        },
+        {
+          "seed": 117,
+          "distance": 684,
+          "reason": "no_progress",
+          "frames": 839,
+          "actions": {
+            "2": 39,
+            "3": 105,
+            "4": 7,
+            "5": 30,
+            "0": 12,
+            "1": 10,
+            "6": 7
+          },
+          "jump_releases": 48
+        },
+        {
+          "seed": 118,
+          "distance": 622,
+          "reason": "death",
+          "frames": 645,
+          "actions": {
+            "2": 25,
+            "5": 42,
+            "6": 5,
+            "0": 8,
+            "3": 69,
+            "4": 5,
+            "1": 8
+          },
+          "jump_releases": 37
+        },
+        {
+          "seed": 119,
+          "distance": 682,
+          "reason": "death",
+          "frames": 811,
+          "actions": {
+            "3": 81,
+            "5": 34,
+            "2": 44,
+            "6": 5,
+            "1": 20,
+            "4": 10,
+            "0": 9
+          },
+          "jump_releases": 50
+        },
+        {
+          "seed": 120,
+          "distance": 638,
+          "reason": "death",
+          "frames": 461,
+          "actions": {
+            "3": 47,
+            "4": 6,
+            "6": 4,
+            "2": 23,
+            "5": 27,
+            "0": 7,
+            "1": 2
+          },
+          "jump_releases": 34
+        }
+      ]
+    }
+  ],
+  "aggregate": [
+    {
+      "updates": 0,
+      "subsets": {
+        "original": {
+          "count": 3,
+          "mean": 495.6666666666667,
+          "median": 555.0,
+          "min": 250,
+          "max": 682,
+          "endings": {
+            "no_progress": 2,
+            "death": 1
+          },
+          "distances": [
+            682,
+            555,
+            250
+          ]
+        },
+        "additional": {
+          "count": 20,
+          "mean": 492.65,
+          "median": 555.0,
+          "min": 243,
+          "max": 858,
+          "endings": {
+            "death": 10,
+            "no_progress": 10
+          },
+          "distances": [
+            261,
+            682,
+            243,
+            682,
+            555,
+            668,
+            683,
+            555,
+            248,
+            251,
+            555,
+            258,
+            250,
+            251,
+            858,
+            555,
+            682,
+            683,
+            251,
+            682
+          ]
+        },
+        "all": {
+          "count": 23,
+          "mean": 493.04347826086956,
+          "median": 555.0,
+          "min": 243,
+          "max": 858,
+          "endings": {
+            "no_progress": 12,
+            "death": 11
+          },
+          "distances": [
+            682,
+            555,
+            250,
+            261,
+            682,
+            243,
+            682,
+            555,
+            668,
+            683,
+            555,
+            248,
+            251,
+            555,
+            258,
+            250,
+            251,
+            858,
+            555,
+            682,
+            683,
+            251,
+            682
+          ]
+        }
+      }
+    },
+    {
+      "updates": 250,
+      "subsets": {
+        "original": {
+          "count": 3,
+          "mean": 601.3333333333334,
+          "median": 564.0,
+          "min": 556,
+          "max": 684,
+          "endings": {
+            "no_progress": 3
+          },
+          "distances": [
+            564,
+            556,
+            684
+          ]
+        },
+        "additional": {
+          "count": 20,
+          "mean": 597.05,
+          "median": 655.5,
+          "min": 218,
+          "max": 1371,
+          "endings": {
+            "no_progress": 10,
+            "death": 10
+          },
+          "distances": [
+            682,
+            234,
+            683,
+            682,
+            555,
+            218,
+            268,
+            858,
+            682,
+            255,
+            1371,
+            555,
+            629,
+            251,
+            683,
+            682,
+            555,
+            556,
+            859,
+            683
+          ]
+        },
+        "all": {
+          "count": 23,
+          "mean": 597.6086956521739,
+          "median": 629.0,
+          "min": 218,
+          "max": 1371,
+          "endings": {
+            "no_progress": 13,
+            "death": 10
+          },
+          "distances": [
+            564,
+            556,
+            684,
+            682,
+            234,
+            683,
+            682,
+            555,
+            218,
+            268,
+            858,
+            682,
+            255,
+            1371,
+            555,
+            629,
+            251,
+            683,
+            682,
+            555,
+            556,
+            859,
+            683
+          ]
+        }
+      }
+    },
+    {
+      "updates": 307,
+      "subsets": {
+        "original": {
+          "count": 3,
+          "mean": 526.3333333333334,
+          "median": 629.0,
+          "min": 268,
+          "max": 682,
+          "endings": {
+            "death": 2,
+            "no_progress": 1
+          },
+          "distances": [
+            629,
+            682,
+            268
+          ]
+        },
+        "additional": {
+          "count": 20,
+          "mean": 610.8,
+          "median": 662.0,
+          "min": 264,
+          "max": 859,
+          "endings": {
+            "death": 6,
+            "no_progress": 14
+          },
+          "distances": [
+            269,
+            555,
+            683,
+            684,
+            264,
+            683,
+            859,
+            682,
+            555,
+            555,
+            556,
+            683,
+            642,
+            555,
+            683,
+            682,
+            684,
+            622,
+            682,
+            638
+          ]
+        },
+        "all": {
+          "count": 23,
+          "mean": 599.7826086956521,
+          "median": 642.0,
+          "min": 264,
+          "max": 859,
+          "endings": {
+            "death": 8,
+            "no_progress": 15
+          },
+          "distances": [
+            629,
+            682,
+            268,
+            269,
+            555,
+            683,
+            684,
+            264,
+            683,
+            859,
+            682,
+            555,
+            555,
+            556,
+            683,
+            642,
+            555,
+            683,
+            682,
+            684,
+            622,
+            682,
+            638
+          ]
+        }
+      }
+    }
+  ],
+  "paired_250_vs_307_additional": {
+    "later_better": 10,
+    "later_worse": 7,
+    "ties": 3,
+    "mean_paired_delta": 13.75
+  },
+  "protected_weights_unchanged": true,
+  "limitations": [
+    "Same deterministic level; seeds vary action sampling, not maps.",
+    "20 additional fixed seeds; exploratory comparison, not a generalization claim."
+  ]
+}
