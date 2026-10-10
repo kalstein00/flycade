@@ -59,6 +59,14 @@ def graph_view(graph: Path) -> dict[str, Any]:
             'activity_rule': 'signed arithmetic mean of final tanh state vector; range [-1, 1]'}
 
 
+def policy_view(run: Path) -> dict[str, Any]:
+    manifest = json.loads((run / 'run.json').read_text())
+    if manifest['model'].get('kind', 'connectome') == 'cnn':
+        return {'applicable': False, 'model_kind': 'cnn', 'nodes': [], 'edges': [],
+                'used_nodes': 0, 'used_edges': 0, 'reason': 'CNN has no connectome circuit'}
+    return {**graph_view(run / 'graph'), 'applicable': True, 'model_kind': 'connectome'}
+
+
 def png_uri(pixels: Pixels) -> str:
     buffer = io.BytesIO()
     Image.fromarray(pixels[:, :, 0] if pixels.shape[-1] == 1 else pixels).save(buffer, format='PNG')
@@ -89,8 +97,8 @@ class RolloutObserver:
         previous = json.loads(self.path.read_text()) if self.path.exists() else {}
         self.generation = previous.get('generation', 0) + 1
         self.session = dict(session)
-        self.graph = graph_view(output / 'graph')
-        self.indices = torch.tensor([n['index'] for n in self.graph['nodes']], device=device)
+        self.graph = policy_view(output)
+        self.indices = torch.tensor([n['index'] for n in self.graph['nodes']], device=device, dtype=torch.long)
         self.hz = hz
         self.sequence = 0
         self.first_capture = 0.

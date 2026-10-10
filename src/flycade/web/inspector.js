@@ -26,6 +26,14 @@ class NeuronInspector {
   }
   render(root, graph, sample, redraw) {
     const find=selector=>root.querySelector(selector), ns='http://www.w3.org/2000/svg';
+    if (graph.applicable === false) {
+      const heading=document.createElement('h2');heading.textContent='회로 해당 없음';
+      const note=document.createElement('p');note.textContent='CNN PPO는 커넥톰 회로를 사용하지 않습니다. 실제 정책 입력과 행동 확률은 정책 입력과 행동 패널에서 확인합니다.';
+      find('.network').replaceChildren(heading,note);
+      for(const selector of ['#neuron-details','#selected-neuron','#selected-value','#history-activity-label','#history-activity'])find(selector).remove();
+      this.renderControls(root,sample,redraw,null,false);
+      return;
+    }
     const svg=find('#circuit');
     const nodes=graph.nodes.map((node,index)=>({...node,mean:this.mean(sample.activity[index])}));
     const selected=nodes.find(node=>node.index===this.selected);
@@ -73,11 +81,16 @@ class NeuronInspector {
     }
     find('#selected-neuron').textContent=selected?`${selected.root_id} · ${selected.cell_type||'종류: 알 수 없음'} · 영역: ${selected.neuropil||selected.region||'알 수 없음'} · ${groupNames[selected.group]} · 정책 사용 노드`:'회로나 표에서 뉴런을 선택하세요.';
     const value=find('#selected-value');value.textContent=selected?(selected.mean===null?'활성 누락':`모델 활성 평균 ${selected.mean.toFixed(5)} · 무차원`):'선택 없음';if(selected?.mean!=null)value.dataset.value=selected.mean;
+    this.renderControls(root,sample,redraw,selected,true);
+  }
+  renderControls(root,sample,redraw,selected,hasCircuit) {
+    const find=selector=>root.querySelector(selector);
+    find('#history-details summary').textContent=hasCircuit?'최근 활동과 행동 확률':'최근 행동 확률';
     const action=find('#history-action');
     for(const [index,buttons] of sample.actions.entries()){const option=document.createElement('option');option.value=index;option.textContent=`${index} · ${buttons.join(' + ')||'NOOP'}`;action.append(option);}
     action.value=this.action;action.addEventListener('change',event=>{this.action=Number(event.target.value);redraw();});
-    find('#history-activity-label').textContent=selected?`선택 뉴런 ${selected.root_id} · 평균 (−1~+1, 무차원)`:'표시 부분집합의 노드 평균 · 무차원 (−1~+1)';
-    this.chart(find('#history-activity'),row=>selected?row.means[selected.index]:this.mean(Object.values(row.means)), -1,1);
+    if(hasCircuit){find('#history-activity-label').textContent=selected?`선택 뉴런 ${selected.root_id} · 평균 (−1~+1, 무차원)`:'표시 부분집합의 노드 평균 · 무차원 (−1~+1)';
+    this.chart(find('#history-activity'),row=>selected?row.means[selected.index]:this.mean(Object.values(row.means)), -1,1);}
     this.chart(find('#history-probability'),row=>row.probabilities[this.action],0,1);
     find('#history-note').textContent=`최근 30초 · 최대 90개 · 현재 ${this.history.length}개. 가로축: 마지막 표본 대비 초. 누락/전송 생략 구간은 끊음 · 새 세션/스트림에서 초기화.`;
     const frame=find('#frame-choice');frame.value=this.frame;frame.addEventListener('change',event=>{this.frame=event.target.value;redraw();});

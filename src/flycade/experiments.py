@@ -117,6 +117,7 @@ def warm_start(parent: Path, checkpoint_id: str, output: Path, home: Path,
     lineage.update(kind='warm_start', loaded='all model state_dict keys; strict shapes; no partial load',
                    excluded=['optimizer', 'RNG', 'counters', 'save/evaluation schedules', 'parent training config'])
     manifest = state['manifest']
+    settings = {'model_kind': manifest['model'].get('kind', 'connectome'), **settings}
     game = GameConfig(**(manifest['game'] if game_settings is None else game_settings))
     return train(home, parent / 'graph', output, TrainingConfig(**settings), game,
                  manifest['device'], manifest['fixture'], stop_after_updates, observe_hz=observe_hz,

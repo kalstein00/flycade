@@ -15,7 +15,7 @@ from torch import Tensor
 from flycade.checkpoint import atomic_json, sync_directory
 from flycade.game import ACTIONS, Pixels
 from flycade.graph import digest
-from flycade.observation import graph_view, png_uri
+from flycade.observation import policy_view, png_uri
 
 
 class EvaluationReplay:
@@ -30,8 +30,8 @@ class EvaluationReplay:
         self.samples: list[dict[str, Any]] = []
         self.byte_count = 0
         self.maximum_bytes = 16 * 2**20
-        graph = graph_view(run / 'graph')
-        self.indices = torch.tensor([node['index'] for node in graph['nodes']], device=device)
+        graph = policy_view(run)
+        self.indices = torch.tensor([node['index'] for node in graph['nodes']], device=device, dtype=torch.long)
         self.document: dict[str, Any] = {
             'format_version': 1, 'run_id': report['run_id'], 'evaluation_id': report['evaluation_id'],
             'snapshot_id': report['snapshot_id'], 'protocol_id': report['protocol_id'],

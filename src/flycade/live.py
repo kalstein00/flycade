@@ -76,6 +76,7 @@ def serve_live(run: Path, port: int = 8766, additional_runs: list[Path] | None =
                 except (OSError, ValueError, KeyError, TypeError) as exc:
                     envelope['run_info'] = {'run_id': manifest['run_id'],
                         'lineage': manifest.get('lineage'), 'error': str(exc)}
+                envelope['model_kind'] = manifest['model'].get('kind', 'connectome')
                 envelope['selected_worker'] = worker
                 body = json.dumps(envelope, allow_nan=False).encode()
                 content_type = 'application/json'

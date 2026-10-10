@@ -263,3 +263,5 @@ uv run --offline --locked --extra train flycade resume reports/daily-001
 주기 평가와 초기·최근·최고본 비교는 [T12 운영·검증](docs/validation/T12.md)을 참고하세요. `live RUN` 화면의 **평가 비교**에서 저장된 짧은 영상과 시드별 성과를 확인합니다.
 
 평가 영상 탐색과 실제 회로·정책 입력·행동의 동기 재생, 고정 평가 최신 관측은 [T13 시간 대응·상한·검증](docs/validation/T13.md)을 참고하세요.
+
+동일 조건의 별도 CNN Run은 `train --model-kind cnn`으로 시작합니다. `compare-runs RUN_A RUN_B`는 모델별 초기 대비 거리·완료율·사망 변화와 예산/설정 차이를 보고합니다. [T14 비교 조건과 실제 미개선 결과](docs/validation/T14.md)를 참고하세요.

@@ -12,7 +12,7 @@ import torch
 from flycade.checkpoint import atomic_json, sync_directory
 from flycade.errors import PreparationError
 from flycade.graph import digest, inspect_graph
-from flycade.policy import ConnectomePolicy, policy_from_graph
+from flycade.policy import Policy, policy_for_kind
 from flycade.rom import inspect_registration
 
 POLICY_SOURCES = ('policy.py', 'game.py', 'nes.py', 'rom.py', 'training_fixture.py')
@@ -50,7 +50,7 @@ def publish_snapshot(run: Path, state: dict[str, Any], manifest: dict[str, Any],
     atomic_json(directory / 'latest.json', {'snapshot_id': snapshot_id})
 
 
-def load_snapshot(run: Path, selection: str, home: Path, device: str) -> tuple[ConnectomePolicy, dict[str, Any], dict[str, Any]]:
+def load_snapshot(run: Path, selection: str, home: Path, device: str) -> tuple[Policy, dict[str, Any], dict[str, Any]]:
     if device == 'cuda' and not torch.cuda.is_available():
         raise PreparationError('cuda_unavailable', 'CUDA requested but unavailable')
     if selection == 'latest':
@@ -79,7 +79,7 @@ def load_snapshot(run: Path, selection: str, home: Path, device: str) -> tuple[C
         raise PreparationError('snapshot_incompatible', 'ROM/state/integration differs')
     graph = run / 'graph'
     model, game = manifest['model'], manifest['game']
-    policy = policy_from_graph(graph, model['state_dim'], model['propagation_steps'],
+    policy = policy_for_kind(graph, model.get('kind', 'connectome'), model['state_dim'], model['propagation_steps'],
         game['frame_stack'] * (3 if game['color'] == 'RGB' else 1)).to(device)
     policy.load_state_dict(torch.load(run / expected_weights, map_location=device, weights_only=True), strict=True)
     policy.eval()

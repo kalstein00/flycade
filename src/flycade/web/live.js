@@ -112,6 +112,7 @@ function switchStream() {
   selectionVersion++;renderVersion++;requestController?.abort();current=null;runID=selectedRun;lastReceived=0;connected=false;inspector.reset();
   $('#view').replaceChildren(Object.assign(document.createElement('p'),{className:'empty',textContent:'선택 스트림의 관측을 기다립니다.'}));
   $('#run').textContent=selectedRun.slice(0,8);$('#session').textContent='—';$('#update').textContent='—';$('#stage').textContent='—';
+  $('#model-kind').textContent='모델 확인 중';
   $('#run-kind').textContent='—';$('#run-identity').textContent='';$('#lineage').textContent='';$('#budget-info').textContent='';$('#budget-events').textContent='';
   $('#operation').textContent='선택 Run 상태 확인 중';$('#recovery').textContent='';$('#rollback').textContent='';$('#recovery-details').hidden=true;$('#reset-notice').textContent='';
   clearTimeout(timer);poll();
@@ -140,6 +141,7 @@ async function poll() {
       if(selection!==selectionVersion)return;
       $('#compare-link').href='/compare?'+new URLSearchParams({run:selectedRun});
       $('#evaluation-link').href='/replay?'+new URLSearchParams({run:selectedRun});
+      $('#model-kind').textContent=next.model_kind==='cnn'?'모델: CNN PPO':'모델: 커넥톰 PPO';
       operation(next.control);
       runInformation(next.run_info);
       current=next;runID=next.run_id;lastReceived=Date.now()/1000;

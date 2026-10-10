@@ -37,6 +37,8 @@ function render(side) {
     }
     tbody.append(tr);
   }
+  const initial=group.results.find(result=>result.evaluation_id===group.initial);
+  panel.querySelector('.outcome-change').textContent=initial?'초기 대비 평균 거리 '+number(row.mean_distance-initial.mean_distance)+' px · 완료율 '+number((row.completion_rate-initial.completion_rate)*100)+'%p · 사망 '+number((row.termination_counts.death||0)-(initial.termination_counts.death||0))+'회 ('+row.evaluation_count+'개 표본)':'같은 조건의 초기 평가 없음';
   const labels = [];
   if (row.snapshot_id === 'initial') labels.push('초기 정책');
   if (row.snapshot_id === group.best_snapshot) labels.push('최고 평가본');
@@ -47,7 +49,7 @@ function render(side) {
   circuit.replaceChildren();
   if (row.replay?.status === 'complete') {
     const link = document.createElement('a');
-    link.textContent = '회로 이력과 함께 재생';
+    link.textContent = catalog.model_kind==='cnn'?'입력·행동 이력과 함께 재생':'회로 이력과 함께 재생';
     link.href = '/replay?'+new URLSearchParams({run:catalog.run_id,evaluation:row.evaluation_id});
     circuit.append(link);
   } else circuit.textContent = row.replay?.error ? '회로 기록 실패 · '+row.replay.error : '회로 관측 데이터 없음';
@@ -80,6 +82,7 @@ async function load() {
     const result = await response.json();
     if (version !== requestVersion) return;
     catalog = result;
+    $('#comparison-model').textContent=(catalog.model_kind==='cnn'?'CNN PPO · 회로 해당 없음':'커넥톰 PPO')+' · 총 예산 '+number(catalog.training_budget.total_updates)+' updates / '+number(catalog.training_budget.total_updates*catalog.training_config.rollout_steps)+'전이 · 파라미터 '+(catalog.parameter_count==null?'미기록':number(catalog.parameter_count)+'개');
     $('#live-link').href = '/?'+new URLSearchParams({run:id});
     const select = $('#protocol-choice'); select.replaceChildren();
     catalog.protocols.forEach((g,i) => select.add(new Option('조건 '+(i+1)+' · '+g.results.length+'회 평가 · '+g.protocol_id.slice(0,12),g.protocol_id)));

@@ -11,16 +11,18 @@ def protocol_identity(protocol: dict[str, Any]) -> str:
 
 def evaluation_catalog(run: Path) -> dict[str, Any]:
     manifest = json.loads((run / 'run.json').read_text())
+    from flycade.budget import budget_info
     path = run / 'evaluation-index.json'
-    if path.exists():
-        result: dict[str, Any] = json.loads(path.read_text())
-        if result['run_id'] != manifest['run_id']:
-            raise ValueError('Evaluation index Run identity differs')
-        refs = run / 'checkpoint-references.json'
-        result['references'] = json.loads(refs.read_text()) if refs.exists() else {'pins': [], 'best': [], 'latest': []}
-        return result
-    return {'run_id': manifest['run_id'], 'model_kind': 'connectome', 'protocols': [],
-            'note': 'Small fixed-seed samples; no general learning-success claim.'}
+    result: dict[str, Any] = (json.loads(path.read_text()) if path.exists() else
+        {'run_id': manifest['run_id'], 'protocols': [], 'note': 'Small fixed-seed samples; no general learning-success claim.'})
+    if result['run_id'] != manifest['run_id']:
+        raise ValueError('Evaluation index Run identity differs')
+    refs = run / 'checkpoint-references.json'
+    result['references'] = json.loads(refs.read_text()) if refs.exists() else {'pins': [], 'best': [], 'latest': []}
+    result.update(model_kind=manifest['model'].get('kind', 'connectome'),
+                  parameter_count=manifest['model'].get('parameter_count'),
+                  training_budget=budget_info(run, manifest), training_config=manifest['training'])
+    return result
 
 
 def refresh_evaluations(run: Path) -> dict[str, Any]:

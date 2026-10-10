@@ -66,3 +66,34 @@ def policy_from_graph(graph: Path, state_dim: int, propagation_steps: int, chann
         np.load(graph / 'weight.npy', allow_pickle=False).tolist(),
         [node['index'] for node in nodes if node['input']], [node['index'] for node in nodes if node['output']],
         state_dim, propagation_steps, channels)
+
+
+class CNNPolicy(nn.Module):
+    """Small untrained convolutional control; no connectome or synthetic neuron activity."""
+    def __init__(self, channels: int = 12):
+        super().__init__()
+        self.encoder = nn.Sequential(nn.Conv2d(channels, 16, 8, stride=4), nn.ReLU(),
+            nn.Conv2d(16, 32, 4, stride=2), nn.ReLU(), nn.AdaptiveAvgPool2d((3, 3)),
+            nn.Flatten(), nn.Linear(32 * 9, 64), nn.ReLU())
+        self.actor = nn.Linear(64, 7)
+        self.critic = nn.Linear(64, 1)
+
+    def forward(self, pixels: Tensor, *, observe: Callable[[Tensor], None] | None = None) -> tuple[Categorical, Tensor]:
+        if pixels.dtype != torch.uint8 or pixels.ndim != 5:
+            raise ValueError('Expected uint8 [batch, stack, height, width, channels] pixels')
+        batch, stack, height, width, channels = pixels.shape
+        image = pixels.permute(0, 1, 4, 2, 3).reshape(batch, stack * channels, height, width).float() / 255.
+        readout = self.encoder(image)
+        # The common observer callback is intentionally not called: this model has no circuit.
+        return Categorical(logits=self.actor(readout)), self.critic(readout).squeeze(-1)
+
+
+Policy = ConnectomePolicy | CNNPolicy
+
+
+def policy_for_kind(graph: Path, kind: str, state_dim: int, propagation_steps: int, channels: int) -> Policy:
+    if kind == 'cnn':
+        return CNNPolicy(channels)
+    if kind == 'connectome':
+        return policy_from_graph(graph, state_dim, propagation_steps, channels)
+    raise ValueError(f'Unknown model kind: {kind}')

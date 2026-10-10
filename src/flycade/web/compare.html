@@ -4,11 +4,11 @@
 <body><header><h1>고정 정책 평가 비교</h1><a id="live-link" href="/">현재 학습 관찰</a></header>
 <p>같은 평가 조건에서 초기·최근·최고 정책을 비교합니다. 완료율, 평균 거리 순으로 최고본을 선정하며 동률이면 기존 최고본을 유지합니다.</p>
 <div class="stream-controls"><label for="run-choice">Run</label><select id="run-choice"></select><label for="protocol-choice">평가 조건</label><select id="protocol-choice"></select><button id="reload" type="button">내역 새로고침</button></div>
-<p id="status" role="status">평가 내역을 불러오는 중입니다.</p><p id="limitations">고정된 소수 시드의 표본입니다. 한 번의 좋은 플레이나 이 표본의 차이만으로 일반적인 학습 성과를 판단할 수 없습니다.</p>
+<p id="comparison-model"></p><p id="status" role="status">평가 내역을 불러오는 중입니다.</p><p id="limitations">고정된 소수 시드의 표본입니다. 한 번의 좋은 플레이나 이 표본의 차이만으로 일반적인 학습 성과를 판단할 수 없습니다.</p>
 <main id="comparison" class="comparison" hidden></main>
 <template id="comparison-panel"><section class="panel"><h2></h2><label class="choice-label">평가본 <select class="choice"></select></label><p class="mode">평가 기록 영상 · 고정 정책</p>
 <video controls preload="metadata"></video><p class="video-status" role="status"></p><p class="circuit-note">회로 관측 데이터 없음</p>
 <dl class="scores"><div><dt>완료 / 평가 횟수</dt><dd class="completion"></dd></div><div><dt>평균 거리</dt><dd class="mean"></dd></div><div><dt>거리 중앙값 · 최솟값~최댓값</dt><dd class="distribution"></dd></div></dl>
 <h3>시드별 거리와 원래 보상</h3><table class="episodes"><thead><tr><th>시드</th><th>거리 (px)</th><th>원래 보상</th><th>종료</th></tr></thead><tbody></tbody></table>
-<p class="protection"></p><details><summary>Run·모델·평가본 식별 정보</summary><p class="identity identifier"></p></details></section></template>
+<p class="outcome-change"></p><p class="protection"></p><details><summary>Run·모델·평가본 식별 정보</summary><p class="identity identifier"></p></details></section></template>
 </body></html>

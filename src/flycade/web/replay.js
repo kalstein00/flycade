@@ -72,6 +72,7 @@ async function fetchSelection(selectionVersion) {
     record=result;
     $('#replay-identity').textContent='Run '+selectedRun+' · snapshot '+result.report.snapshot_id+' · protocol '+result.report.protocol_id+' · 평가 '+selectedEvaluation;
     $('#replay-contract').textContent=result.document?`첫 에피소드 · 최대 ${result.document.maximum_samples}개 · ${result.document.graph.nodes.length}개 실제 노드 · ${result.document.graph.edges.length}개 연결. 마지막 tanh 상태 벡터의 산술평균 · 생물학적 전압이 아닙니다.`:'이 평가에는 회로 관측 이력이 없습니다.';
+    if(result.document?.graph.applicable===false)$('#replay-contract').textContent='CNN PPO · 회로 해당 없음 · 첫 에피소드의 실제 정책 입력과 행동만 기록합니다. 최대 '+result.document.maximum_samples+'개 표본.';
     if(!live && result.report.videos[0]) {
       video.src='/api/video?'+new URLSearchParams({run:selectedRun,file:'evaluations/'+selectedEvaluation+'/'+result.report.videos[0].file});
     }

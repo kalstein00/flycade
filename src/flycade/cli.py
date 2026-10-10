@@ -49,6 +49,7 @@ def main() -> int:
     training.add_argument('--rollout-steps', type=int)
     training.add_argument('--observe-hz', type=int, choices=OBSERVATION_RATES, default=3)
     training.add_argument('--seed', type=int)
+    training.add_argument('--model-kind', choices=('connectome', 'cnn'))
     training.add_argument('--training-config', type=Path)
     training.add_argument('--initial-evaluation-config', type=Path, help='Evaluate initial policy before first rollout (EvaluationConfig JSON)')
     training.add_argument('--config', type=Path, help='GameConfig JSON')
@@ -117,6 +118,9 @@ def main() -> int:
     compare = sub.add_parser('compare-evaluations')
     compare.add_argument('run', type=Path)
     compare.add_argument('evaluations', nargs='+')
+    run_compare = sub.add_parser('compare-runs')
+    run_compare.add_argument('runs', type=Path, nargs='+')
+    run_compare.add_argument('--protocol')
     args = parser.parse_args()
     try:
         if args.command == 'diagnose':
@@ -145,6 +149,9 @@ def main() -> int:
             from flycade.evaluation import evaluate
             report = evaluate(args.run, args.snapshot, args.protocol, args.home, args.device,
                               args.realtime, args.training_paused)
+        elif args.command == 'compare-runs':
+            from flycade.comparison import compare_runs
+            report = compare_runs(args.runs, args.protocol)
         elif args.command == 'evaluations':
             from flycade.evaluation_index import evaluation_catalog, refresh_evaluations
             report = refresh_evaluations(args.run) if args.refresh else evaluation_catalog(args.run)
@@ -191,7 +198,7 @@ def main() -> int:
             from flycade.game import GameConfig
             from flycade.training import TrainingConfig, train
             settings = json.loads(args.training_config.read_text()) if args.training_config else {}
-            settings.update({name: getattr(args, name) for name in ('updates', 'rollout_steps', 'seed')
+            settings.update({name: getattr(args, name) for name in ('updates', 'rollout_steps', 'seed', 'model_kind')
                              if getattr(args, name) is not None})
             game = GameConfig(**json.loads(args.config.read_text())) if args.config else GameConfig()
             report = train(args.home, args.graph, args.output, TrainingConfig(**settings),

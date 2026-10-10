@@ -27,7 +27,7 @@ from flycade.control import SaveControl
 from flycade.game import GameConfig, GameEnv, Pixels
 from flycade.graph import digest, inspect_graph, write_json
 from flycade.nes import NesEmulator
-from flycade.policy import ConnectomePolicy, policy_from_graph
+from flycade.policy import ConnectomePolicy, Policy, policy_for_kind
 from flycade.recording import RecordingEmulator
 from flycade.rom import inspect_registration
 from flycade.training_fixture import FixtureEmulator
@@ -38,6 +38,7 @@ from flycade.observation_config import validate_observation_rate
 
 @dataclass(frozen=True)
 class TrainingConfig:
+    model_kind: str = 'connectome'
     updates: int = 2
     rollout_steps: int = 32
     epochs: int = 2
@@ -57,6 +58,8 @@ class TrainingConfig:
     evaluation_every_updates: int = 1000
 
     def __post_init__(self) -> None:
+        if self.model_kind not in ('connectome', 'cnn'):
+            raise ValueError('model_kind must be connectome or cnn')
         for name in ('updates', 'rollout_steps', 'epochs', 'state_dim', 'propagation_steps', 'keep_checkpoints'):
             if type(getattr(self, name)) is not int or getattr(self, name) <= 0:
                 raise ValueError(f'{name} must be a positive integer')
@@ -111,7 +114,7 @@ class RolloutTransition:
     ended: bool
 
 
-def optimize(policy: ConnectomePolicy, optimizer: torch.optim.Optimizer,
+def optimize(policy: Policy, optimizer: torch.optim.Optimizer,
              rollout: list[RolloutTransition], config: TrainingConfig, device: str) -> dict[str, Any]:
     # next_values already masks true termination, but bootstraps truncation.
     advantages = [0.] * len(rollout)
@@ -179,7 +182,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
     if device == 'cuda':
         torch.cuda.reset_peak_memory_stats()
     channels = game.frame_stack * (3 if game.color == 'RGB' else 1)
-    policy = policy_from_graph(graph, config.state_dim, config.propagation_steps, channels).to(device)
+    policy = policy_for_kind(graph, config.model_kind, config.state_dim, config.propagation_steps, channels).to(device)
     if warm_state is not None:
         policy.load_state_dict(warm_state['model'], strict=True)
     optimizer = torch.optim.Adam(policy.parameters(), lr=config.learning_rate)
@@ -203,7 +206,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
             'code': {'git_head': git.stdout.strip() if git.returncode == 0 else None,
                      'files': {p.name: digest(p) for p in sorted(source.glob('*.py'))},
                      'uv_lock_sha256': digest(repo / 'uv.lock') if (repo / 'uv.lock').exists() else None},
-            'model': {'architecture': 'conv/pool/linear pixel encoder -> COO propagation -> output-only actor/critic',
+            'model': {'kind': config.model_kind, 'parameter_count': sum(p.numel() for p in policy.parameters()), 'architecture': 'conv/pool/linear pixel encoder -> COO propagation -> output-only actor/critic',
                       'state_dim': config.state_dim, 'propagation_steps': config.propagation_steps,
                       'fixed': 'topology and incoming-synapse-normalized nonnegative weights',
                       'sign_assumption': 'structural positive weights; not neurotransmitter sign inference',
@@ -212,6 +215,13 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                       'trainable': list(initial_parameters), 'pretrained_or_teacher': False},
             'algorithm': 'PPO-Clip; GAE; full-rollout batch per epoch; Adam; FP32; no running normalization',
             'worker_model': 'one in-process environment; one bounded ffmpeg encoder, reaped on close'}
+        if config.model_kind == 'cnn':
+            manifest['model'].update(architecture='Conv16(8/4), Conv32(4/2), adaptive pool3x3, dense64, actor/critic; ReLU',
+                fixed='no graph; same pixel/game/action/reward contract', graph_used=False,
+                sign_assumption='not applicable', state='feedforward CNN; no temporal recurrence',
+                mapping='pixels -> convolutional features -> actor/critic; no connectome mapping')
+        else:
+            manifest['model']['graph_used'] = True
         if warm_state is not None:
             manifest['lineage'] = warm_state['lineage']
             manifest['model']['pretrained_or_teacher'] = 'local checkpoint warm start; no teacher'
@@ -309,8 +319,9 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                                       'stack_frames_equal': all(np.array_equal(obs[0], f) for f in obs)}
         if resume_state is None:
             np.save(output / 'control-pixels.npy', obs, allow_pickle=False)
-        report['graph_influence'] = graph_influence(policy, pixel_tensor(obs, device))
-        if not report['graph_influence']['passed']:
+        report['graph_influence'] = (graph_influence(policy, pixel_tensor(obs, device)) if isinstance(policy, ConnectomePolicy)
+                                     else {'applicable': False, 'reason': 'CNN has no connectome graph'})
+        if isinstance(policy, ConnectomePolicy) and not report['graph_influence']['passed']:
             raise PreparationError('graph_no_influence', 'Controlled edge removal did not change policy distribution')
         try:
             if observe_hz:
@@ -497,7 +508,7 @@ def train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         raise ValueError('No input-to-output path within propagation_steps')
     if warm_state is not None:
         channels = game.frame_stack * (3 if game.color == 'RGB' else 1)
-        candidate = policy_from_graph(graph, config.state_dim, config.propagation_steps, channels)
+        candidate = policy_for_kind(graph, config.model_kind, config.state_dim, config.propagation_steps, channels)
         candidate.load_state_dict(warm_state['model'], strict=True)
     output.mkdir(parents=True)
     with run_lock(output):
