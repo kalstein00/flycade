@@ -1,0 +1,148 @@
+{
+  "run": "/home/kalstein/vscode/flycade/reports/five-minute-001/run",
+  "wall_seconds": 302.1508673649987,
+  "learning_seconds": 294.977202500002,
+  "start_update": 307,
+  "final_update": 605,
+  "before": {
+    "snapshot_updates": 307,
+    "distances": [
+      629,
+      682,
+      268
+    ],
+    "mean_distance": 526.3333333333334,
+    "completion_count": 0,
+    "evaluation_count": 3,
+    "termination_counts": {
+      "death": 2,
+      "no_progress": 1
+    }
+  },
+  "after": {
+    "snapshot_updates": 605,
+    "distances": [
+      256,
+      683,
+      555
+    ],
+    "mean_distance": 498.0,
+    "completion_count": 0,
+    "evaluation_count": 3,
+    "termination_counts": {
+      "death": 1,
+      "no_progress": 2
+    }
+  },
+  "mean_distance_delta": -28.33333333333337,
+  "last_rollout_action_counts": [
+    8,
+    16,
+    15,
+    26,
+    23,
+    5,
+    35
+  ],
+  "last_rollout_mean_probabilities": [
+    0.07798523438395932,
+    0.10684776469133794,
+    0.16561291285324842,
+    0.1785729906987399,
+    0.16462380962911993,
+    0.05158778323675506,
+    0.2547695013927296
+  ],
+  "last_rollout_entropy": 1.8388438837152772,
+  "training_episode_outcomes": {
+    "death": 261,
+    "no_progress": 194
+  },
+  "reward_components": {
+    "completion": 0.0,
+    "death": -2610.0,
+    "enemy": 160.0,
+    "no_progress": -1940.0,
+    "progress": 2496.1399999993155,
+    "stall": -381.2399999999402,
+    "time": -308.70200000001796
+  },
+  "status": "saved",
+  "checkpoint_id": "566a8207-653c-43aa-8662-f64151a6ac67",
+  "limitations": [
+    "One training seed and three fixed evaluation seeds; no generalization claim.",
+    "Fall termination changed; old v2 distance included offscreen drift, so compare within the new protocol."
+  ],
+  "segment_deltas": {
+    "transitions": 38144,
+    "emulator_frames": 152231,
+    "episodes": 210,
+    "enemy_defeats": 128,
+    "optimizer_steps": 596,
+    "episode_outcomes": {
+      "death": 104,
+      "no_progress": 106
+    },
+    "reward_components": {
+      "completion": 0.0,
+      "death": -1040.0,
+      "enemy": 64.0,
+      "no_progress": -1060.0,
+      "progress": 1054.509999999894,
+      "stall": -214.4549999999296,
+      "time": -152.12700000002016
+    },
+    "action_counts": [
+      2962,
+      5641,
+      5153,
+      5317,
+      6643,
+      5508,
+      6920
+    ]
+  },
+  "source_hashes_unchanged": true,
+  "source_hashes": {
+    "src/flycade/__init__.py": "b21c242866043cf4c76505158aa55d92ee3ac72b30169b5364f6679686ca75a5",
+    "src/flycade/__main__.py": "1387805973f2d3e6251d74d656c8599178769ed5fbb6693982801a6b32cee706",
+    "src/flycade/budget.py": "cd54d96406058059bfb2c9fc9d44e538d49fbb10716b51284db0e4557f64466d",
+    "src/flycade/checkpoint.py": "928f2b088f72bb56b1c65298fc7ba1020bb17b99a25e5591972eaac0a2a36151",
+    "src/flycade/cli.py": "9d7526593eb2569c2c344547c2daa0200b36119c5194feb3c34781ca082c2845",
+    "src/flycade/comparison.py": "f52dbf96c3f67065e1d284f4a612d635bd17cca61090825c3fe7eb3e00c87673",
+    "src/flycade/control.py": "38c843ab21a5908bab528c9fdf2ba17c1bced8ef5cc10726239af77905426b25",
+    "src/flycade/demo.py": "09dfedca0736cf377c3f3009ff6bc1db10c76e5af4b242af0c7ef332e5033ecf",
+    "src/flycade/diagnostics.py": "2c9428f5f709f51c4ff8b84e24e0fc888b8b2422080d91e417bc3d012d548684",
+    "src/flycade/errors.py": "6784cf5e06ea471663a8e9786500cec7b3080469303adce4653137f84f9736e4",
+    "src/flycade/evaluation.py": "7162f0debdcd3521e6c5b001e0431693535a69b46e41731afc91a976c0c25095",
+    "src/flycade/evaluation_index.py": "f00c74e6a895eb798913c633d5d134dce24a7190241bda91ccd9b1c8c804da22",
+    "src/flycade/evaluation_worker.py": "b19213c98b4c7c7b7e9382a42c9be351f6104fa1068695d96b846cb54fe70589",
+    "src/flycade/experiments.py": "988edad576d4a333f8fe7d9cb131533499a77a4d4ff208cc630b09e2f827e19d",
+    "src/flycade/game.py": "31b99e0530fa6abeefb64f55bcddd38dad108b3a9ca0919f960c2f6440f90420",
+    "src/flycade/graph.py": "22f6e589c98363ffe142958d3a09d44a7222d879e9e2bb2663c02a97953343d1",
+    "src/flycade/history.py": "b93c99c1b343685e649b421ecde71cd562a18f641bc1890c23d73dfe5bd7e3ab",
+    "src/flycade/live.py": "b2debaeb1c9be481463a41e12c06d8b10c9d5e41fe8a9d1f88a0ec5fef3d0475",
+    "src/flycade/media.py": "0a9ee0a7af63d6133ab48bf4f019e23386094c9c2dcd7492f45c337f3bde2dba",
+    "src/flycade/nes.py": "68898f3e4bea94419479a1e4fa3278dfaed6f03085c611408a7245970708772d",
+    "src/flycade/observation.py": "5a1cc5147bf5ca4b4f704c20a8bd579b78328cd421129cad3b501b80098663e9",
+    "src/flycade/observation_config.py": "d0018485c97480cb24fd04406bc53eb7b9107de3ffc381b80abe99fbe4f3291d",
+    "src/flycade/policy.py": "0d7e132b13f0e079f67b9223c2c788a0995f1c74a60300240a87c2eb399f9251",
+    "src/flycade/recording.py": "c53b330469e32a5baa404624d4a1f9e42f2cefc911082c4002e24b98ca266075",
+    "src/flycade/replay.py": "3eadb0aa8f2e70af7a4b1ed32988104b209ea84a18891375795f6cdc00001cc1",
+    "src/flycade/replay_reader.py": "1bbe0677a4efa7ee4b46a137a130edb6915b7c258d2ee27856be302129a01493",
+    "src/flycade/retention.py": "45aaec85cd31b7372c16425390170d5ad7ed79f896903f73784ba98d49e570fc",
+    "src/flycade/rom.py": "a8d33123cfc13a22a4c2a6a5c3ac7bb6261317ea948c1f3c54c248bacfdce8fe",
+    "src/flycade/snapshot.py": "65e3c04f746dca5003a66fbe4aca93c352700314b8bdd8337b1e8031c2d1e35f",
+    "src/flycade/storage.py": "bdf53797585823ff06b9e83020665f739f610b361abf1ff4d55293800ee1d233",
+    "src/flycade/training.py": "b36a1aa57510a502e962e875e7577647901b077a604109cbc4e95267091ba413",
+    "src/flycade/training_fixture.py": "784f9ce4a985504739aff96ae60afb1d4ffdaebdcec812524704abe6e252c6c4",
+    "src/flycade/workers.py": "0718ac0caeeb4f62a7445fd287761dec3c12db4700a8b435fe5ba9394d1a029e"
+  },
+  "health": {
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "recording_status": "complete",
+    "recording_error": null
+  }
+}
