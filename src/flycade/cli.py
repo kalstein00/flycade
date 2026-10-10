@@ -58,6 +58,12 @@ def main() -> int:
     resume_parser.add_argument('--observe-hz', type=int, choices=OBSERVATION_RATES, default=3)
     resume_parser.add_argument('--home', type=Path, default=Path('.flycade'))
     resume_parser.add_argument('--stop-after-updates', type=int)
+    checkpoints = sub.add_parser('checkpoints')
+    checkpoints.add_argument('run', type=Path)
+    pin = sub.add_parser('pin-checkpoint')
+    pin.add_argument('run', type=Path)
+    pin.add_argument('checkpoint_id')
+    pin.add_argument('--remove', action='store_true')
     save = sub.add_parser('save')
     save.add_argument('run', type=Path)
     save.add_argument('--stop', action='store_true')
@@ -120,6 +126,12 @@ def main() -> int:
         elif args.command == 'compare-evaluations':
             from flycade.evaluation import compare_evaluations
             report = compare_evaluations(args.run, args.evaluations)
+        elif args.command == 'checkpoints':
+            from flycade.retention import checkpoint_history
+            report = checkpoint_history(args.run)
+        elif args.command == 'pin-checkpoint':
+            from flycade.retention import pin_checkpoint
+            report = pin_checkpoint(args.run, args.checkpoint_id, args.remove)
         elif args.command == 'save':
             from flycade.control import request_save
             report = request_save(args.run, args.stop, args.wait_seconds)

@@ -249,3 +249,9 @@ uv run --offline --locked --extra train flycade resume reports/daily-001
 ```
 
 학습 JSON의 `autosave_seconds`(기본600)로 주기를 설정한다. 요청은 다음 rollout/optimizer 완료 경계에서 저장하며 CLI·브라우저에서 접수/대기/저장/완료와 마지막 복구 시점을 확인한다. `save --stop`은 환경과 인코더 종료까지 기다린다. 자동 저장 주기와 누적 예산은 재개할 때 보존한다. `--wait-seconds 0`으로 요청만 보내거나 대기 시간을 바꿀 수 있다. 실제 실행·실패 처리·매일 절차는 [T08 운영 기록](docs/validation/T08.md)을 참조한다.
+
+## 손상·강제 종료 후 복구
+
+`resume RUN`은 최신 정상본을 검증하고, 손상됐으면 공개 확인 기록이 있는 이전 정상본을 차례로 검사한다. 같은 Run의 새 세션에서 이어가며 되돌린 update·전이와 후보별 오류를 CLI/관찰 화면에 표시한다. 이전 로그는 보존한다. 검증 가능한 정상본이 없으면 일치하는 로컬 백업을 복원하거나 새 Run을 만들어야 한다.
+
+기본 최근3개 정상본 외에 원하는 전체 학습 상태는 `pin-checkpoint RUN UUID`로 보호한다. `checkpoints RUN`에서 목록을 확인하며 pin 변경은 저장 후 종료한 상태에서 수행한다. 초기 정책과 최고본 참조는 보호한다. 공개 순서·오류 주입·보존 범위·실제 복구 증거는 [T09 기록](docs/validation/T09.md)을 참조한다.

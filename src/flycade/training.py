@@ -20,7 +20,7 @@ import numpy as np
 import torch
 from torch import Tensor
 
-from flycade.checkpoint import (FORMAT, capture_rng, load_checkpoint, restore_rng,
+from flycade.checkpoint import (FORMAT, atomic_json, capture_rng, load_checkpoint, restore_rng,
                                 run_lock, save_checkpoint, sync_directory)
 from flycade.errors import PreparationError
 from flycade.control import SaveControl
@@ -53,9 +53,10 @@ class TrainingConfig:
     max_grad_norm: float = 0.5
     autosave_seconds: float = 600
     evaluation_timeout_seconds: float = 120
+    keep_checkpoints: int = 3
 
     def __post_init__(self) -> None:
-        for name in ('updates', 'rollout_steps', 'epochs', 'state_dim', 'propagation_steps'):
+        for name in ('updates', 'rollout_steps', 'epochs', 'state_dim', 'propagation_steps', 'keep_checkpoints'):
             if type(getattr(self, name)) is not int or getattr(self, name) <= 0:
                 raise ValueError(f'{name} must be a positive integer')
         if type(self.seed) is not int or not 0 <= self.seed < 2**32:
@@ -229,6 +230,15 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         report.update(session_id=str(uuid.uuid4()), status='running', environment_closed=False,
                       resumed_from=resume_state['checkpoint_id'])
         report.pop('error', None)
+        if '_recovery' in resume_state:
+            recovery = {**resume_state['_recovery'], 'state': 'restored', 'to_session_id': report['session_id']}
+            report['recovery'] = recovery
+            directory = output / 'recoveries'
+            directory.mkdir(exist_ok=True)
+            atomic_json(directory / f"{recovery['recovery_id']}.json", recovery)
+            atomic_json(output / 'recovery-status.json', recovery)
+            print(f"Recovered checkpoint {recovery['checkpoint_id']}; rollback {recovery['lost_updates']} updates / {recovery['lost_transitions']} transitions; new session.", file=sys.stderr)
+
     session = {'run_id': report['run_id'], 'session_id': report['session_id'],
                'resumed_from': report.get('resumed_from'), 'start_updates': report['updates'],
                'created_unix': time.time(), 'reset': 'new episode; learning state preserved'}
@@ -237,6 +247,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
     write_json(sessions / f"{report['session_id']}.json", session)
     report.setdefault('next_autosave_seconds', config.autosave_seconds)
     control = SaveControl(output, session, report)
+    write_json(output / 'report.json', report)
     if resume_state is not None:
         print('Resumed learning state; new episode (interrupted episode is not counted).', file=sys.stderr)
     start_updates = report['updates']
@@ -328,6 +339,8 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
             report['checkpoint_id'] = metadata['checkpoint_id']
             report['final_sha256'] = digest(output / 'final.pt')
             control.complete(metadata, report)
+            from flycade.retention import prune_checkpoints
+            report['pruned_checkpoints'] = prune_checkpoints(output, config.keep_checkpoints)
 
         episode_step = 0
         with (output / 'transitions.jsonl').open('a') as transitions, (output / 'updates.jsonl').open('a') as updates:

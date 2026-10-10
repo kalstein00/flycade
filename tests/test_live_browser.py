@@ -298,3 +298,32 @@ def test_stop_cleanup_is_visible_until_encoder_finishes(tmp_path):
         if service is not None:
             service.terminate()
             service.communicate(timeout=10)
+
+
+def test_browser_shows_recovered_checkpoint_and_rollback(tmp_path):
+    from playwright.sync_api import expect
+    from test_recovery_cli import saved_run
+    run, saves = saved_run(tmp_path)
+    (run / saves[-1]['file']).write_bytes(b'corrupt')
+    service, url = start_service(run)
+    try:
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch()
+            page = browser.new_page(viewport={'width': 1280, 'height': 720})
+            page.goto(url)
+            result = cli('resume', run, '--stop-after-updates', 1)
+            assert result.returncode == 0, result.stdout + result.stderr
+            expect(page.locator('#rollback')).to_contain_text('1 update · 4전이')
+            expect(page.locator('#rollback')).to_contain_text('복구 완료')
+            page.locator('#recovery-details summary').click()
+            expect(page.locator('#recovery-errors')).to_contain_text('checksum')
+            for path in (run / 'checkpoints').glob('*.pt'):
+                path.write_bytes(b'broken')
+            result = cli('resume', run)
+            assert result.returncode == 2
+            expect(page.locator('#rollback')).to_contain_text('복구 실패')
+            expect(page.locator('#status')).to_contain_text('복구 실패')
+            browser.close()
+    finally:
+        service.terminate()
+        service.communicate(timeout=10)

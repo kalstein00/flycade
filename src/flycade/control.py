@@ -64,6 +64,9 @@ def run_status(run: Path) -> dict[str, Any]:
         pending = json.loads(request.read_text())
         if pending['session_id'] == state['session_id'] and pending['request_id'] != state.get('request_id'):
             state['pending_request'] = pending
+    recovery = run / 'recovery-status.json'
+    if recovery.exists():
+        state['recovery'] = json.loads(recovery.read_text())
     state['delay_seconds'] = max(0., time.time() - state['requested_unix']) if state['state'] in ('waiting_boundary', 'saving') or (state.get('stop') and state['active']) else 0
     return state
 

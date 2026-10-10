@@ -1,0 +1,734 @@
+{
+  "train": {
+    "output": "/home/kalstein/vscode/flycade/reports/t09-recovery-001/run",
+    "run_id": "f3ae6776-1873-44c2-ac44-433b3f79481d",
+    "session_id": "3ff68a8a-5660-4be2-8246-dcdaed3ab7ef",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 128,
+    "emulator_frames": 512,
+    "updates": 4,
+    "optimizer_steps": 8,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 546.0,
+    "max_progress": 546,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "next_autosave_seconds": 600,
+    "training_paused": false,
+    "evaluation_worker_pid": 165563,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "dd1e0d24-7ef4-45c0-ad3e-2eb5a1a360a6",
+    "training_started_unix": 1791614145.5234118,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.13501065969467163,
+          0.1331796795129776,
+          0.13726885616779327,
+          0.149994358420372,
+          0.15055043995380402,
+          0.13946370780467987,
+          0.1545322835445404
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14366517961025238,
+          0.14164121448993683,
+          0.14318563044071198,
+          0.14242911338806152,
+          0.14349770545959473,
+          0.14200611412525177,
+          0.1435750424861908
+        ]
+      ],
+      "max_probability_delta": 0.01095724105834961,
+      "passed": true
+    },
+    "loss": 1459.29150390625,
+    "policy_loss": 0.0024404674768447876,
+    "value_loss": 2918.6083984375,
+    "entropy": 1.5166211128234863,
+    "approx_kl": 0.015857277438044548,
+    "clip_fraction": 0.28125,
+    "gradient_l2": {
+      "encoder.0.weight": 1132.461181640625,
+      "encoder.0.bias": 175.3600616455078,
+      "encoder.4.weight": 68.01558685302734,
+      "encoder.4.bias": 18.890588760375977,
+      "actor.weight": 2.202702045440674,
+      "actor.bias": 0.1596520096063614,
+      "critic.weight": 694.5970458984375,
+      "critic.bias": 50.372276306152344
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.055762097239494324,
+      "encoder.0.bias": 0.005463043227791786,
+      "encoder.4.weight": 2.7355756759643555,
+      "encoder.4.bias": 0.24315737187862396,
+      "actor.weight": 0.24419619143009186,
+      "actor.bias": 0.002238967688754201,
+      "critic.weight": 0.23441393673419952,
+      "critic.bias": 0.002286984585225582
+    },
+    "training_seconds": 2.2827011449990096,
+    "transitions_per_second": 56.073919391693096,
+    "checkpoint_id": "7fae9ab0-b9e2-4c4c-b776-afc6264d1396",
+    "final_sha256": "8a028a78fdac5656345d0e47c951f6a6221922c056cf08e7764c1d4e9b4d0c27",
+    "last_save": {
+      "checkpoint_id": "7fae9ab0-b9e2-4c4c-b776-afc6264d1396",
+      "updates": 4,
+      "transitions": 128,
+      "completed_unix": 1791614147.9952018
+    },
+    "pruned_checkpoints": [],
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 5,
+      "published": 5,
+      "dropped": 0,
+      "selected_forward_seconds": 0.15708218500185467,
+      "actual_hz": 1.9921766982007987,
+      "encode_seconds": 0.021572146000835346,
+      "error": null
+    },
+    "wall_seconds": 6.273371575000056,
+    "peak_rss_bytes": 2372501504,
+    "peak_cuda_allocated_bytes": 111489024
+  },
+  "resume1": {
+    "output": "/home/kalstein/vscode/flycade/reports/t09-recovery-001/run",
+    "run_id": "f3ae6776-1873-44c2-ac44-433b3f79481d",
+    "session_id": "9a25cbb4-fad7-4f49-a1e9-66548991c894",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 256,
+    "emulator_frames": 1024,
+    "updates": 8,
+    "optimizer_steps": 16,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 1125.0,
+    "max_progress": 579,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "next_autosave_seconds": 600,
+    "training_paused": false,
+    "evaluation_worker_pid": 165563,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "dd1e0d24-7ef4-45c0-ad3e-2eb5a1a360a6",
+    "training_started_unix": 1791614150.5036352,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.03275187313556671,
+          0.5060359239578247,
+          0.05822107195854187,
+          0.05749223381280899,
+          0.21469657123088837,
+          0.029404891654849052,
+          0.10139743983745575
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14354044198989868,
+          0.141872838139534,
+          0.14313530921936035,
+          0.1423845887184143,
+          0.143587127327919,
+          0.14187069237232208,
+          0.14360901713371277
+        ]
+      ],
+      "max_probability_delta": 0.3641631007194519,
+      "passed": true
+    },
+    "loss": 44.51081848144531,
+    "policy_loss": -0.024241920560598373,
+    "value_loss": 89.0985107421875,
+    "entropy": 1.419558048248291,
+    "approx_kl": 0.018837658688426018,
+    "clip_fraction": 0.125,
+    "gradient_l2": {
+      "encoder.0.weight": 295.2452392578125,
+      "encoder.0.bias": 45.951332092285156,
+      "encoder.4.weight": 15.697134017944336,
+      "encoder.4.bias": 3.1438846588134766,
+      "actor.weight": 1.2557445764541626,
+      "actor.bias": 0.05594756081700325,
+      "critic.weight": 179.70236206054688,
+      "critic.bias": 8.004026412963867
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.1265360713005066,
+      "encoder.0.bias": 0.012273367494344711,
+      "encoder.4.weight": 5.18281888961792,
+      "encoder.4.bias": 0.43936872482299805,
+      "actor.weight": 0.31867292523384094,
+      "actor.bias": 0.0027071223594248295,
+      "critic.weight": 0.4372553825378418,
+      "critic.bias": 0.004150882363319397
+    },
+    "training_seconds": 4.225581987999249,
+    "transitions_per_second": 60.58337069947902,
+    "last_save": {
+      "checkpoint_id": "75c36b78-6694-470a-abd7-571032d753a2",
+      "updates": 8,
+      "transitions": 256,
+      "completed_unix": 1791614152.6099937
+    },
+    "resumed_from": "7fae9ab0-b9e2-4c4c-b776-afc6264d1396",
+    "resume_reset": {
+      "frames": 0,
+      "max_progress": 0,
+      "stack_frames_equal": true
+    },
+    "checkpoint_id": "75c36b78-6694-470a-abd7-571032d753a2",
+    "final_sha256": "25117a08823991c2b6367e952af0654bdf4e9b9dd3ba004c15fbc0116635266a",
+    "pruned_checkpoints": [],
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 4,
+      "published": 4,
+      "dropped": 0,
+      "selected_forward_seconds": 0.09706809099952807,
+      "actual_hz": 1.773517499725707,
+      "encode_seconds": 0.018254225000418955,
+      "error": null
+    },
+    "wall_seconds": 2.349257542000487,
+    "peak_rss_bytes": 2356301824,
+    "peak_cuda_allocated_bytes": 111783936
+  },
+  "resume2": {
+    "output": "/home/kalstein/vscode/flycade/reports/t09-recovery-001/run",
+    "run_id": "f3ae6776-1873-44c2-ac44-433b3f79481d",
+    "session_id": "9e06077f-ec84-4d5c-8b80-8dfc4382a025",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 384,
+    "emulator_frames": 1536,
+    "updates": 12,
+    "optimizer_steps": 24,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 1680.0,
+    "max_progress": 579,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "next_autosave_seconds": 600,
+    "training_paused": false,
+    "evaluation_worker_pid": 165563,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "dd1e0d24-7ef4-45c0-ad3e-2eb5a1a360a6",
+    "training_started_unix": 1791614155.4081771,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.029251130297780037,
+          0.4129302203655243,
+          0.22898878157138824,
+          0.043992843478918076,
+          0.2654206156730652,
+          0.005732099059969187,
+          0.013684290461242199
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.1435362547636032,
+          0.1418997049331665,
+          0.14319837093353271,
+          0.14238755404949188,
+          0.14364869892597198,
+          0.14181458950042725,
+          0.14351476728916168
+        ]
+      ],
+      "max_probability_delta": 0.2710305154323578,
+      "passed": true
+    },
+    "loss": 7.476878643035889,
+    "policy_loss": 0.02172202803194523,
+    "value_loss": 14.929996490478516,
+    "entropy": 0.9841293096542358,
+    "approx_kl": 0.08607591688632965,
+    "clip_fraction": 0.90625,
+    "gradient_l2": {
+      "encoder.0.weight": 144.15274047851562,
+      "encoder.0.bias": 22.72013282775879,
+      "encoder.4.weight": 8.447074890136719,
+      "encoder.4.bias": 1.3559890985488892,
+      "actor.weight": 5.559119701385498,
+      "actor.bias": 0.17558304965496063,
+      "critic.weight": 118.39518737792969,
+      "critic.bias": 3.7397725582122803
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.19380713999271393,
+      "encoder.0.bias": 0.01875879243016243,
+      "encoder.4.weight": 7.424063682556152,
+      "encoder.4.bias": 0.5980632901191711,
+      "actor.weight": 0.3817141652107239,
+      "actor.bias": 0.0031519324984401464,
+      "critic.weight": 0.6235544681549072,
+      "critic.bias": 0.00561611820012331
+    },
+    "training_seconds": 6.257544551997853,
+    "transitions_per_second": 61.36592345593447,
+    "last_save": {
+      "checkpoint_id": "b859a1e5-17d1-4ff3-a735-229db66acef3",
+      "updates": 12,
+      "transitions": 384,
+      "completed_unix": 1791614157.6032896
+    },
+    "resumed_from": "75c36b78-6694-470a-abd7-571032d753a2",
+    "resume_reset": {
+      "frames": 0,
+      "max_progress": 0,
+      "stack_frames_equal": true
+    },
+    "checkpoint_id": "b859a1e5-17d1-4ff3-a735-229db66acef3",
+    "final_sha256": "361b97da8f962b9585475849c13d3eb08dccca8f448e178bac56e6667e8c75f1",
+    "pruned_checkpoints": [],
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 4,
+      "published": 4,
+      "dropped": 0,
+      "selected_forward_seconds": 0.0997063690028881,
+      "actual_hz": 1.7583084116566798,
+      "encode_seconds": 0.019099965000350494,
+      "error": null
+    },
+    "wall_seconds": 2.394168640001226,
+    "peak_rss_bytes": 2347220992,
+    "peak_cuda_allocated_bytes": 111783936
+  },
+  "damaged_checkpoint": {
+    "format_version": 1,
+    "checkpoint_id": "b859a1e5-17d1-4ff3-a735-229db66acef3",
+    "file": "checkpoints/b859a1e5-17d1-4ff3-a735-229db66acef3.pt",
+    "sha256": "361b97da8f962b9585475849c13d3eb08dccca8f448e178bac56e6667e8c75f1",
+    "manifest_sha256": "8aa02481c5804d1155ecf67815bc69a544efcdf97e092cad8c044d45002ca2e4",
+    "run_id": "f3ae6776-1873-44c2-ac44-433b3f79481d",
+    "session_id": "9e06077f-ec84-4d5c-8b80-8dfc4382a025",
+    "updates": 12,
+    "saved_unix": 1791614157.5304148
+  },
+  "recovered": {
+    "output": "/home/kalstein/vscode/flycade/reports/t09-recovery-001/run",
+    "run_id": "f3ae6776-1873-44c2-ac44-433b3f79481d",
+    "session_id": "302da872-bcd1-4664-99e0-aba166cd5674",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 384,
+    "emulator_frames": 1536,
+    "updates": 12,
+    "optimizer_steps": 24,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 1680.0,
+    "max_progress": 579,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "next_autosave_seconds": 600,
+    "training_paused": false,
+    "evaluation_worker_pid": 165563,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "dd1e0d24-7ef4-45c0-ad3e-2eb5a1a360a6",
+    "training_started_unix": 1791614160.096867,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.029251130297780037,
+          0.4129302203655243,
+          0.22898878157138824,
+          0.043992843478918076,
+          0.2654206156730652,
+          0.005732099059969187,
+          0.013684290461242199
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.1435362547636032,
+          0.1418997049331665,
+          0.14319837093353271,
+          0.14238755404949188,
+          0.14364869892597198,
+          0.14181458950042725,
+          0.14351476728916168
+        ]
+      ],
+      "max_probability_delta": 0.2710305154323578,
+      "passed": true
+    },
+    "loss": 7.476878643035889,
+    "policy_loss": 0.02172202803194523,
+    "value_loss": 14.929996490478516,
+    "entropy": 0.9841293096542358,
+    "approx_kl": 0.08607591688632965,
+    "clip_fraction": 0.90625,
+    "gradient_l2": {
+      "encoder.0.weight": 144.15274047851562,
+      "encoder.0.bias": 22.72013282775879,
+      "encoder.4.weight": 8.447074890136719,
+      "encoder.4.bias": 1.3559890985488892,
+      "actor.weight": 5.559119701385498,
+      "actor.bias": 0.17558304965496063,
+      "critic.weight": 118.39518737792969,
+      "critic.bias": 3.7397725582122803
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.19380713999271393,
+      "encoder.0.bias": 0.01875879243016243,
+      "encoder.4.weight": 7.424063682556152,
+      "encoder.4.bias": 0.5980632901191711,
+      "actor.weight": 0.3817141652107239,
+      "actor.bias": 0.0031519324984401464,
+      "critic.weight": 0.6235544681549072,
+      "critic.bias": 0.00561611820012331
+    },
+    "training_seconds": 6.353499699000167,
+    "transitions_per_second": 60.439130902993355,
+    "last_save": {
+      "checkpoint_id": "25737c6f-de72-4429-a73e-8526d9cf8c8e",
+      "updates": 12,
+      "transitions": 384,
+      "completed_unix": 1791614162.3746076
+    },
+    "resumed_from": "75c36b78-6694-470a-abd7-571032d753a2",
+    "resume_reset": {
+      "frames": 0,
+      "max_progress": 0,
+      "stack_frames_equal": true
+    },
+    "recovery": {
+      "state": "restored",
+      "checkpoint_id": "75c36b78-6694-470a-abd7-571032d753a2",
+      "restored_updates": 8,
+      "restored_transitions": 256,
+      "lost_updates": 4,
+      "lost_transitions": 128,
+      "from_session_id": "9e06077f-ec84-4d5c-8b80-8dfc4382a025",
+      "rejected_candidates": [
+        {
+          "checkpoint_id": "b859a1e5-17d1-4ff3-a735-229db66acef3",
+          "error": "Checkpoint checksum differs"
+        }
+      ],
+      "observed_updates": 12,
+      "note": "Rollback is relative to last durable progress report; unlogged work may also be lost.",
+      "recovery_id": "a7c61dc9-117e-4220-ab3d-901e04c7f8d2",
+      "run_id": "f3ae6776-1873-44c2-ac44-433b3f79481d",
+      "created_unix": 1791614159.2561033,
+      "to_session_id": "302da872-bcd1-4664-99e0-aba166cd5674"
+    },
+    "checkpoint_id": "25737c6f-de72-4429-a73e-8526d9cf8c8e",
+    "final_sha256": "3e2ea3172d851c437b7a5868613d02938bc917d2ab4a13ebb8beae6ad4eb24ca",
+    "pruned_checkpoints": [],
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 5,
+      "published": 5,
+      "dropped": 0,
+      "selected_forward_seconds": 0.09981099700053164,
+      "actual_hz": 2.141183939139758,
+      "encode_seconds": 0.025609268004700425,
+      "error": null
+    },
+    "wall_seconds": 2.461369058000855,
+    "peak_rss_bytes": 2371293184,
+    "peak_cuda_allocated_bytes": 111783936
+  },
+  "browser_rollback": "\ubcf5\uad6c \uc644\ub8cc \u00b7 update 8\uc5d0\uc11c \uc7ac\uac1c \u00b7 \ub418\ub3cc\ub9b0 \uc9c4\ub3c4 4 update \u00b7 128\uc804\uc774. \uae30\ub85d\ub418\uc9c0 \uc54a\uc740 \uc791\uc5c5\ub3c4 \uc720\uc2e4\ub410\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.",
+  "browser_errors": "b859a1e5-17d1-4ff3-a735-229db66acef3: Checkpoint checksum differs"
+}

@@ -2,8 +2,10 @@
 import fcntl
 import importlib.metadata
 import json
+import math
 import os
 import platform
+import pickle
 import random
 import tempfile
 import time
@@ -118,6 +120,7 @@ def save_checkpoint(output: Path, state: dict[str, Any]) -> dict[str, Any]:
     atomic_json(destination.with_suffix('.json'), metadata)
     # The single authoritative commit point. An interrupted save cannot replace it partially.
     atomic_json(output / 'latest.json', metadata)
+    atomic_json(directory / f'{checkpoint_id}.committed.json', metadata)
     # Compatibility convenience for A3 consumers; resume always uses latest.json.
     alias = output / '.final.pt.partial'
     alias.unlink(missing_ok=True)
@@ -127,12 +130,11 @@ def save_checkpoint(output: Path, state: dict[str, Any]) -> dict[str, Any]:
     return metadata
 
 
-def load_checkpoint(output: Path, home: Path) -> dict[str, Any]:
+def read_checkpoint(output: Path, home: Path, metadata: dict[str, Any]) -> dict[str, Any]:
     def reject(message: str) -> None:
         raise PreparationError('checkpoint_incompatible', message)
 
     try:
-        metadata = json.loads((output / 'latest.json').read_text())
         if metadata['format_version'] != FORMAT:
             reject('Unsupported checkpoint format')
         identifier = str(uuid.UUID(metadata['checkpoint_id']))
@@ -172,6 +174,9 @@ def load_checkpoint(output: Path, home: Path) -> dict[str, Any]:
         if (state['manifest'] != manifest or state['format_version'] != FORMAT
                 or state['checkpoint_id'] != identifier or state['state_contract'] != STATE_CONTRACT
                 or state['progress']['run_id'] != manifest['run_id']
+                or metadata['run_id'] != manifest['run_id']
+                or metadata['session_id'] != state['progress']['session_id']
+                or metadata['updates'] != state['progress']['updates']
                 or not state['progress']['safe_boundary']):
             reject('Checkpoint identity or state contract differs')
         state['progress']['last_save'] = {'checkpoint_id': identifier, 'updates': metadata['updates'],
@@ -179,3 +184,98 @@ def load_checkpoint(output: Path, home: Path) -> dict[str, Any]:
         return state
     except (OSError, KeyError, ValueError, TypeError) as exc:
         raise PreparationError('checkpoint_incompatible', f'Missing or invalid checkpoint/artifact: {exc}') from exc
+
+
+def read_metadata(path: Path) -> dict[str, Any]:
+    value: dict[str, Any] = json.loads(path.read_text())
+    if not isinstance(value, dict):
+        raise ValueError('Checkpoint metadata must be an object')
+    timestamp = value.get('saved_unix')
+    if not isinstance(timestamp, (int, float)) or isinstance(timestamp, bool) or not math.isfinite(timestamp):
+        raise ValueError('Invalid checkpoint timestamp')
+    return value
+
+
+def last_log_row(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    with path.open('rb') as log:
+        log.seek(max(0, path.stat().st_size - 65536))
+        for line in reversed(log.read().splitlines()):
+            try:
+                row: dict[str, Any] = json.loads(line)
+                if isinstance(row, dict):
+                    return row
+            except ValueError:
+                continue
+    return {}
+
+
+def observed_progress(output: Path) -> dict[str, Any]:
+    try:
+        value: dict[str, Any] = json.loads((output / 'report.json').read_text())
+        if not isinstance(value, dict):
+            raise ValueError('Invalid progress report')
+    except (OSError, ValueError):
+        value = last_log_row(output / 'updates.jsonl')
+    for name, key in (('updates', 'updates'), ('transitions', 'transition')):
+        row = last_log_row(output / f'{name}.jsonl')
+        if row.get('session_id') == value.get('session_id'):
+            value[name] = max(value.get(name, 0), row.get(key, 0))
+    return value
+
+
+def load_checkpoint(output: Path, home: Path) -> dict[str, Any]:
+    atomic_json(output / 'recovery-status.json', {'state': 'validating', 'started_unix': time.time()})
+    rejected: list[dict[str, Any]] = []
+    candidates: list[dict[str, Any]] = []
+    try:
+        candidates.append(read_metadata(output / 'latest.json'))
+    except (OSError, ValueError) as exc:
+        rejected.append({'checkpoint_id': 'latest', 'error': str(exc)})
+    committed = []
+    for path in (output / 'checkpoints').glob('*.committed.json'):
+        try:
+            committed.append(read_metadata(path))
+        except (OSError, ValueError) as exc:
+            rejected.append({'checkpoint_id': path.name, 'error': str(exc)})
+    candidates.extend(sorted(committed, key=lambda m: m.get('saved_unix', 0), reverse=True))
+    seen = set()
+    before = observed_progress(output)
+    for metadata in candidates:
+        identifier = str(metadata.get('checkpoint_id'))
+        if identifier in seen:
+            continue
+        seen.add(identifier)
+        try:
+            state = read_checkpoint(output, home, metadata)
+        except (PreparationError, OSError, ValueError, KeyError, TypeError, RuntimeError, EOFError, pickle.UnpicklingError) as exc:
+            rejected.append({'checkpoint_id': identifier, 'error': str(exc)})
+            continue
+        marker = output / 'checkpoints' / f'{identifier}.committed.json'
+        if not marker.exists():
+            atomic_json(marker, metadata)
+        progress = state['progress']
+        lost_updates = max(0, before.get('updates', 0) - progress['updates'])
+        lost_transitions = max(0, before.get('transitions', 0) - progress['transitions'])
+        recovery = {'state': 'validated', 'checkpoint_id': identifier, 'restored_updates': progress['updates'],
+            'restored_transitions': progress['transitions'], 'lost_updates': lost_updates,
+            'lost_transitions': lost_transitions, 'from_session_id': before.get('session_id'),
+            'rejected_candidates': rejected, 'observed_updates': before.get('updates'),
+            'note': 'Rollback is relative to last durable progress report; unlogged work may also be lost.'}
+        atomic_json(output / 'recovery-status.json', recovery)
+        if rejected or lost_updates or lost_transitions:
+            recovery.update(recovery_id=str(uuid.uuid4()), run_id=state['manifest']['run_id'], created_unix=time.time())
+            state['_recovery'] = recovery
+            # Repair only after full state validation; no checkpoint content is rewritten.
+            atomic_json(output / 'latest.json', metadata)
+            alias = output / '.final.pt.partial'
+            alias.unlink(missing_ok=True)
+            os.symlink(metadata['file'], alias)
+            os.replace(alias, output / 'final.pt')
+            sync_directory(output)
+        return state
+    failure: dict[str, Any] = {'state': 'failed', 'rejected_candidates': rejected,
+        'error': 'No valid checkpoint/artifact. Restore a matching local backup or create a new Run; partial weights are not resume.'}
+    atomic_json(output / 'recovery-status.json', failure)
+    raise PreparationError('checkpoint_incompatible', failure['error'] + ' ' + json.dumps(rejected))

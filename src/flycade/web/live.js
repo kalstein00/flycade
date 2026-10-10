@@ -10,6 +10,8 @@ function status() {
   const now = Date.now() / 1000;
   let message = !connected ? '연결 끊김 · 재연결 중' : current?.status === 'no_data' ? '관측 데이터 없음' : terminal[current?.status];
   if (connected && current?.control?.state === 'complete' && current.control.stop && current.control.active) message = '저장 완료 · 종료 정리 중';
+  if (connected && current?.control?.recovery?.state === 'validating') message = '복구 정상본 검증 중';
+  if (connected && current?.control?.recovery?.state === 'failed') message = '복구 실패 · 정상본 확인 필요';
   if (!message) message = current?.sample ? (now - current.sample.observed_unix > 2 ? '표본 지연 · 마지막 표본' : '연결됨 · 학습 중') : '연결됨 · 첫 표본 대기';
   $('#status').textContent = message;
   $('#received').textContent = lastReceived ? `마지막 수신 ${time(lastReceived)}` : '수신된 표본 없음';
@@ -21,8 +23,16 @@ function operation(control) {
   $('#operation').textContent=control.pending_request ? '저장 요청 전송 · 접수 대기' : labels[control.state] || control.state;
   if(control.delay_seconds) $('#operation').textContent+=` · 대기 ${number(control.delay_seconds,1)}초`;
   if(control.error) $('#operation').textContent+=` · ${control.error}`;
+  const recovery=control.recovery;
+  let recoveryMessage='';
+  if(recovery?.state==='validating') recoveryMessage='복구 중 · 정상본의 전체 학습 상태를 검증합니다.';
+  if(recovery?.state==='restored') recoveryMessage=`복구 완료 · update ${number(recovery.restored_updates)}에서 재개 · 되돌린 진도 ${number(recovery.lost_updates)} update · ${number(recovery.lost_transitions)}전이. 기록되지 않은 작업도 유실됐을 수 있습니다.`;
+  if(recovery?.state==='failed') recoveryMessage='복구 실패 · 검증 가능한 정상본이 없습니다. 일치하는 로컬 백업을 복원하거나 새 Run을 시작하세요.';
+  $('#rollback').textContent=recoveryMessage;
+  $('#recovery-details').hidden=!recovery?.rejected_candidates?.length;
+  $('#recovery-errors').textContent=(recovery?.rejected_candidates||[]).map(row=>`${row.checkpoint_id}: ${row.error}`).join('\n');
   const saved=control.last_save;
-  $('#recovery').textContent=saved?`마지막 복구 시점 ${time(saved.completed_unix)} · update ${number(saved.updates)} · ${number(saved.transitions)}전이`:'정상 저장본 없음';
+  $('#recovery').textContent=recovery?.state==='failed'?'복구 가능한 정상본 없음':saved?`마지막 복구 시점 ${time(saved.completed_unix)} · update ${number(saved.updates)} · ${number(saved.transitions)}전이`:'정상 저장본 없음';
   $('#reset-notice').textContent=control.reset ? '세션 시작: 새 에피소드 · 누적 학습 진도 유지' : '';
 }
 function circuit(root, graph, sample) {
