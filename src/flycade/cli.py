@@ -38,6 +38,17 @@ def main() -> int:
     graph_fetch = sub.add_parser('fetch-graph-data')
     graph_fetch.add_argument('--cache', type=Path, default=Path('.flycade/data/v783'))
     graph_fetch.add_argument('--source-manifest', type=Path)
+    training = sub.add_parser('train')
+    training.add_argument('--home', type=Path, default=Path('.flycade'))
+    training.add_argument('--graph', type=Path, required=True)
+    training.add_argument('--output', type=Path, required=True)
+    training.add_argument('--device', choices=('cpu', 'cuda'), default='cuda')
+    training.add_argument('--fixture', action='store_true', help='Synthetic CPU evidence only')
+    training.add_argument('--updates', type=int)
+    training.add_argument('--rollout-steps', type=int)
+    training.add_argument('--seed', type=int)
+    training.add_argument('--training-config', type=Path)
+    training.add_argument('--config', type=Path, help='GameConfig JSON')
     args = parser.parse_args()
     try:
         if args.command == 'diagnose':
@@ -57,6 +68,15 @@ def main() -> int:
             report = prepare_graph(args.cache, args.source_manifest or DEFAULT_SOURCE, args.config, args.output)
         elif args.command == 'inspect':
             report = inspect_registration(args.home)
+        elif args.command == 'train':
+            from flycade.game import GameConfig
+            from flycade.training import TrainingConfig, train
+            settings = json.loads(args.training_config.read_text()) if args.training_config else {}
+            settings.update({name: getattr(args, name) for name in ('updates', 'rollout_steps', 'seed')
+                             if getattr(args, name) is not None})
+            game = GameConfig(**json.loads(args.config.read_text())) if args.config else GameConfig()
+            report = train(args.home, args.graph, args.output, TrainingConfig(**settings),
+                           game, args.device, args.fixture)
         else:
             from flycade.demo import demo
             from flycade.game import GameConfig

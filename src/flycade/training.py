@@ -1,0 +1,296 @@
+"""Bounded single-environment PPO experiment and auditable new Run artifacts."""
+import hashlib
+import importlib.metadata
+import json
+import platform
+import random
+import resource
+import shutil
+import subprocess
+import time
+import uuid
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, TextIO
+
+import numpy as np
+import torch
+from torch import Tensor
+
+from flycade.errors import PreparationError
+from flycade.game import GameConfig, GameEnv, Pixels
+from flycade.graph import digest, inspect_graph, write_json
+from flycade.nes import NesEmulator
+from flycade.policy import ConnectomePolicy
+from flycade.rom import inspect_registration
+from flycade.training_fixture import FixtureEmulator
+
+
+@dataclass(frozen=True)
+class TrainingConfig:
+    updates: int = 2
+    rollout_steps: int = 32
+    epochs: int = 2
+    state_dim: int = 8
+    propagation_steps: int = 2
+    seed: int = 7
+    learning_rate: float = 0.0003
+    gamma: float = 0.99
+    gae_lambda: float = 0.95
+    clip_ratio: float = 0.2
+    entropy_coefficient: float = 0.01
+    value_coefficient: float = 0.5
+    max_grad_norm: float = 0.5
+
+    def __post_init__(self) -> None:
+        for name in ('updates', 'rollout_steps', 'epochs', 'state_dim', 'propagation_steps'):
+            if type(getattr(self, name)) is not int or getattr(self, name) <= 0:
+                raise ValueError(f'{name} must be a positive integer')
+        if type(self.seed) is not int or not 0 <= self.seed < 2**32:
+            raise ValueError('seed must be an integer in [0, 2**32)')
+        for name in ('learning_rate', 'gamma', 'gae_lambda', 'clip_ratio', 'entropy_coefficient',
+                     'value_coefficient', 'max_grad_norm'):
+            value = getattr(self, name)
+            if not np.isfinite(value) or value < 0:
+                raise ValueError(f'{name} must be finite and nonnegative')
+        if not 0 < self.gamma <= 1 or not 0 <= self.gae_lambda <= 1 or not 0 < self.clip_ratio < 1:
+            raise ValueError('Invalid discount, GAE lambda or PPO clip ratio')
+        if self.learning_rate == 0 or self.max_grad_norm == 0:
+            raise ValueError('learning_rate and max_grad_norm must be positive')
+
+
+def log_row(log: TextIO, row: dict[str, Any]) -> None:
+    log.write(json.dumps(row, allow_nan=False) + '\n')
+    log.flush()
+
+
+def pixel_tensor(obs: Pixels, device: str) -> Tensor:
+    return torch.from_numpy(obs).unsqueeze(0).to(device)
+
+
+def graph_influence(policy: ConnectomePolicy, pixels: Tensor) -> dict[str, Any]:
+    with torch.no_grad():
+        original, _ = policy(pixels)
+        removed, _ = policy(pixels, edge_scale=0.)
+    delta = float((original.probs - removed.probs).abs().max())
+    return {'intervention': 'all edges removed; identical pixels and parameters',
+            'input_sha256': hashlib.sha256(pixels.cpu().numpy().tobytes()).hexdigest(),
+            'original_probabilities': original.probs.cpu().tolist(),
+            'removed_probabilities': removed.probs.cpu().tolist(),
+            'max_probability_delta': delta, 'passed': delta > 1e-7}
+
+
+@dataclass(frozen=True)
+class RolloutTransition:
+    observation: Pixels
+    action: int
+    log_probability: float
+    value: float
+    reward: float
+    next_value: float
+    ended: bool
+
+
+def optimize(policy: ConnectomePolicy, optimizer: torch.optim.Optimizer,
+             rollout: list[RolloutTransition], config: TrainingConfig, device: str) -> dict[str, Any]:
+    # next_values already masks true termination, but bootstraps truncation.
+    advantages = [0.] * len(rollout)
+    carry = 0.
+    for i in reversed(range(len(rollout))):
+        transition = rollout[i]
+        delta = transition.reward + config.gamma * transition.next_value - transition.value
+        carry = delta + config.gamma * config.gae_lambda * (not transition.ended) * carry
+        advantages[i] = carry
+    advantage = torch.tensor(advantages, device=device)
+    returns = advantage + torch.tensor([t.value for t in rollout], device=device)
+    advantage = (advantage - advantage.mean()) / (advantage.std(unbiased=False) + 1e-8)
+    pixels = torch.from_numpy(np.stack([t.observation for t in rollout])).to(device)
+    action = torch.tensor([t.action for t in rollout], device=device)
+    old_logp = torch.tensor([t.log_probability for t in rollout], device=device)
+    before = {name: param.detach().clone() for name, param in policy.named_parameters()}
+    metrics: dict[str, Any] = {}
+    for _ in range(config.epochs):
+        distribution, value = policy(pixels)
+        logp = distribution.log_prob(action)
+        ratio = (logp - old_logp).exp()
+        actor_loss = -torch.minimum(ratio * advantage,
+            ratio.clamp(1 - config.clip_ratio, 1 + config.clip_ratio) * advantage).mean()
+        value_loss = (value - returns).square().mean()
+        entropy = distribution.entropy().mean()
+        loss = actor_loss + config.value_coefficient * value_loss - config.entropy_coefficient * entropy
+        if not torch.isfinite(loss):
+            raise PreparationError('nonfinite_training', 'Nonfinite PPO loss; update aborted')
+        optimizer.zero_grad()
+        loss.backward()
+        gradient_norms = {}
+        for name, param in policy.named_parameters():
+            if param.grad is None or not torch.isfinite(param.grad).all():
+                raise PreparationError('nonfinite_training', f'Missing or nonfinite gradient: {name}')
+            gradient_norms[name] = float(param.grad.norm())
+        torch.nn.utils.clip_grad_norm_(policy.parameters(), config.max_grad_norm, error_if_nonfinite=True)
+        optimizer.step()
+        if any(not torch.isfinite(p).all() for p in policy.parameters()):
+            raise PreparationError('nonfinite_training', 'Nonfinite parameters after optimizer step')
+        metrics = {'loss': float(loss.detach()), 'policy_loss': float(actor_loss.detach()),
+                   'value_loss': float(value_loss.detach()), 'entropy': float(entropy.detach()),
+                   'approx_kl': float(((ratio - 1) - (logp - old_logp)).mean().detach()),
+                   'clip_fraction': float(((ratio - 1).abs() > config.clip_ratio).float().mean()),
+                   'gradient_l2': gradient_norms, 'nonfinite_count': 0}
+    metrics['parameter_delta_l2'] = {name: float((param.detach() - before[name]).norm())
+                                     for name, param in policy.named_parameters()}
+    return metrics
+
+
+def train(home: Path, graph: Path, output: Path, config: TrainingConfig,
+          game: GameConfig, device: str, fixture: bool = False) -> dict[str, Any]:
+    if output.exists():
+        raise PreparationError('output_exists', f'Refusing to overwrite Run {output}')
+    if fixture and device != 'cpu':
+        raise ValueError('Synthetic fixture requires --device cpu')
+    if device == 'cuda' and not torch.cuda.is_available():
+        raise PreparationError('cuda_unavailable', 'CUDA requested but unavailable; no silent CPU fallback')
+    graph_report = inspect_graph(graph)
+    nodes = json.loads((graph / 'nodes.json').read_text())
+    edges = np.load(graph / 'edge_index.npy', allow_pickle=False).T.tolist()
+    inputs = [n['index'] for n in nodes if n['input']]
+    outputs = [n['index'] for n in nodes if n['output']]
+    reachable = set(inputs)
+    for _ in range(config.propagation_steps):
+        reachable |= {dst for src, dst in edges if src in reachable}
+    if not reachable.intersection(outputs):
+        raise ValueError('No input-to-output path within propagation_steps')
+    registration = {'evidence': 'synthetic fixture'} if fixture else inspect_registration(home)
+    random.seed(config.seed)
+    np.random.seed(config.seed)
+    torch.manual_seed(config.seed)
+    torch.set_num_threads(1)
+    if device == 'cuda':
+        torch.cuda.reset_peak_memory_stats()
+    channels = game.frame_stack * (3 if game.color == 'RGB' else 1)
+    policy = ConnectomePolicy(len(nodes), edges, np.load(graph / 'weight.npy').tolist(),
+        inputs, outputs, config.state_dim, config.propagation_steps, channels).to(device)
+    optimizer = torch.optim.Adam(policy.parameters(), lr=config.learning_rate)
+    initial_parameters = {name: p.detach().clone() for name, p in policy.named_parameters()}
+    output.mkdir(parents=True)
+    shutil.copytree(graph, output / 'graph')
+    # Check the actual copied artifact too: a Run never silently changes graph identity.
+    if inspect_graph(output / 'graph')['graph_sha256'] != graph_report['graph_sha256']:
+        raise ValueError('Graph changed during Run creation')
+    source = Path(__file__).parent
+    repo = source.parent.parent
+    git = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=source, capture_output=True, text=True)
+    manifest = {'format_version': 1, 'run_id': str(uuid.uuid4()), 'session_id': str(uuid.uuid4()),
+        'created_unix': time.time(), 'seed': config.seed, 'training': asdict(config),
+        'game': asdict(game), 'registration': registration, 'graph': graph_report,
+        'device': device, 'device_name': torch.cuda.get_device_name() if device == 'cuda' else 'CPU',
+        'python': platform.python_version(), 'cuda_runtime': torch.version.cuda,
+        'versions': {name: importlib.metadata.version(name) for name in
+                     ('torch', 'numpy', 'stable-retro', 'gymnasium', 'pillow', 'flycade')},
+        'code': {'git_head': git.stdout.strip() if git.returncode == 0 else None,
+                 'files': {p.name: digest(p) for p in sorted(source.glob('*.py'))},
+                 'uv_lock_sha256': digest(repo / 'uv.lock') if (repo / 'uv.lock').exists() else None},
+        'model': {'architecture': 'conv/pool/linear pixel encoder -> COO propagation -> output-only actor/critic',
+                  'state_dim': config.state_dim, 'propagation_steps': config.propagation_steps,
+                  'fixed': 'topology and incoming-synapse-normalized nonnegative weights',
+                  'sign_assumption': 'structural positive weights; not neurotransmitter sign inference',
+                  'state': 'zero per observation, repeated input drive, tanh propagation; no temporal recurrence',
+                  'mapping': 'learned engineering mapping to input nodes; output nodes flattened for readout',
+                  'trainable': list(initial_parameters), 'pretrained_or_teacher': False},
+        'algorithm': 'PPO-Clip; GAE; full-rollout batch per epoch; Adam; FP32; no running normalization',
+        'worker_model': 'one in-process environment; no child workers'}
+    write_json(output / 'run.json', manifest)
+    torch.save(policy.state_dict(), output / 'initial.pt')
+    (output / 'initial.pt').chmod(0o444)
+    report: dict[str, Any] = {'run_id': manifest['run_id'], 'session_id': manifest['session_id'],
+        'evidence': 'synthetic CPU fixture; not NES/GPU acceptance' if fixture else f'real NES on {device}',
+        'status': 'running', 'transitions': 0, 'emulator_frames': 0, 'updates': 0,
+        'optimizer_steps': 0, 'episodes': 0, 'episode_outcomes': {}, 'reward_sum': 0.,
+        'max_progress': 0, 'safe_boundary': False, 'environment_closed': False,
+        'workers_alive': 0, 'nonfinite_count': 0, 'initial_sha256': digest(output / 'initial.pt')}
+    started = time.perf_counter()
+    env: GameEnv | None = None
+    try:
+        env = GameEnv(FixtureEmulator() if fixture else NesEmulator(home), game)
+        report['contract'] = env.describe()
+        obs, _ = env.reset(seed=config.seed)
+        np.save(output / 'control-pixels.npy', obs, allow_pickle=False)
+        report['graph_influence'] = graph_influence(policy, pixel_tensor(obs, device))
+        if not report['graph_influence']['passed']:
+            raise PreparationError('graph_no_influence', 'Controlled edge removal did not change policy distribution')
+        with (output / 'transitions.jsonl').open('x') as transitions, (output / 'updates.jsonl').open('x') as updates:
+            for update in range(config.updates):
+                report['safe_boundary'] = False
+                rollout: list[RolloutTransition] = []
+                for _ in range(config.rollout_steps):
+                    if not env.observation_space.contains(obs):
+                        raise ValueError('Invalid policy observation')
+                    with torch.no_grad():
+                        distribution, value = policy(pixel_tensor(obs, device))
+                        sampled = distribution.sample()
+                        action = int(sampled.item())
+                        logp = float(distribution.log_prob(sampled).item())
+                    following, reward, terminated, truncated, info = env.step(action)
+                    report['transitions'] += 1
+                    report['emulator_frames'] += info['executed_frames']
+                    if not all(np.isfinite(number) for number in (reward, logp, float(value.item()))):
+                        raise PreparationError('nonfinite_training', 'Nonfinite rollout reward, value or log probability')
+                    log_row(transitions, {'transition': report['transitions'], 'episode': report['episodes'],
+                        'observation_sha256': hashlib.sha256(obs.tobytes()).hexdigest(),
+                        'next_observation_sha256': hashlib.sha256(following.tobytes()).hexdigest(),
+                        'action': action, 'probabilities': distribution.probs[0].cpu().tolist(),
+                        'reward': reward, 'terminated': terminated, 'truncated': truncated, **info})
+                    if info['reason'] in ('position_discontinuity', 'unexpected_game_state', 'backend_end_unclassified'):
+                        raise PreparationError('game_contract_violation', f"Invalid training transition: {info['reason']}")
+                    if not env.observation_space.contains(following):
+                        raise ValueError('Invalid next observation')
+                    with torch.no_grad():
+                        _, bootstrap = policy(pixel_tensor(following, device))
+                    rollout.append(RolloutTransition(obs, action, logp, float(value.item()), float(reward),
+                        0. if terminated else float(bootstrap.item()), terminated or truncated))
+                    report['reward_sum'] += reward
+                    report['max_progress'] = max(report['max_progress'], info['max_progress'])
+                    if terminated or truncated:
+                        report['episodes'] += 1
+                        outcomes = report['episode_outcomes']
+                        outcomes[info['reason']] = outcomes.get(info['reason'], 0) + 1
+                        obs, _ = env.reset()
+                    else:
+                        obs = following
+                metrics = optimize(policy, optimizer, rollout, config, device)
+                report.update(metrics)
+                report['updates'] = update + 1
+                report['optimizer_steps'] += config.epochs
+                report['safe_boundary'] = True
+                elapsed = time.perf_counter() - started
+                report['training_seconds'] = elapsed
+                report['transitions_per_second'] = report['transitions'] / elapsed
+                log_row(updates, report)
+                write_json(output / 'report.json', report)
+        report['parameter_delta_l2'] = {name: float((p.detach() - initial_parameters[name]).norm())
+                                        for name, p in policy.named_parameters()}
+        if not all(delta > 0 for delta in report['parameter_delta_l2'].values()):
+            raise PreparationError('parameters_unchanged', 'At least one declared trainable parameter did not change')
+        torch.save({'model': policy.state_dict(), 'optimizer': optimizer.state_dict(),
+                    'progress': report, 'torch_rng': torch.get_rng_state(),
+                    'cuda_rng': torch.cuda.get_rng_state_all() if device == 'cuda' else [],
+                    'python_rng': random.getstate(), 'numpy_rng': np.random.get_state(),
+                    'manifest': manifest}, output / 'final.pt')
+        report['final_sha256'] = digest(output / 'final.pt')
+        if digest(output / 'initial.pt') != report['initial_sha256']:
+            raise ValueError('Protected initial policy changed')
+        report['status'] = 'completed'
+    except BaseException as exc:
+        report['status'] = 'interrupted' if isinstance(exc, KeyboardInterrupt) else 'failed'
+        report['error'] = str(exc) or type(exc).__name__
+        if isinstance(exc, PreparationError) and exc.code == 'nonfinite_training':
+            report['nonfinite_count'] += 1
+        raise
+    finally:
+        if env is not None:
+            env.close()
+            report['environment_closed'] = env.closed
+        report['wall_seconds'] = time.perf_counter() - started
+        report['peak_rss_bytes'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
+        report['peak_cuda_allocated_bytes'] = torch.cuda.max_memory_allocated() if device == 'cuda' else 0
+        write_json(output / 'report.json', report)
+    return {'output': str(output.resolve()), **report}

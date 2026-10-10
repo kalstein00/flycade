@@ -2,7 +2,7 @@
 
 초파리 커넥톰 기반 레트로 게임 학습 실험실.
 
-현재 구현은 **T01: 환경 진단과 NES World 1-1 연결 검증**이다. 커넥톰 정책과 GPU 학습은 후속 작업이다. CLI는 JSON 결과를 출력하며 성공은 exit 0, 준비/검증 실패는 exit 2, Ctrl+C는 exit 130이다.
+현재 구현은 **T01 환경 연결, T02 그래프 준비, T03 실제 커넥톰 정책의 짧은 PPO 학습**이다. CLI는 JSON 결과를 출력하며 성공은 exit 0, 준비/검증 실패는 exit 2, Ctrl+C는 exit 130이다.
 
 ## 설치와 확인
 
@@ -16,7 +16,7 @@ uv run mypy src
 uv run pytest
 ```
 
-진단은 CPU, Windows 물리 RAM, Linux/WSL RAM과 cgroup 제한, 디스크, GPU별 전체/가용 VRAM, 드라이버, Python/패키지를 구분한다. Windows RAM은 PowerShell interop가 없으면 `null`과 오류 사유를 남긴다. GPU 인식은 sparse backward나 optimizer 검증이 아니다. PyTorch/SB3는 아직 선택하지 않았으며 미설치 패키지를 보고한다. NES 데모 자체는 CPU로 동작한다.
+진단은 CPU, Windows 물리 RAM, Linux/WSL RAM과 cgroup 제한, 디스크, GPU별 전체/가용 VRAM, 드라이버, Python/패키지를 구분한다. Windows RAM은 PowerShell interop가 없으면 `null`과 오류 사유를 남긴다. GPU 인식은 sparse backward나 optimizer 검증이 아니다. 학습 후보는 선택적 `train` extra의 PyTorch 2.10.0이며 SB3는 사용하지 않는다. NES 데모 자체는 CPU로 동작한다.
 
 WSL CUDA는 **Windows NVIDIA 드라이버**를 사용한다. WSL 안에 Linux 디스플레이 드라이버를 설치하지 않는다. 드라이버를 갱신해야 한다면 Windows에서 갱신하고 WSL을 다시 시작한다. [NVIDIA WSL 안내](https://docs.nvidia.com/cuda/wsl-user-guide/index.html), [Microsoft WSL 메모리 설정](https://learn.microsoft.com/en-us/windows/wsl/wsl-config)을 참고한다.
 
@@ -111,3 +111,37 @@ uv run --extra graph pytest
 ```
 
 설정·출력 형식·출처·라이선스·오류 대응은 [데이터 준비 안내](docs/graph-preparation.md), fixture와 실제 데이터의 구분된 검증 결과는 [A2 기록](docs/validation/A2.md)을 참고한다. `graph` extra를 설치하지 않은 환경에서는 그래프 통합 테스트를 건너뛴다.
+
+## 새 Run과 짧은 PPO 학습 (A3)
+
+```bash
+uv sync --locked --extra graph --extra train
+uv run --offline --locked --extra train flycade train \
+  --graph .flycade/graphs/visual-001 --output reports/train-001 \
+  --device cuda --updates 16 --rollout-steps 64 --seed 7
+```
+
+등록된 NES 1-1과 실제 그래프를 사용하는 새 Run을 만든다. `--output`은 새 디렉터리여야 한다. CUDA가 없으면 오류로 끝나며 CPU로 자동 전환하지 않는다. `--device cpu --fixture`는 합성 에뮬레이터를 명시적으로 사용하는 자동 검사 옵션이며 실제 NES/GPU 검증으로 기록하지 않는다. 그래프 준비 이후 학습에는 `graph` extra가 필요하지 않다.
+
+픽셀 인코더 → 고정 방향성 COO 그래프 → 출력 노드 readout → 7개 행동의 확률 분포와 가치 추정 순서다. 기본 노드 상태 차원 8, 관측마다 2회 전파, 입력군에 반복 주입, tanh 활성화이며 시간 순환 상태는 없다. 연결은 도착 뉴런별 synapse count 합으로 나눠 고정하고 양수 구조 가중치로 취급한다. 생물학적 흥분/억제 부호를 추론하지 않는다. 인코더·행동 및 가치 readout만 학습하며 사전학습·교사 정책은 없다. 출력군과 입력군은 분리하고 주어진 전파 횟수 안에 방향성 경로가 있어야 한다.
+
+`--training-config path.json`은 학습 설정, `--config path.json`은 앞서 설명한 게임 설정이다. 명시한 CLI의 `--updates`, `--rollout-steps`, `--seed`가 JSON보다 우선한다. 학습 기본값은 다음과 같으며 최종 값은 Run에 기록한다.
+
+```json
+{"updates":2,"rollout_steps":32,"epochs":2,"state_dim":8,"propagation_steps":2,"seed":7,"learning_rate":0.0003,"gamma":0.99,"gae_lambda":0.95,"clip_ratio":0.2,"entropy_coefficient":0.01,"value_coefficient":0.5,"max_grad_norm":0.5}
+```
+
+PPO-Clip은 전체 rollout을 한 batch로 epoch마다 Adam 갱신한다. GAE는 실제 종료의 bootstrap을 0으로 하고 truncation은 마지막 관측 가치로 bootstrap하되 reset 사이의 advantage를 연결하지 않는다. GPU 메모리 사용량은 rollout과 그래프 크기에 따라 늘어난다. 이 작은 A3 후보의 규모는 장기 학습 프리셋 확정이 아니다.
+
+Run 출력은 다음과 같다.
+
+- `run.json`, `graph/`: Run/세션 UUID, seed, 게임·ROM·state·그래프·원본 출처, 모델·학습 설정, 코드 파일 해시·Git 기준점·lock 해시·패키지 버전, 사용 그래프 사본.
+- `initial.pt`: 첫 행동 이전의 무학습 모델. 읽기 전용으로 보존하고 종료 시 해시를 다시 검사한다.
+- `control-pixels.npy`, `report.json`: 고정 입력에서 동일 정책의 연결 제거 전후 행동 확률, 유효 갱신·전체 파라미터 변화·시간·자원·환경 종료 결과.
+- `transitions.jsonl`: 행동 확률·선택 행동·보상·관측 해시·종료 사유와 내부 프레임 수. RAM 진단은 로그에만 있고 정책 입력에 섞지 않는다.
+- `updates.jsonl`: 완료된 PPO 갱신별 누적 전이·프레임·완료 에피소드·성과·loss·entropy·gradient·비정상 수치·전이/초. `updates`는 rollout 학습 완료 횟수, `optimizer_steps`는 Adam 갱신 수다.
+- `final.pt`: rollout과 해당 optimizer epoch가 모두 끝난 안전 경계의 모델·optimizer·RNG·진도·manifest. 아직 새 프로세스 resume·원자 저장·손상 복구 계약을 제공하는 체크포인트 형식은 아니다.
+
+예산은 `updates × rollout_steps` 환경 전이다. 예산 종료 시 진행 중인 에피소드는 완료로 세지 않는다. 에뮬레이터는 같은 프로세스에 하나만 있으며 종료·예외·Ctrl+C에서 닫는다. Ctrl+C는 즉시 중단하고 실패/부분 보고서를 남기므로 `final.pt` 저장을 보장하지 않는다. 안전한 저장 요청과 재개는 후속 T04 범위다.
+
+작은 CPU fixture와 실제 NES·RTX 5090의 분리된 결과, 라이브러리 선택 근거와 남은 불확실성은 [A3 검증 기록](docs/validation/A3.md)을 참고한다. 이 결과는 플랫폼 갱신 성공이며 초기 정책 대비 행동 성능 개선을 뜻하지 않는다.

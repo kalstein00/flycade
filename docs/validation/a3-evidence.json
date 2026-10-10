@@ -1,0 +1,818 @@
+{
+  "scope": "Actual user WSL NES/RTX 5090 A3; not behavioral improvement or A4/A5 acceptance",
+  "artifact_directory": "reports/a3-nes-5090-003",
+  "report": {
+    "approx_kl": 0.0032516708597540855,
+    "clip_fraction": 0.015625,
+    "contract": {
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "config": {
+        "action_repeat": 4,
+        "color": "RGB",
+        "completion_reward": 100.0,
+        "death_reward": -10.0,
+        "frame_stack": 4,
+        "height": 84,
+        "max_frames": 18000,
+        "no_progress_frames": 600,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "width": 84
+      },
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "observation_dtype": "uint8",
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "policy_input": "pixels only",
+      "resize": "Pillow bilinear",
+      "reward_unit": "per emulated frame"
+    },
+    "emulator_frames": 4085,
+    "entropy": 0.33186793327331543,
+    "environment_closed": true,
+    "episode_outcomes": {
+      "death": 4,
+      "no_progress": 1
+    },
+    "episodes": 5,
+    "evidence": "real NES on cuda",
+    "final_sha256": "3be9502592d718c89576e40cc66d56e7285504ae9746872ca6bbe6bd00e31d2b",
+    "gradient_l2": {
+      "actor.bias": 0.03356839343905449,
+      "actor.weight": 1.1530098915100098,
+      "critic.bias": 4.610174179077148,
+      "critic.weight": 158.3079071044922,
+      "encoder.0.bias": 26.347280502319336,
+      "encoder.0.weight": 165.51065063476562,
+      "encoder.4.bias": 1.5451468229293823,
+      "encoder.4.weight": 10.19205093383789
+    },
+    "graph_influence": {
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "intervention": "all edges removed; identical pixels and parameters",
+      "max_probability_delta": 0.01095724105834961,
+      "original_probabilities": [
+        [
+          0.13501065969467163,
+          0.1331796795129776,
+          0.13726885616779327,
+          0.149994358420372,
+          0.15055043995380402,
+          0.13946370780467987,
+          0.1545322835445404
+        ]
+      ],
+      "passed": true,
+      "removed_probabilities": [
+        [
+          0.14366517961025238,
+          0.14164121448993683,
+          0.14318563044071198,
+          0.14242911338806152,
+          0.14349770545959473,
+          0.14200611412525177,
+          0.1435750424861908
+        ]
+      ]
+    },
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "loss": 11.375624656677246,
+    "max_progress": 1214,
+    "nonfinite_count": 0,
+    "optimizer_steps": 32,
+    "parameter_delta_l2": {
+      "actor.bias": 0.003419561544433236,
+      "actor.weight": 0.39017990231513977,
+      "critic.bias": 0.0061971042305231094,
+      "critic.weight": 0.6838780045509338,
+      "encoder.0.bias": 0.020511336624622345,
+      "encoder.0.weight": 0.2140001356601715,
+      "encoder.4.bias": 0.6560519933700562,
+      "encoder.4.weight": 8.170999526977539
+    },
+    "peak_cuda_allocated_bytes": 161337344,
+    "peak_rss_bytes": 2358026240,
+    "policy_loss": -0.009281952865421772,
+    "reward_sum": 3219.0,
+    "run_id": "5a85f56f-9792-47bc-84a1-22573b24f814",
+    "safe_boundary": true,
+    "session_id": "b3ab5be0-1098-48cb-9cf1-2e15e66d55d4",
+    "status": "completed",
+    "training_seconds": 8.444901318000007,
+    "transitions": 1024,
+    "transitions_per_second": 121.25659749479611,
+    "updates": 16,
+    "value_loss": 22.776451110839844,
+    "wall_seconds": 8.490495541999962,
+    "workers_alive": 0
+  },
+  "manifest": {
+    "algorithm": "PPO-Clip; GAE; full-rollout batch per epoch; Adam; FP32; no running normalization",
+    "code": {
+      "files": {
+        "__init__.py": "b21c242866043cf4c76505158aa55d92ee3ac72b30169b5364f6679686ca75a5",
+        "__main__.py": "1387805973f2d3e6251d74d656c8599178769ed5fbb6693982801a6b32cee706",
+        "cli.py": "b46fe401efe0249c4cfa9a538a3f7c72a022d22b58983ae4a615b62e558d541b",
+        "demo.py": "09dfedca0736cf377c3f3009ff6bc1db10c76e5af4b242af0c7ef332e5033ecf",
+        "diagnostics.py": "2c9428f5f709f51c4ff8b84e24e0fc888b8b2422080d91e417bc3d012d548684",
+        "errors.py": "6784cf5e06ea471663a8e9786500cec7b3080469303adce4653137f84f9736e4",
+        "game.py": "9d04081d79513996196867950bc904bfe0d42a9ee3dc106458629a0840a38477",
+        "graph.py": "22f6e589c98363ffe142958d3a09d44a7222d879e9e2bb2663c02a97953343d1",
+        "nes.py": "b81d2dbb0b82dd2532dbc8140eb5cd597a17df53d0714ac010a03493b0cba5d8",
+        "policy.py": "db78e4f4606550a542cf1e3cf8462224a67640614e310058d7436728e641dfc7",
+        "rom.py": "a8d33123cfc13a22a4c2a6a5c3ac7bb6261317ea948c1f3c54c248bacfdce8fe",
+        "training.py": "a0d7933363d9b0cf3e9f6d4f9403f07b7e00e54120620f8a91f5a5e55a1646f9",
+        "training_fixture.py": "784f9ce4a985504739aff96ae60afb1d4ffdaebdcec812524704abe6e252c6c4"
+      },
+      "git_head": "65af54d0a5986a0586b3dc82682818ed10ab798a",
+      "uv_lock_sha256": "eb492c9389c74b624f2f1b355c169363ba82071d58e75f5a61a1ea3d0b411736"
+    },
+    "created_unix": 1791605158.3725848,
+    "cuda_runtime": "12.8",
+    "device": "cuda",
+    "device_name": "NVIDIA GeForce RTX 5090",
+    "format_version": 1,
+    "game": {
+      "action_repeat": 4,
+      "color": "RGB",
+      "completion_reward": 100.0,
+      "death_reward": -10.0,
+      "frame_stack": 4,
+      "height": 84,
+      "max_frames": 18000,
+      "no_progress_frames": 600,
+      "progress_reward": 1.0,
+      "survival_reward": 0.0,
+      "width": 84
+    },
+    "model": {
+      "architecture": "conv/pool/linear pixel encoder -> COO propagation -> output-only actor/critic",
+      "fixed": "topology and incoming-synapse-normalized nonnegative weights",
+      "mapping": "learned engineering mapping to input nodes; output nodes flattened for readout",
+      "pretrained_or_teacher": false,
+      "propagation_steps": 2,
+      "sign_assumption": "structural positive weights; not neurotransmitter sign inference",
+      "state": "zero per observation, repeated input drive, tanh propagation; no temporal recurrence",
+      "state_dim": 8,
+      "trainable": [
+        "encoder.0.weight",
+        "encoder.0.bias",
+        "encoder.4.weight",
+        "encoder.4.bias",
+        "actor.weight",
+        "actor.bias",
+        "critic.weight",
+        "critic.bias"
+      ]
+    },
+    "python": "3.12.9",
+    "registration": {
+      "available_states": [
+        "Level1-1",
+        "Level1-1-99lives",
+        "Level1-4",
+        "Level2-1",
+        "Level2-1-clouds",
+        "Level2-1-clouds-easy",
+        "Level3-1",
+        "Level4-1",
+        "Level5-1",
+        "Level6-1",
+        "Level7-1",
+        "Level8-1"
+      ],
+      "buttons": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "core": "fceumm",
+      "core_sha256": "b60f93804e63d421b838b900458e086ca2f26a22d2a4ddb157f0c13a21086724",
+      "custom_sha256": {
+        "data.json": "1739364596573936a6c4ba52b160b5ad07e327bd607525c99c5c13feba04a397",
+        "scenario.json": "fd5add1082b332fdf04ac3ff7cd801097fd6b844d1efae60abc6f5231e4794de"
+      },
+      "evidence": "artifacts verified; NES execution unverified",
+      "game": "SuperMarioBros-Nes-v0",
+      "integration_version": "flycade-smb-1",
+      "rom_payload_sha1": "facee9c577a5262dbe33ac4930bb0b58c8c037f7",
+      "rom_sha256": "f61548fdf1670cffefcc4f0b7bdcdd9eaba0c226e3b74f8666071496988248de",
+      "stable_retro": "1.0.1",
+      "state": "Level1-1",
+      "upstream_sha256": {
+        "Level1-1.state": "905a2e5d8a1bcc8b5955d132a77a8244025d205c2c6a9b07404758d3b84174b5",
+        "data.json": "d82a50603b506d5c06a90122a76a16c4ca1c9ef5ed7b845d4e8f1aa17f916b3a",
+        "metadata.json": "aa374d335d017f410c7aa2e956c3d4589d3d71d94710bd62f268efcb5a76d433",
+        "rom.sha": "b6b802455068c878076f2ca148e95668e79fc1a1cd8a29edc0b4c70c2a923f52",
+        "scenario.json": "6c2b3ea6a36ba51b10a20ac0f118c7efd0136f50c519be4603e03bea1692bdb4"
+      }
+    },
+    "run_id": "5a85f56f-9792-47bc-84a1-22573b24f814",
+    "seed": 7,
+    "session_id": "b3ab5be0-1098-48cb-9cf1-2e15e66d55d4",
+    "training": {
+      "clip_ratio": 0.2,
+      "entropy_coefficient": 0.01,
+      "epochs": 2,
+      "gae_lambda": 0.95,
+      "gamma": 0.99,
+      "learning_rate": 0.0003,
+      "max_grad_norm": 0.5,
+      "propagation_steps": 2,
+      "rollout_steps": 64,
+      "seed": 7,
+      "state_dim": 8,
+      "updates": 16,
+      "value_coefficient": 0.5
+    },
+    "versions": {
+      "flycade": "0.1.0",
+      "gymnasium": "1.4.0",
+      "numpy": "2.5.3",
+      "pillow": "12.3.0",
+      "stable-retro": "1.0.1",
+      "torch": "2.10.0"
+    },
+    "worker_model": "one in-process environment; no child workers"
+  },
+  "graph": {
+    "graph_sha256": "97ea609f3c64c24ebfd90c73b4590878d437b5e67851dff1f60f9e74c730de7f",
+    "artifacts": {
+      "config.json": "315b857a315fa04c5f24623f62ccae495688c2675a8c08efb19036a9c6ec5e20",
+      "edge_index.npy": "4efc3e2e681cd8f61da2beadc03b8cc29c06b385ada307aace8ed8c2470f1232",
+      "nodes.json": "879899529648fcbdbfbd57a40ab32cb8e4899b3c00952463b0cf01cf246fbf18",
+      "report.json": "744bd4fb4dc2bb9cbaa0f5ac337e38a130179fdde3bd5382132c0cbfa08f23e2",
+      "sources.json": "3dd79fc2571121b84a26179076cf6a2dda46e95b22802b101a88aa6c32976cb1",
+      "syn_count.npy": "57d28c8be6be384f0c117aa453c1137eb2e7c45493cef527b15caf91cf8753da",
+      "weight.npy": "04a0951cf78f492b501506fe8ea1e6bc581c6c019d84d0e7b401b05401248eb6"
+    }
+  },
+  "graph_counts": {
+    "eligible_edges": 2700513,
+    "eligible_synapses": 34153566,
+    "excluded_neurons": 134633,
+    "excluded_pair_edges": 15083973,
+    "excluded_synapses": 54282611,
+    "source_neurons": 139255,
+    "source_pair_edges": 15091983,
+    "source_pair_synapses": 54492922,
+    "source_region_edges": 16847997,
+    "source_synapses": 54492922,
+    "used_edges": 8010,
+    "used_neurons": 4622,
+    "used_synapses": 210311
+  },
+  "gpu": "NVIDIA GeForce RTX 5090, 610.88",
+  "independent_checks": {
+    "all_transitions_valid": true,
+    "all_update_losses_finite": true,
+    "initial_hash_unchanged": true,
+    "saved_parameter_delta_l2": {
+      "encoder.0.weight": 0.21400010585784912,
+      "encoder.0.bias": 0.020511336624622345,
+      "encoder.4.weight": 8.170942306518555,
+      "encoder.4.bias": 0.6560519933700562,
+      "actor.weight": 0.39017996191978455,
+      "actor.bias": 0.003419561544433236,
+      "critic.weight": 0.6838779449462891,
+      "critic.bias": 0.0061971042305231094
+    },
+    "all_optimizer_steps": 32
+  },
+  "updates": [
+    {
+      "transitions": 64,
+      "emulator_frames": 256,
+      "updates": 1,
+      "episodes": 0,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 2087.28466796875,
+      "entropy": 1.9160857200622559,
+      "gradient_l2": {
+        "encoder.0.weight": 211.09805297851562,
+        "encoder.0.bias": 33.375736236572266,
+        "encoder.4.weight": 59.256282806396484,
+        "encoder.4.bias": 21.107126235961914,
+        "actor.weight": 1.334233283996582,
+        "actor.bias": 0.13204476237297058,
+        "critic.weight": 601.4572143554688,
+        "critic.bias": 59.051414489746094
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.014005495235323906,
+        "encoder.0.bias": 0.0013650578912347555,
+        "encoder.4.weight": 0.7333468198776245,
+        "encoder.4.bias": 0.06536095589399338,
+        "actor.weight": 0.08076311647891998,
+        "actor.bias": 0.0007009751279838383,
+        "critic.weight": 0.06361562013626099,
+        "critic.bias": 0.0005994066596031189
+      }
+    },
+    {
+      "transitions": 128,
+      "emulator_frames": 512,
+      "updates": 2,
+      "episodes": 0,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 447.6791687011719,
+      "entropy": 1.9053559303283691,
+      "gradient_l2": {
+        "encoder.0.weight": 183.60194396972656,
+        "encoder.0.bias": 28.919893264770508,
+        "encoder.4.weight": 18.633750915527344,
+        "encoder.4.bias": 6.308526992797852,
+        "actor.weight": 0.8461794853210449,
+        "actor.bias": 0.07764896750450134,
+        "critic.weight": 188.95359802246094,
+        "critic.bias": 17.46274185180664
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.014362412504851818,
+        "encoder.0.bias": 0.0013879896141588688,
+        "encoder.4.weight": 0.7078738212585449,
+        "encoder.4.bias": 0.0631709173321724,
+        "actor.weight": 0.08013726770877838,
+        "actor.bias": 0.0006957622244954109,
+        "critic.weight": 0.06113568693399429,
+        "critic.bias": 0.000588560476899147
+      }
+    },
+    {
+      "transitions": 192,
+      "emulator_frames": 768,
+      "updates": 3,
+      "episodes": 0,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 991.5709838867188,
+      "entropy": 1.8499412536621094,
+      "gradient_l2": {
+        "encoder.0.weight": 609.793701171875,
+        "encoder.0.bias": 94.40478515625,
+        "encoder.4.weight": 43.251121520996094,
+        "encoder.4.bias": 13.119833946228027,
+        "actor.weight": 1.3569434881210327,
+        "actor.bias": 0.10999110341072083,
+        "critic.weight": 437.6979675292969,
+        "critic.bias": 35.72929000854492
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.01624828577041626,
+        "encoder.0.bias": 0.0015659559285268188,
+        "encoder.4.weight": 0.6849064230918884,
+        "encoder.4.bias": 0.06006819009780884,
+        "actor.weight": 0.07087705284357071,
+        "actor.bias": 0.000606672081630677,
+        "critic.weight": 0.05859099328517914,
+        "critic.bias": 0.0005628541111946106
+      }
+    },
+    {
+      "transitions": 256,
+      "emulator_frames": 1024,
+      "updates": 4,
+      "episodes": 0,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 682.6767578125,
+      "entropy": 1.725393533706665,
+      "gradient_l2": {
+        "encoder.0.weight": 683.3499755859375,
+        "encoder.0.bias": 106.57073974609375,
+        "encoder.4.weight": 40.912967681884766,
+        "encoder.4.bias": 11.340057373046875,
+        "actor.weight": 1.6375871896743774,
+        "actor.bias": 0.11992698907852173,
+        "critic.weight": 417.9439697265625,
+        "critic.bias": 30.197242736816406
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.017137285321950912,
+        "encoder.0.bias": 0.0016505930107086897,
+        "encoder.4.weight": 0.6661884188652039,
+        "encoder.4.bias": 0.056956104934215546,
+        "actor.weight": 0.05384411662817001,
+        "actor.bias": 0.00046521122567355633,
+        "critic.weight": 0.05646330118179321,
+        "critic.bias": 0.0005328534170985222
+      }
+    },
+    {
+      "transitions": 320,
+      "emulator_frames": 1280,
+      "updates": 5,
+      "episodes": 0,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 1008.8507690429688,
+      "entropy": 1.6517058610916138,
+      "gradient_l2": {
+        "encoder.0.weight": 693.7339477539062,
+        "encoder.0.bias": 111.54279327392578,
+        "encoder.4.weight": 38.0235595703125,
+        "encoder.4.bias": 9.837772369384766,
+        "actor.weight": 0.6870454549789429,
+        "actor.bias": 0.043568313121795654,
+        "critic.weight": 394.49127197265625,
+        "critic.bias": 25.52117919921875
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.01765860803425312,
+        "encoder.0.bias": 0.0017022688407450914,
+        "encoder.4.weight": 0.6528818011283875,
+        "encoder.4.bias": 0.05429030954837799,
+        "actor.weight": 0.037401292473077774,
+        "actor.bias": 0.0003132111160084605,
+        "critic.weight": 0.0549887977540493,
+        "critic.bias": 0.0005037859082221985
+      }
+    },
+    {
+      "transitions": 384,
+      "emulator_frames": 1536,
+      "updates": 6,
+      "episodes": 0,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 1061.31982421875,
+      "entropy": 1.5639021396636963,
+      "gradient_l2": {
+        "encoder.0.weight": 1205.89794921875,
+        "encoder.0.bias": 191.39276123046875,
+        "encoder.4.weight": 63.821224212646484,
+        "encoder.4.bias": 15.029096603393555,
+        "actor.weight": 1.64061439037323,
+        "actor.bias": 0.09275690466165543,
+        "critic.weight": 678.9927978515625,
+        "critic.bias": 38.41608428955078
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.017988191917538643,
+        "encoder.0.bias": 0.0017346566310152411,
+        "encoder.4.weight": 0.6465234160423279,
+        "encoder.4.bias": 0.0519968718290329,
+        "actor.weight": 0.039488378912210464,
+        "actor.bias": 0.00028720140107907355,
+        "critic.weight": 0.0542040579020977,
+        "critic.bias": 0.000476260669529438
+      }
+    },
+    {
+      "transitions": 448,
+      "emulator_frames": 1792,
+      "updates": 7,
+      "episodes": 0,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 820.3685913085938,
+      "entropy": 1.3492906093597412,
+      "gradient_l2": {
+        "encoder.0.weight": 922.0130004882812,
+        "encoder.0.bias": 140.93170166015625,
+        "encoder.4.weight": 49.05156707763672,
+        "encoder.4.bias": 10.357458114624023,
+        "actor.weight": 3.504598379135132,
+        "actor.bias": 0.1718859076499939,
+        "critic.weight": 541.0304565429688,
+        "critic.bias": 26.529850006103516
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.018181249499320984,
+        "encoder.0.bias": 0.001750526949763298,
+        "encoder.4.weight": 0.647264838218689,
+        "encoder.4.bias": 0.04996828734874725,
+        "actor.weight": 0.03651325777173042,
+        "actor.bias": 0.0002660711470525712,
+        "critic.weight": 0.054043252021074295,
+        "critic.bias": 0.00045070983469486237
+      }
+    },
+    {
+      "transitions": 512,
+      "emulator_frames": 2043,
+      "updates": 8,
+      "episodes": 2,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 1873.08447265625,
+      "entropy": 1.2505333423614502,
+      "gradient_l2": {
+        "encoder.0.weight": 1548.7559814453125,
+        "encoder.0.bias": 243.08346557617188,
+        "encoder.4.weight": 82.40518188476562,
+        "encoder.4.bias": 16.46826171875,
+        "actor.weight": 2.2445788383483887,
+        "actor.bias": 0.09949880093336105,
+        "critic.weight": 942.6234130859375,
+        "critic.bias": 41.89068603515625
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.01829960010945797,
+        "encoder.0.bias": 0.0017619135323911905,
+        "encoder.4.weight": 0.6503907442092896,
+        "encoder.4.bias": 0.04831886664032936,
+        "actor.weight": 0.020634373649954796,
+        "actor.bias": 0.0001856330782175064,
+        "critic.weight": 0.05441797152161598,
+        "critic.bias": 0.00042824260890483856
+      }
+    },
+    {
+      "transitions": 576,
+      "emulator_frames": 2299,
+      "updates": 9,
+      "episodes": 2,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 6955.7978515625,
+      "entropy": 1.147608995437622,
+      "gradient_l2": {
+        "encoder.0.weight": 4301.60107421875,
+        "encoder.0.bias": 677.9581298828125,
+        "encoder.4.weight": 231.4578094482422,
+        "encoder.4.bias": 43.59349822998047,
+        "actor.weight": 3.502188205718994,
+        "actor.bias": 0.14048144221305847,
+        "critic.weight": 2775.77001953125,
+        "critic.bias": 111.65105438232422
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.01836671680212021,
+        "encoder.0.bias": 0.0017688637599349022,
+        "encoder.4.weight": 0.6556589603424072,
+        "encoder.4.bias": 0.04696916043758392,
+        "actor.weight": 0.02049443870782852,
+        "actor.bias": 0.00015713018365204334,
+        "critic.weight": 0.055211033672094345,
+        "critic.bias": 0.000408761203289032
+      }
+    },
+    {
+      "transitions": 640,
+      "emulator_frames": 2555,
+      "updates": 10,
+      "episodes": 2,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 679.0209350585938,
+      "entropy": 1.0570673942565918,
+      "gradient_l2": {
+        "encoder.0.weight": 1054.175048828125,
+        "encoder.0.bias": 166.2132568359375,
+        "encoder.4.weight": 58.087284088134766,
+        "encoder.4.bias": 10.305331230163574,
+        "actor.weight": 0.5217510461807251,
+        "actor.bias": 0.01813570410013199,
+        "critic.weight": 733.3609008789062,
+        "critic.bias": 26.860490798950195
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.018375936895608902,
+        "encoder.0.bias": 0.0017701187171041965,
+        "encoder.4.weight": 0.6620274782180786,
+        "encoder.4.bias": 0.04582345858216286,
+        "actor.weight": 0.025632359087467194,
+        "actor.bias": 0.0001608758611837402,
+        "critic.weight": 0.05633273348212242,
+        "critic.bias": 0.00039212964475154877
+      }
+    },
+    {
+      "transitions": 704,
+      "emulator_frames": 2811,
+      "updates": 11,
+      "episodes": 2,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 8.139799118041992,
+      "entropy": 0.9935694932937622,
+      "gradient_l2": {
+        "encoder.0.weight": 155.53030395507812,
+        "encoder.0.bias": 25.758146286010742,
+        "encoder.4.weight": 8.67845630645752,
+        "encoder.4.bias": 1.5075099468231201,
+        "actor.weight": 6.663546562194824,
+        "actor.bias": 0.23102809488773346,
+        "critic.weight": 113.5592269897461,
+        "critic.bias": 3.9365487098693848
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.01225257758051157,
+        "encoder.0.bias": 0.0011636862764135003,
+        "encoder.4.weight": 0.4380857050418854,
+        "encoder.4.bias": 0.032873138785362244,
+        "actor.weight": 0.03559541329741478,
+        "actor.bias": 0.00023623459856025875,
+        "critic.weight": 0.03578232601284981,
+        "critic.bias": 0.000292033888399601
+      }
+    },
+    {
+      "transitions": 768,
+      "emulator_frames": 3067,
+      "updates": 12,
+      "episodes": 2,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 6.730860233306885,
+      "entropy": 0.7669298052787781,
+      "gradient_l2": {
+        "encoder.0.weight": 138.27005004882812,
+        "encoder.0.bias": 22.991222381591797,
+        "encoder.4.weight": 7.830442905426025,
+        "encoder.4.bias": 1.3278772830963135,
+        "actor.weight": 4.82739782333374,
+        "actor.bias": 0.1614992320537567,
+        "critic.weight": 105.84986877441406,
+        "critic.bias": 3.541874408721924
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.005868395324796438,
+        "encoder.0.bias": 0.0005338928895071149,
+        "encoder.4.weight": 0.2239408791065216,
+        "encoder.4.bias": 0.019844189286231995,
+        "actor.weight": 0.040221452713012695,
+        "actor.bias": 0.0003141143824905157,
+        "critic.weight": 0.01611911691725254,
+        "critic.bias": 0.00018301885575056076
+      }
+    },
+    {
+      "transitions": 832,
+      "emulator_frames": 3318,
+      "updates": 13,
+      "episodes": 4,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 2304.572998046875,
+      "entropy": 0.6261309385299683,
+      "gradient_l2": {
+        "encoder.0.weight": 2076.453369140625,
+        "encoder.0.bias": 330.2524719238281,
+        "encoder.4.weight": 121.63690185546875,
+        "encoder.4.bias": 19.72365379333496,
+        "actor.weight": 3.489783525466919,
+        "actor.bias": 0.11307661235332489,
+        "critic.weight": 1710.453125,
+        "critic.bias": 55.12502670288086
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.006508633494377136,
+        "encoder.0.bias": 0.0005992141086608171,
+        "encoder.4.weight": 0.2417883425951004,
+        "encoder.4.bias": 0.019490864127874374,
+        "actor.weight": 0.026629870757460594,
+        "actor.bias": 0.00019374002295080572,
+        "critic.weight": 0.018774567171931267,
+        "critic.bias": 0.0001812828704714775
+      }
+    },
+    {
+      "transitions": 896,
+      "emulator_frames": 3573,
+      "updates": 14,
+      "episodes": 5,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 3003.0517578125,
+      "entropy": 0.4912834167480469,
+      "gradient_l2": {
+        "encoder.0.weight": 2445.02783203125,
+        "encoder.0.bias": 389.5369567871094,
+        "encoder.4.weight": 145.01254272460938,
+        "encoder.4.bias": 23.09931182861328,
+        "actor.weight": 3.1441810131073,
+        "actor.bias": 0.0985734686255455,
+        "critic.weight": 2103.385009765625,
+        "critic.bias": 65.82070922851562
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.00870710052549839,
+        "encoder.0.bias": 0.0008176970295608044,
+        "encoder.4.weight": 0.3296002447605133,
+        "encoder.4.bias": 0.022921448573470116,
+        "actor.weight": 0.02146383933722973,
+        "actor.bias": 0.00015682639786973596,
+        "critic.weight": 0.02837538905441761,
+        "critic.bias": 0.00020809099078178406
+      }
+    },
+    {
+      "transitions": 960,
+      "emulator_frames": 3829,
+      "updates": 15,
+      "episodes": 5,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 1108.0225830078125,
+      "entropy": 0.40434718132019043,
+      "gradient_l2": {
+        "encoder.0.weight": 1379.865234375,
+        "encoder.0.bias": 220.9852294921875,
+        "encoder.4.weight": 83.021484375,
+        "encoder.4.bias": 12.957993507385254,
+        "actor.weight": 4.184381008148193,
+        "actor.bias": 0.12637962400913239,
+        "critic.weight": 1246.138427734375,
+        "critic.bias": 37.636077880859375
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.010429015383124352,
+        "encoder.0.bias": 0.0009875060059130192,
+        "encoder.4.weight": 0.40621474385261536,
+        "encoder.4.bias": 0.026073545217514038,
+        "actor.weight": 0.019429964944720268,
+        "actor.bias": 0.00012400158448144794,
+        "critic.weight": 0.03667007014155388,
+        "critic.bias": 0.00023079104721546173
+      }
+    },
+    {
+      "transitions": 1024,
+      "emulator_frames": 4085,
+      "updates": 16,
+      "episodes": 5,
+      "safe_boundary": true,
+      "nonfinite_count": 0,
+      "loss": 11.375624656677246,
+      "entropy": 0.33186793327331543,
+      "gradient_l2": {
+        "encoder.0.weight": 165.51065063476562,
+        "encoder.0.bias": 26.347280502319336,
+        "encoder.4.weight": 10.19205093383789,
+        "encoder.4.bias": 1.5451468229293823,
+        "actor.weight": 1.1530098915100098,
+        "actor.bias": 0.03356839343905449,
+        "critic.weight": 158.3079071044922,
+        "critic.bias": 4.610174179077148
+      },
+      "parameter_delta_l2": {
+        "encoder.0.weight": 0.00666815647855401,
+        "encoder.0.bias": 0.0006287660216912627,
+        "encoder.4.weight": 0.24972011148929596,
+        "encoder.4.bias": 0.01753184013068676,
+        "actor.weight": 0.02372601628303528,
+        "actor.bias": 0.00015498600259888917,
+        "critic.weight": 0.021035777404904366,
+        "critic.bias": 0.0001583220437169075
+      }
+    }
+  ],
+  "artifact_sha256": {
+    "run.json": "ef9025bb6062f02398f9c3b4901feeac01e2ece7ae8e04303cb710b4590eb960",
+    "control-pixels.npy": "97fa848dbb108996026d0eeb1f2487dc13cd26bed2e30c9e2f4603b0aff318cd",
+    "updates.jsonl": "d7d12aee21a460d83d57c21fe63d66346eb569757f4548fcb1d77aa7cdb5f088",
+    "transitions.jsonl": "f73eb36d7fb54203331d254e419ee9da8dfaa3a0aee3ebdf5ae0744a96323e4e",
+    "initial.pt": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "final.pt": "3be9502592d718c89576e40cc66d56e7285504ae9746872ca6bbe6bd00e31d2b",
+    "report.json": "d9f843dc76a4666c9ed551dcb99f048860e3821ecaba12e61ff9f352b005ceba"
+  }
+}
