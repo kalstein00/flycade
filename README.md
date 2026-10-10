@@ -267,3 +267,5 @@ uv run --offline --locked --extra train flycade resume reports/daily-001
 동일 조건의 별도 CNN Run은 `train --model-kind cnn`으로 시작합니다. `compare-runs RUN_A RUN_B`는 모델별 초기 대비 거리·완료율·사망 변화와 예산/설정 차이를 보고합니다. [T14 비교 조건과 실제 미개선 결과](docs/validation/T14.md)를 참고하세요.
 
 Run별 저장 공간과 보존 정책은 `storage RUN`으로 확인합니다. 최근 평가·영상·로그를 제한하고 초기·최고·사용자 보존본을 보호하는 방법과 오프라인 절차는 [T15 안내](docs/validation/T15.md)를 참고하세요.
+
+설치부터 새 Run·저장/재개·평가·복구·분기·공간 관리까지는 [운영 안내](docs/OPERATIONS.md)에 모았습니다. 최소1시간 측정과 실제 WSL/PC 재시작·Windows 화면 인수는 [T16 기록](docs/validation/T16.md)에서 자동 검증과 수동 확인을 구분합니다.
