@@ -24,7 +24,7 @@ from flycade.rom import inspect_registration
 
 FORMAT = 1
 STATE_CONTRACT = {
-    'schedule': 'constant learning rate; fixed total update budget',
+    'schedule': 'constant learning rate; total update budget extended only by explicit budget ledger',
     'normalization': 'pixels / 255; per-rollout advantage normalization; no running statistics',
     'scaler': None, 'hidden_state': None, 'discounted_environment_returns': None,
     'sampler': 'torch global RNG; full rollout batch, no shuffle',

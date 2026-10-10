@@ -12,7 +12,7 @@ import shutil
 import subprocess
 import time
 import uuid
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any, TextIO
 
@@ -161,7 +161,8 @@ def optimize(policy: ConnectomePolicy, optimizer: torch.optim.Optimizer,
 def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
           game: GameConfig, device: str, fixture: bool = False, stop_after_updates: int | None = None,
            resume_state: dict[str, Any] | None = None,
-           initial_evaluation: dict[str, Any] | None = None, observe_hz: int = 3) -> dict[str, Any]:
+           initial_evaluation: dict[str, Any] | None = None, observe_hz: int = 3,
+          warm_state: dict[str, Any] | None = None) -> dict[str, Any]:
     if fixture and device != 'cpu':
         raise ValueError('Synthetic fixture requires --device cpu')
     if device == 'cuda' and not torch.cuda.is_available():
@@ -176,6 +177,8 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         torch.cuda.reset_peak_memory_stats()
     channels = game.frame_stack * (3 if game.color == 'RGB' else 1)
     policy = policy_from_graph(graph, config.state_dim, config.propagation_steps, channels).to(device)
+    if warm_state is not None:
+        policy.load_state_dict(warm_state['model'], strict=True)
     optimizer = torch.optim.Adam(policy.parameters(), lr=config.learning_rate)
     initial_parameters = {name: p.detach().clone() for name, p in policy.named_parameters()}
     if resume_state is None:
@@ -186,7 +189,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         source = Path(__file__).parent
         repo = source.parent.parent
         git = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=source, capture_output=True, text=True)
-        manifest = {'format_version': 2, 'checkpoint_format': FORMAT, 'fixture': fixture, 'run_id': str(uuid.uuid4()), 'session_id': str(uuid.uuid4()),
+        manifest: dict[str, Any] = {'format_version': 2, 'checkpoint_format': FORMAT, 'fixture': fixture, 'run_id': str(uuid.uuid4()), 'session_id': str(uuid.uuid4()),
             'created_unix': time.time(), 'seed': config.seed, 'training': asdict(config),
             'game': asdict(game), 'registration': registration, 'graph': graph_report,
             'device': device, 'device_name': torch.cuda.get_device_name() if device == 'cuda' else 'CPU',
@@ -205,6 +208,9 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                       'trainable': list(initial_parameters), 'pretrained_or_teacher': False},
             'algorithm': 'PPO-Clip; GAE; full-rollout batch per epoch; Adam; FP32; no running normalization',
             'worker_model': 'one in-process environment; one bounded ffmpeg encoder, reaped on close'}
+        if warm_state is not None:
+            manifest['lineage'] = warm_state['lineage']
+            manifest['model']['pretrained_or_teacher'] = 'local checkpoint warm start; no teacher'
         torch.save(policy.state_dict(), output / 'initial.pt')
         (output / 'initial.pt').chmod(0o444)
         manifest['initial_sha256'] = digest(output / 'initial.pt')
@@ -239,6 +245,10 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
             atomic_json(output / 'recovery-status.json', recovery)
             print(f"Recovered checkpoint {recovery['checkpoint_id']}; rollback {recovery['lost_updates']} updates / {recovery['lost_transitions']} transitions; new session.", file=sys.stderr)
 
+    from flycade.budget import budget_info
+    report['budget'] = budget_info(output, manifest)
+    if 'lineage' in manifest:
+        report['lineage'] = manifest['lineage']
     session = {'run_id': report['run_id'], 'session_id': report['session_id'],
                'resumed_from': report.get('resumed_from'), 'start_updates': report['updates'],
                'created_unix': time.time(), 'reset': 'new episode; learning state preserved'}
@@ -455,7 +465,8 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
 def train(home: Path, graph: Path, output: Path, config: TrainingConfig,
           game: GameConfig, device: str, fixture: bool = False,
           stop_after_updates: int | None = None,
-          initial_evaluation: dict[str, Any] | None = None, observe_hz: int = 3) -> dict[str, Any]:
+          initial_evaluation: dict[str, Any] | None = None, observe_hz: int = 3,
+          warm_state: dict[str, Any] | None = None) -> dict[str, Any]:
     validate_observation_rate(observe_hz)
     if output.exists():
         raise PreparationError('output_exists', f'Refusing to overwrite Run {output}')
@@ -473,10 +484,14 @@ def train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         reachable |= {dst for src, dst in edges if src in reachable}
     if not reachable.intersection(n['index'] for n in nodes if n['output']):
         raise ValueError('No input-to-output path within propagation_steps')
+    if warm_state is not None:
+        channels = game.frame_stack * (3 if game.color == 'RGB' else 1)
+        candidate = policy_from_graph(graph, config.state_dim, config.propagation_steps, channels)
+        candidate.load_state_dict(warm_state['model'], strict=True)
     output.mkdir(parents=True)
     with run_lock(output):
         return _train(home, graph, output, config, game, device, fixture, stop_after_updates,
-                      initial_evaluation=initial_evaluation, observe_hz=observe_hz)
+                      initial_evaluation=initial_evaluation, observe_hz=observe_hz, warm_state=warm_state)
 
 
 def resume(output: Path, home: Path, stop_after_updates: int | None = None, observe_hz: int = 3) -> dict[str, Any]:
@@ -486,7 +501,11 @@ def resume(output: Path, home: Path, stop_after_updates: int | None = None, obse
     with run_lock(output):
         state = load_checkpoint(output, home)
         manifest = state['manifest']
-        config = TrainingConfig(**manifest['training'])
+        from flycade.budget import budget_info
+        budget = budget_info(output, manifest)
+        if state['progress'].get('budget', {}).get('total_updates', 0) > budget['total_updates']:
+            raise ValueError('Budget ledger is older than the checkpoint; restore the ledger')
+        config = replace(TrainingConfig(**manifest['training']), updates=budget['total_updates'])
         if state['progress']['updates'] >= config.updates:
             raise PreparationError('budget_completed', 'Run budget is already complete; no schedule restart')
         return _train(home, output / 'graph', output, config, GameConfig(**manifest['game']),

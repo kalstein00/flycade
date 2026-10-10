@@ -4,7 +4,7 @@ import select
 import subprocess
 import sys
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 from test_graph_cli import cli
 from test_training_cli import prepared_graph
@@ -327,3 +327,42 @@ def test_browser_shows_recovered_checkpoint_and_rollback(tmp_path):
     finally:
         service.terminate()
         service.communicate(timeout=10)
+
+
+def test_browser_identifies_full_branch_warm_start_and_budget_events(tmp_path):
+    from test_recovery_cli import saved_run
+    parent, saves = saved_run(tmp_path, 1)
+    branch = tmp_path / 'branch'
+    warm = tmp_path / 'warm'
+    result = cli('branch', parent, '--checkpoint', saves[0]['checkpoint_id'], '--output', branch)
+    assert result.returncode == 0, result.stdout + result.stderr
+    config = tmp_path / 'warm.json'
+    config.write_text(json.dumps({'updates': 1, 'rollout_steps': 4}))
+    result = cli('warm-start', parent, '--checkpoint', saves[0]['checkpoint_id'], '--output', warm,
+                 '--training-config', config)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert cli('extend-budget', branch, '--updates', 25).returncode == 0
+    parent_id = json.loads((parent / 'run.json').read_text())['run_id']
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        for run, label in [(branch, '전체 상태 분기'), (warm, '가중치 재사용 · 새 실험')]:
+            service, url = start_service(run)
+            try:
+                page = browser.new_page()
+                page.goto(url)
+                expect(page.locator('#run-kind')).to_have_text(label)
+                assert page.locator('#run-kind').inner_text() == label
+                page.locator('#run-info summary').click()
+                assert parent_id in page.locator('#lineage').inner_text()
+                assert saves[0]['checkpoint_id'] in page.locator('#lineage').inner_text()
+                if run == branch:
+                    assert '25' in page.locator('#budget-info').inner_text()
+                    assert '20 → 25' in page.locator('#budget-events').inner_text()
+                for width in (1280, 1920, 390):
+                    page.set_viewport_size({'width': width, 'height': 844})
+                    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+                page.close()
+            finally:
+                service.terminate()
+                service.wait(timeout=5)
+        browser.close()

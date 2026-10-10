@@ -1,0 +1,952 @@
+{
+  "train": {
+    "output": "/home/kalstein/vscode/flycade/reports/t10-lineage-001/parent",
+    "run_id": "150298dd-0fa6-4785-a17d-7d37cbb44379",
+    "session_id": "fdb2adec-1021-4a51-81c9-b1326a07933c",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 128,
+    "emulator_frames": 512,
+    "updates": 4,
+    "optimizer_steps": 8,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 546.0,
+    "max_progress": 546,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "budget": {
+      "total_updates": 100000,
+      "original_updates": 100000,
+      "events": [],
+      "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+    },
+    "next_autosave_seconds": 600,
+    "training_paused": false,
+    "evaluation_worker_pid": 190176,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "851338b3-4c26-490d-a7dd-18afae7b4c59",
+    "training_started_unix": 1791615019.0672743,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.13501065969467163,
+          0.1331796795129776,
+          0.13726885616779327,
+          0.149994358420372,
+          0.15055043995380402,
+          0.13946370780467987,
+          0.1545322835445404
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14366517961025238,
+          0.14164121448993683,
+          0.14318563044071198,
+          0.14242911338806152,
+          0.14349770545959473,
+          0.14200611412525177,
+          0.1435750424861908
+        ]
+      ],
+      "max_probability_delta": 0.01095724105834961,
+      "passed": true
+    },
+    "loss": 1459.29150390625,
+    "policy_loss": 0.0024404674768447876,
+    "value_loss": 2918.6083984375,
+    "entropy": 1.5166211128234863,
+    "approx_kl": 0.015857277438044548,
+    "clip_fraction": 0.28125,
+    "gradient_l2": {
+      "encoder.0.weight": 1132.461181640625,
+      "encoder.0.bias": 175.3600616455078,
+      "encoder.4.weight": 68.01558685302734,
+      "encoder.4.bias": 18.890588760375977,
+      "actor.weight": 2.202702045440674,
+      "actor.bias": 0.1596520096063614,
+      "critic.weight": 694.5970458984375,
+      "critic.bias": 50.372276306152344
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.055762097239494324,
+      "encoder.0.bias": 0.005463043227791786,
+      "encoder.4.weight": 2.7355756759643555,
+      "encoder.4.bias": 0.24315737187862396,
+      "actor.weight": 0.24419619143009186,
+      "actor.bias": 0.002238967688754201,
+      "critic.weight": 0.23441393673419952,
+      "critic.bias": 0.002286984585225582
+    },
+    "training_seconds": 2.174832493001304,
+    "transitions_per_second": 58.855107421794095,
+    "checkpoint_id": "1605980c-1fd2-4a08-84ad-b82278ec3f69",
+    "final_sha256": "d3b031674762698b5a370eebea527ec90dcc6cd42930ed18a66aebc5197aedbb",
+    "last_save": {
+      "checkpoint_id": "1605980c-1fd2-4a08-84ad-b82278ec3f69",
+      "updates": 4,
+      "transitions": 128,
+      "completed_unix": 1791615021.4001222
+    },
+    "pruned_checkpoints": [],
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 5,
+      "published": 5,
+      "dropped": 0,
+      "selected_forward_seconds": 0.16843876000348246,
+      "actual_hz": 2.1949928084160457,
+      "encode_seconds": 0.02220545599993784,
+      "error": null
+    },
+    "wall_seconds": 6.059733452999353,
+    "peak_rss_bytes": 2371559424,
+    "peak_cuda_allocated_bytes": 111489024
+  },
+  "parent_resume": {
+    "output": "/home/kalstein/vscode/flycade/reports/t10-lineage-001/parent",
+    "run_id": "150298dd-0fa6-4785-a17d-7d37cbb44379",
+    "session_id": "48860291-2bf9-4754-9023-ab99f2012c9a",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 256,
+    "emulator_frames": 1024,
+    "updates": 8,
+    "optimizer_steps": 16,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 1125.0,
+    "max_progress": 579,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "budget": {
+      "total_updates": 100000,
+      "original_updates": 100000,
+      "events": [],
+      "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+    },
+    "next_autosave_seconds": 600,
+    "training_paused": false,
+    "evaluation_worker_pid": 190176,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "851338b3-4c26-490d-a7dd-18afae7b4c59",
+    "training_started_unix": 1791615023.7958994,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.03275187313556671,
+          0.5060359239578247,
+          0.05822107195854187,
+          0.05749223381280899,
+          0.21469657123088837,
+          0.029404891654849052,
+          0.10139743983745575
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14354044198989868,
+          0.141872838139534,
+          0.14313530921936035,
+          0.1423845887184143,
+          0.143587127327919,
+          0.14187069237232208,
+          0.14360901713371277
+        ]
+      ],
+      "max_probability_delta": 0.3641631007194519,
+      "passed": true
+    },
+    "loss": 44.51081848144531,
+    "policy_loss": -0.024241920560598373,
+    "value_loss": 89.0985107421875,
+    "entropy": 1.419558048248291,
+    "approx_kl": 0.018837658688426018,
+    "clip_fraction": 0.125,
+    "gradient_l2": {
+      "encoder.0.weight": 295.2452392578125,
+      "encoder.0.bias": 45.951332092285156,
+      "encoder.4.weight": 15.697134017944336,
+      "encoder.4.bias": 3.1438846588134766,
+      "actor.weight": 1.2557445764541626,
+      "actor.bias": 0.05594756081700325,
+      "critic.weight": 179.70236206054688,
+      "critic.bias": 8.004026412963867
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.1265360713005066,
+      "encoder.0.bias": 0.012273367494344711,
+      "encoder.4.weight": 5.18281888961792,
+      "encoder.4.bias": 0.43936872482299805,
+      "actor.weight": 0.31867292523384094,
+      "actor.bias": 0.0027071223594248295,
+      "critic.weight": 0.4372553825378418,
+      "critic.bias": 0.004150882363319397
+    },
+    "training_seconds": 3.970349207000254,
+    "transitions_per_second": 64.47795562884946,
+    "last_save": {
+      "checkpoint_id": "49801292-5ff1-41ef-8d01-8ef8b0f4ec95",
+      "updates": 8,
+      "transitions": 256,
+      "completed_unix": 1791615025.7327547
+    },
+    "resumed_from": "1605980c-1fd2-4a08-84ad-b82278ec3f69",
+    "resume_reset": {
+      "frames": 0,
+      "max_progress": 0,
+      "stack_frames_equal": true
+    },
+    "checkpoint_id": "49801292-5ff1-41ef-8d01-8ef8b0f4ec95",
+    "final_sha256": "fd5800613353b1793f82212d79d37a9a2f98dfd306f675112432d21f9710b78e",
+    "pruned_checkpoints": [],
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 3,
+      "published": 3,
+      "dropped": 0,
+      "selected_forward_seconds": 0.09295357900009549,
+      "actual_hz": 1.3981828354584338,
+      "encode_seconds": 0.01604059000237612,
+      "error": null
+    },
+    "wall_seconds": 2.04715644099997,
+    "peak_rss_bytes": 2354765824,
+    "peak_cuda_allocated_bytes": 111783936
+  },
+  "branch": {
+    "output": "/home/kalstein/vscode/flycade/reports/t10-lineage-001/branch",
+    "run_id": "00c463d5-a12b-45f5-906a-5a6408863828",
+    "session_id": "2a212fc5-f330-4846-a1b7-f0d7a2810c5e",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 128,
+    "emulator_frames": 512,
+    "updates": 4,
+    "optimizer_steps": 8,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 546.0,
+    "max_progress": 546,
+    "safe_boundary": true,
+    "environment_closed": false,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "budget": {
+      "total_updates": 100000,
+      "original_updates": 100000,
+      "events": [],
+      "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+    },
+    "next_autosave_seconds": 600,
+    "training_paused": false,
+    "evaluation_worker_pid": 190176,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "851338b3-4c26-490d-a7dd-18afae7b4c59",
+    "training_started_unix": 1791615019.0672743,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.13501065969467163,
+          0.1331796795129776,
+          0.13726885616779327,
+          0.149994358420372,
+          0.15055043995380402,
+          0.13946370780467987,
+          0.1545322835445404
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14366517961025238,
+          0.14164121448993683,
+          0.14318563044071198,
+          0.14242911338806152,
+          0.14349770545959473,
+          0.14200611412525177,
+          0.1435750424861908
+        ]
+      ],
+      "max_probability_delta": 0.01095724105834961,
+      "passed": true
+    },
+    "loss": 1459.29150390625,
+    "policy_loss": 0.0024404674768447876,
+    "value_loss": 2918.6083984375,
+    "entropy": 1.5166211128234863,
+    "approx_kl": 0.015857277438044548,
+    "clip_fraction": 0.28125,
+    "gradient_l2": {
+      "encoder.0.weight": 1132.461181640625,
+      "encoder.0.bias": 175.3600616455078,
+      "encoder.4.weight": 68.01558685302734,
+      "encoder.4.bias": 18.890588760375977,
+      "actor.weight": 2.202702045440674,
+      "actor.bias": 0.1596520096063614,
+      "critic.weight": 694.5970458984375,
+      "critic.bias": 50.372276306152344
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.055762097239494324,
+      "encoder.0.bias": 0.005463043227791786,
+      "encoder.4.weight": 2.7355756759643555,
+      "encoder.4.bias": 0.24315737187862396,
+      "actor.weight": 0.24419619143009186,
+      "actor.bias": 0.002238967688754201,
+      "critic.weight": 0.23441393673419952,
+      "critic.bias": 0.002286984585225582
+    },
+    "training_seconds": 2.174832493001304,
+    "transitions_per_second": 58.855107421794095,
+    "lineage": {
+      "parent_run_id": "150298dd-0fa6-4785-a17d-7d37cbb44379",
+      "parent_path": "/home/kalstein/vscode/flycade/reports/t10-lineage-001/parent",
+      "parent_checkpoint_id": "1605980c-1fd2-4a08-84ad-b82278ec3f69",
+      "parent_checkpoint_sha256": "d3b031674762698b5a370eebea527ec90dcc6cd42930ed18a66aebc5197aedbb",
+      "parent_manifest_sha256": "5df67264c245300e47f7ccb1498c8aeebb905dbf800c2b23b6789864f50afecb",
+      "parent_updates": 4,
+      "graph_sha256": "97ea609f3c64c24ebfd90c73b4590878d437b5e67851dff1f60f9e74c730de7f",
+      "kind": "full_state_branch",
+      "inherited": "model, optimizer, RNG, counters and schedules",
+      "initial_policy": "inherited ancestor initial; not the branch starting checkpoint",
+      "parent_budget": {
+        "total_updates": 100000,
+        "original_updates": 100000,
+        "events": [],
+        "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+      },
+      "protected_origin": "origin/checkpoint.pt; original parent bytes, independent of parent retention"
+    },
+    "checkpoint_id": "c1356c0d-85f4-4ea7-94f7-7f9ad372abc8",
+    "last_save": {
+      "checkpoint_id": "c1356c0d-85f4-4ea7-94f7-7f9ad372abc8",
+      "updates": 4,
+      "transitions": 128,
+      "completed_unix": 1791615027.4376535
+    }
+  },
+  "extend": {
+    "event_id": "c989e37e-eef0-474a-a2e5-c94b380cd8a4",
+    "run_id": "00c463d5-a12b-45f5-906a-5a6408863828",
+    "created_unix": 1791615028.677463,
+    "previous_updates": 100000,
+    "total_updates": 100010,
+    "at_updates": 4,
+    "checkpoint_id": "c1356c0d-85f4-4ea7-94f7-7f9ad372abc8",
+    "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+  },
+  "branch_resume": {
+    "output": "/home/kalstein/vscode/flycade/reports/t10-lineage-001/branch",
+    "run_id": "00c463d5-a12b-45f5-906a-5a6408863828",
+    "session_id": "d25100b5-22cf-411f-a4b5-e709fc5e3387",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 256,
+    "emulator_frames": 1024,
+    "updates": 8,
+    "optimizer_steps": 16,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 1125.0,
+    "max_progress": 579,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "budget": {
+      "total_updates": 100010,
+      "original_updates": 100000,
+      "events": [
+        {
+          "event_id": "c989e37e-eef0-474a-a2e5-c94b380cd8a4",
+          "run_id": "00c463d5-a12b-45f5-906a-5a6408863828",
+          "created_unix": 1791615028.677463,
+          "previous_updates": 100000,
+          "total_updates": 100010,
+          "at_updates": 4,
+          "checkpoint_id": "c1356c0d-85f4-4ea7-94f7-7f9ad372abc8",
+          "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+        }
+      ],
+      "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+    },
+    "next_autosave_seconds": 600,
+    "training_paused": false,
+    "evaluation_worker_pid": 190176,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "851338b3-4c26-490d-a7dd-18afae7b4c59",
+    "training_started_unix": 1791615030.647094,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.03275187313556671,
+          0.5060359239578247,
+          0.05822107195854187,
+          0.05749223381280899,
+          0.21469657123088837,
+          0.029404891654849052,
+          0.10139743983745575
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14354044198989868,
+          0.141872838139534,
+          0.14313530921936035,
+          0.1423845887184143,
+          0.143587127327919,
+          0.14187069237232208,
+          0.14360901713371277
+        ]
+      ],
+      "max_probability_delta": 0.3641631007194519,
+      "passed": true
+    },
+    "loss": 44.51081848144531,
+    "policy_loss": -0.024241920560598373,
+    "value_loss": 89.0985107421875,
+    "entropy": 1.419558048248291,
+    "approx_kl": 0.018837658688426018,
+    "clip_fraction": 0.125,
+    "gradient_l2": {
+      "encoder.0.weight": 295.2452392578125,
+      "encoder.0.bias": 45.951332092285156,
+      "encoder.4.weight": 15.697134017944336,
+      "encoder.4.bias": 3.1438846588134766,
+      "actor.weight": 1.2557445764541626,
+      "actor.bias": 0.05594756081700325,
+      "critic.weight": 179.70236206054688,
+      "critic.bias": 8.004026412963867
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.1265360713005066,
+      "encoder.0.bias": 0.012273367494344711,
+      "encoder.4.weight": 5.18281888961792,
+      "encoder.4.bias": 0.43936872482299805,
+      "actor.weight": 0.31867292523384094,
+      "actor.bias": 0.0027071223594248295,
+      "critic.weight": 0.4372553825378418,
+      "critic.bias": 0.004150882363319397
+    },
+    "training_seconds": 4.152930711001318,
+    "transitions_per_second": 61.643214831839934,
+    "lineage": {
+      "parent_run_id": "150298dd-0fa6-4785-a17d-7d37cbb44379",
+      "parent_path": "/home/kalstein/vscode/flycade/reports/t10-lineage-001/parent",
+      "parent_checkpoint_id": "1605980c-1fd2-4a08-84ad-b82278ec3f69",
+      "parent_checkpoint_sha256": "d3b031674762698b5a370eebea527ec90dcc6cd42930ed18a66aebc5197aedbb",
+      "parent_manifest_sha256": "5df67264c245300e47f7ccb1498c8aeebb905dbf800c2b23b6789864f50afecb",
+      "parent_updates": 4,
+      "graph_sha256": "97ea609f3c64c24ebfd90c73b4590878d437b5e67851dff1f60f9e74c730de7f",
+      "kind": "full_state_branch",
+      "inherited": "model, optimizer, RNG, counters and schedules",
+      "initial_policy": "inherited ancestor initial; not the branch starting checkpoint",
+      "parent_budget": {
+        "total_updates": 100000,
+        "original_updates": 100000,
+        "events": [],
+        "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+      },
+      "protected_origin": "origin/checkpoint.pt; original parent bytes, independent of parent retention"
+    },
+    "last_save": {
+      "checkpoint_id": "da18ebf3-4c2b-4ade-8c3c-971e2fc54f84",
+      "updates": 8,
+      "transitions": 256,
+      "completed_unix": 1791615032.7727323
+    },
+    "resumed_from": "c1356c0d-85f4-4ea7-94f7-7f9ad372abc8",
+    "resume_reset": {
+      "frames": 0,
+      "max_progress": 0,
+      "stack_frames_equal": true
+    },
+    "checkpoint_id": "da18ebf3-4c2b-4ade-8c3c-971e2fc54f84",
+    "final_sha256": "634cc66f85dd20db8d57d645ed90cfff607a4dd966881fdc3ae14322509581e5",
+    "pruned_checkpoints": [],
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 5,
+      "published": 5,
+      "dropped": 0,
+      "selected_forward_seconds": 0.11152914400190639,
+      "actual_hz": 2.4488099557721337,
+      "encode_seconds": 0.02222626400180161,
+      "error": null
+    },
+    "wall_seconds": 2.246836700000131,
+    "peak_rss_bytes": 2346479616,
+    "peak_cuda_allocated_bytes": 111783936
+  },
+  "warm": {
+    "output": "/home/kalstein/vscode/flycade/reports/t10-lineage-001/warm",
+    "run_id": "20528095-b20a-4132-933e-87a034327268",
+    "session_id": "6739ae51-03a2-488e-a7b8-50cfccb3f419",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 128,
+    "emulator_frames": 512,
+    "updates": 4,
+    "optimizer_steps": 8,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 554.0,
+    "max_progress": 554,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "9095d6debd40004cb13005bd50ae2d4af6d5ffd77b193a24facb51aeda564dc6",
+    "budget": {
+      "total_updates": 8,
+      "original_updates": 8,
+      "events": [],
+      "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+    },
+    "lineage": {
+      "parent_run_id": "150298dd-0fa6-4785-a17d-7d37cbb44379",
+      "parent_path": "/home/kalstein/vscode/flycade/reports/t10-lineage-001/parent",
+      "parent_checkpoint_id": "1605980c-1fd2-4a08-84ad-b82278ec3f69",
+      "parent_checkpoint_sha256": "d3b031674762698b5a370eebea527ec90dcc6cd42930ed18a66aebc5197aedbb",
+      "parent_manifest_sha256": "5df67264c245300e47f7ccb1498c8aeebb905dbf800c2b23b6789864f50afecb",
+      "parent_updates": 4,
+      "graph_sha256": "97ea609f3c64c24ebfd90c73b4590878d437b5e67851dff1f60f9e74c730de7f",
+      "kind": "warm_start",
+      "loaded": "all model state_dict keys; strict shapes; no partial load",
+      "excluded": [
+        "optimizer",
+        "RNG",
+        "counters",
+        "save/evaluation schedules",
+        "parent training config"
+      ]
+    },
+    "next_autosave_seconds": 600,
+    "training_started_unix": 1791615035.199682,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.03275187313556671,
+          0.5060359239578247,
+          0.05822107195854187,
+          0.05749223381280899,
+          0.21469657123088837,
+          0.029404891654849052,
+          0.10139743983745575
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14354044198989868,
+          0.141872838139534,
+          0.14313530921936035,
+          0.1423845887184143,
+          0.143587127327919,
+          0.14187069237232208,
+          0.14360901713371277
+        ]
+      ],
+      "max_probability_delta": 0.3641631007194519,
+      "passed": true
+    },
+    "loss": 1349.8162841796875,
+    "policy_loss": 0.00554879754781723,
+    "value_loss": 2699.633544921875,
+    "entropy": 0.5991070866584778,
+    "approx_kl": 0.001616036519408226,
+    "clip_fraction": 0.0,
+    "gradient_l2": {
+      "encoder.0.weight": 1631.680908203125,
+      "encoder.0.bias": 253.9629669189453,
+      "encoder.4.weight": 82.83991241455078,
+      "encoder.4.bias": 18.135244369506836,
+      "actor.weight": 1.2978017330169678,
+      "actor.bias": 0.06467080861330032,
+      "critic.weight": 903.4482421875,
+      "critic.bias": 45.131622314453125
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.047116752713918686,
+      "encoder.0.bias": 0.004534111358225346,
+      "encoder.4.weight": 1.9280883073806763,
+      "encoder.4.bias": 0.1708495318889618,
+      "actor.weight": 0.1564672738313675,
+      "actor.bias": 0.0014756714226678014,
+      "critic.weight": 0.16662590205669403,
+      "critic.bias": 0.0015776865184307098
+    },
+    "training_seconds": 2.006078060998334,
+    "transitions_per_second": 63.806091342377876,
+    "checkpoint_id": "9735f7cd-6fd4-44c3-8f16-67ef45d1a528",
+    "final_sha256": "cb3908c897c7ae144c1c84da440ee7e4f116836d650744ace4ffd68955f664fc",
+    "last_save": {
+      "checkpoint_id": "9735f7cd-6fd4-44c3-8f16-67ef45d1a528",
+      "updates": 4,
+      "transitions": 128,
+      "completed_unix": 1791615037.343345
+    },
+    "pruned_checkpoints": [],
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 4,
+      "published": 4,
+      "dropped": 0,
+      "selected_forward_seconds": 0.11060298300253635,
+      "actual_hz": 1.7158498104170175,
+      "encode_seconds": 0.01975390799998422,
+      "error": null
+    },
+    "wall_seconds": 2.3407631430000038,
+    "peak_rss_bytes": 2398253056,
+    "peak_cuda_allocated_bytes": 111489024
+  },
+  "parent_hashes_unchanged": true,
+  "parent_files_checked": 47,
+  "branch_browser": "Run \uc815\ubcf4 \u00b7 \uc804\uccb4 \uc0c1\ud0dc \ubd84\uae30\n\nRun 00c463d5-a12b-45f5-906a-5a6408863828\n\n\ubd80\ubaa8 Run 150298dd-0fa6-4785-a17d-7d37cbb44379 \u00b7 \uccb4\ud06c\ud3ec\uc778\ud2b8 1605980c-1fd2-4a08-84ad-b82278ec3f69 \u00b7 \ubd80\ubaa8 update 4. \ubaa8\ub378\u00b7optimizer\u00b7\ub09c\uc218\u00b7\ub204\uc801 \uc9c4\ub3c4\u00b7\uc2a4\ucf00\uc904\uc744 \uc774\uc5b4\ubc1b\uc2b5\ub2c8\ub2e4. \ucd08\uae30 \uc815\ucc45\uc740 \uc870\uc0c1 Run\uc758 \ucd08\uae30\ubcf8\uc785\ub2c8\ub2e4.\n\n\ucd1d \uc608\uc0b0 100,010 updates \u00b7 \ucd5c\ucd08 \uc608\uc0b0 100,000 \u00b7 \uace0\uc815 \ud559\uc2b5\ub960, \ub204\uc801 \uc2a4\ucf00\uc904 \uc720\uc9c0\n\n2026. 10. 10. \uc624\ud6c4 3:50:28 \u00b7 update 4\uc5d0\uc11c \uc608\uc0b0 100,000 \u2192 100,010",
+  "warm_browser": "Run \uc815\ubcf4 \u00b7 \uac00\uc911\uce58 \uc7ac\uc0ac\uc6a9 \u00b7 \uc0c8 \uc2e4\ud5d8\n\nRun 20528095-b20a-4132-933e-87a034327268\n\n\ubd80\ubaa8 Run 150298dd-0fa6-4785-a17d-7d37cbb44379 \u00b7 \uccb4\ud06c\ud3ec\uc778\ud2b8 1605980c-1fd2-4a08-84ad-b82278ec3f69 \u00b7 \ubd80\ubaa8 update 4. \uc804\uccb4 \uac00\uc911\uce58 \ub85c\ub4dc \u00b7 optimizer\u00b7\ub09c\uc218\u00b7\uc9c4\ub3c4\u00b7\uc800\uc7a5/\ud3c9\uac00 \uc2a4\ucf00\uc904\uc740 \uc0c8\ub85c \uc2dc\uc791\ud569\ub2c8\ub2e4.\n\n\ucd1d \uc608\uc0b0 8 updates \u00b7 \ucd5c\ucd08 \uc608\uc0b0 8 \u00b7 \uace0\uc815 \ud559\uc2b5\ub960, \ub204\uc801 \uc2a4\ucf00\uc904 \uc720\uc9c0\n\n\uc608\uc0b0 \uc5f0\uc7a5 \uc774\ub825 \uc5c6\uc74c"
+}

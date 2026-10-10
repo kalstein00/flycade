@@ -35,6 +35,15 @@ function operation(control) {
   $('#recovery').textContent=recovery?.state==='failed'?'복구 가능한 정상본 없음':saved?`마지막 복구 시점 ${time(saved.completed_unix)} · update ${number(saved.updates)} · ${number(saved.transitions)}전이`:'정상 저장본 없음';
   $('#reset-notice').textContent=control.reset ? '세션 시작: 새 에피소드 · 누적 학습 진도 유지' : '';
 }
+function runInformation(info) {
+  if (!info) return;
+  const lineage=info.lineage, budget=info.budget;
+  $('#run-kind').textContent=({full_state_branch:'전체 상태 분기',warm_start:'가중치 재사용 · 새 실험'})[lineage?.kind] || '새 학습 실험';
+  $('#run-identity').textContent=`Run ${info.run_id}`;
+  $('#lineage').textContent=lineage ? `부모 Run ${lineage.parent_run_id} · 체크포인트 ${lineage.parent_checkpoint_id} · 부모 update ${number(lineage.parent_updates)}. ${lineage.kind==='warm_start'?'전체 가중치 로드 · optimizer·난수·진도·저장/평가 스케줄은 새로 시작합니다.':'모델·optimizer·난수·누적 진도·스케줄을 이어받습니다. 초기 정책은 조상 Run의 초기본입니다.'}` : '부모 없음 · 새 초기 정책에서 시작';
+  $('#budget-info').textContent=budget ? `총 예산 ${number(budget.total_updates)} updates · 최초 예산 ${number(budget.original_updates)} · 고정 학습률, 누적 스케줄 유지` : `예산 기록 확인 실패: ${info.error}`;
+  $('#budget-events').textContent=budget?.events.length ? budget.events.map(event=>`${new Date(event.created_unix*1000).toLocaleString('ko-KR')} · update ${number(event.at_updates)}에서 예산 ${number(event.previous_updates)} → ${number(event.total_updates)}`).join(' / ') : '예산 연장 이력 없음';
+}
 function circuit(root, graph, sample) {
   const svg = $('#circuit', root), ns = 'http://www.w3.org/2000/svg';
   const element = (tag, attrs) => {const node = document.createElementNS(ns, tag); for (const [k,v] of Object.entries(attrs)) node.setAttribute(k, v); svg.append(node); return node;};
@@ -111,6 +120,7 @@ async function poll() {
     if (accepts(next)) {
       if (!current || next.generation!==current.generation || next.sequence!==current.sequence || next.status!==current.status) await render(next);
       operation(next.control);
+      runInformation(next.run_info);
       current=next;runID=next.run_id;lastReceived=Date.now()/1000;
       $('#run').textContent=next.run_id.slice(0,8);$('#run').title=next.run_id;
       $('#session').textContent=next.session_id?.slice(0,8)||'—';$('#session').title=next.session_id||'';

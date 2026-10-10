@@ -58,6 +58,24 @@ def main() -> int:
     resume_parser.add_argument('--observe-hz', type=int, choices=OBSERVATION_RATES, default=3)
     resume_parser.add_argument('--home', type=Path, default=Path('.flycade'))
     resume_parser.add_argument('--stop-after-updates', type=int)
+    branch_parser = sub.add_parser('branch')
+    branch_parser.add_argument('parent', type=Path)
+    branch_parser.add_argument('--checkpoint', required=True)
+    branch_parser.add_argument('--output', type=Path, required=True)
+    branch_parser.add_argument('--home', type=Path, default=Path('.flycade'))
+    warm = sub.add_parser('warm-start')
+    warm.add_argument('parent', type=Path)
+    warm.add_argument('--checkpoint', required=True)
+    warm.add_argument('--output', type=Path, required=True)
+    warm.add_argument('--home', type=Path, default=Path('.flycade'))
+    warm.add_argument('--training-config', type=Path)
+    warm.add_argument('--config', type=Path)
+    warm.add_argument('--stop-after-updates', type=int)
+    warm.add_argument('--observe-hz', type=int, choices=OBSERVATION_RATES, default=3)
+    extension = sub.add_parser('extend-budget')
+    extension.add_argument('run', type=Path)
+    extension.add_argument('--updates', type=int, required=True)
+    extension.add_argument('--home', type=Path, default=Path('.flycade'))
     checkpoints = sub.add_parser('checkpoints')
     checkpoints.add_argument('run', type=Path)
     pin = sub.add_parser('pin-checkpoint')
@@ -126,6 +144,17 @@ def main() -> int:
         elif args.command == 'compare-evaluations':
             from flycade.evaluation import compare_evaluations
             report = compare_evaluations(args.run, args.evaluations)
+        elif args.command == 'extend-budget':
+            from flycade.budget import extend_budget
+            report = extend_budget(args.run, args.updates, args.home)
+        elif args.command == 'warm-start':
+            from flycade.experiments import warm_start
+            report = warm_start(args.parent, args.checkpoint, args.output, args.home,
+                json.loads(args.training_config.read_text()) if args.training_config else {},
+                json.loads(args.config.read_text()) if args.config else None, args.stop_after_updates, args.observe_hz)
+        elif args.command == 'branch':
+            from flycade.experiments import branch
+            report = branch(args.parent, args.checkpoint, args.output, args.home)
         elif args.command == 'checkpoints':
             from flycade.retention import checkpoint_history
             report = checkpoint_history(args.run)

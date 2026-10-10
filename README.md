@@ -255,3 +255,5 @@ uv run --offline --locked --extra train flycade resume reports/daily-001
 `resume RUN`은 최신 정상본을 검증하고, 손상됐으면 공개 확인 기록이 있는 이전 정상본을 차례로 검사한다. 같은 Run의 새 세션에서 이어가며 되돌린 update·전이와 후보별 오류를 CLI/관찰 화면에 표시한다. 이전 로그는 보존한다. 검증 가능한 정상본이 없으면 일치하는 로컬 백업을 복원하거나 새 Run을 만들어야 한다.
 
 기본 최근3개 정상본 외에 원하는 전체 학습 상태는 `pin-checkpoint RUN UUID`로 보호한다. `checkpoints RUN`에서 목록을 확인하며 pin 변경은 저장 후 종료한 상태에서 수행한다. 초기 정책과 최고본 참조는 보호한다. 공개 순서·오류 주입·보존 범위·실제 복구 증거는 [T09 기록](docs/validation/T09.md)을 참조한다.
+
+과거 저장본의 전체 학습 상태를 새 Run으로 이어가려면 `branch PARENT --checkpoint UUID --output CHILD` 후 `resume CHILD`를 실행합니다. `warm-start PARENT --checkpoint UUID --output CHILD --training-config CONFIG.json`은 가중치만 가져와 새 optimizer·진도·스케줄로 학습합니다. `extend-budget RUN --updates TOTAL`은 정지한 같은 Run의 총 update 예산을 명시적으로 늘립니다. 브라우저 ‘Run 정보’에서 부모 계보와 예산 변경을 확인할 수 있습니다. [계약·검증·실행 안내](docs/validation/T10.md).

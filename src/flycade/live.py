@@ -41,6 +41,13 @@ def serve_live(run: Path, port: int = 8766) -> dict[str, Any]:
                     envelope['control'] = run_status(run)
                 except (OSError, ValueError, KeyError):
                     envelope['control'] = None
+                from flycade.budget import budget_info
+                try:
+                    envelope['run_info'] = {'run_id': manifest['run_id'],
+                        'lineage': manifest.get('lineage'), 'budget': budget_info(run, manifest)}
+                except (OSError, ValueError, KeyError, TypeError) as exc:
+                    envelope['run_info'] = {'run_id': manifest['run_id'],
+                        'lineage': manifest.get('lineage'), 'error': str(exc)}
                 body = json.dumps(envelope, allow_nan=False).encode()
                 content_type = 'application/json'
             elif self.path in ('/', '/live.js', '/live.css'):

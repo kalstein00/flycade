@@ -5,6 +5,7 @@
 <body>
 <header><h1>Flycade <span>학습 관찰</span></h1><div class="connection"><strong id="status" role="status">연결 중</strong><button id="reconnect" type="button">다시 연결</button></div></header>
 <div class="runbar"><span>Run <b id="run">—</b></span><span>세션 <b id="session">—</b></span><span>스테이지 <b id="stage">—</b></span><span id="mode">학습 · 확률적 행동 선택</span><span>현재 update <b id="update">—</b></span></div>
+<details id="run-info"><summary>Run 정보 · <strong id="run-kind">—</strong></summary><p id="run-identity" class="identifier"></p><p id="lineage" class="identifier"></p><p id="budget-info"></p><p id="budget-events"></p></details>
 <p class="freshness"><span id="received">수신된 표본 없음</span><span id="lag">지연 —</span><span id="frequency">표본 빈도 —</span></p>
 <div class="operations" aria-label="학습 저장 상태"><strong id="operation" role="status">저장 상태 확인 중</strong><span id="recovery"></span><span id="reset-notice"></span><span>학습 제어는 CLI에서 · 영상 일시정지는 학습을 중단하지 않습니다.</span></div>
 <div id="recovery-notice"><p id="rollback" role="status"></p><details id="recovery-details" hidden><summary>복구 후보와 오류</summary><pre id="recovery-errors"></pre></details></div>
