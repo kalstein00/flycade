@@ -1,0 +1,148 @@
+{
+  "run": "reports/reward-v2-001/run",
+  "session_wall_seconds": 602.6197124659993,
+  "learning_seconds": 592.3142623239983,
+  "updates": 613,
+  "transitions": 78464,
+  "initial": {
+    "snapshot_updates": 0,
+    "distances": [
+      682,
+      555,
+      250
+    ],
+    "mean_distance": 495.6666666666667,
+    "completion_count": 0,
+    "evaluation_count": 3,
+    "termination_counts": {
+      "no_progress": 2,
+      "death": 1
+    }
+  },
+  "latest": {
+    "snapshot_updates": 613,
+    "distances": [
+      859,
+      652,
+      1211
+    ],
+    "mean_distance": 907.3333333333334,
+    "completion_count": 0,
+    "evaluation_count": 3,
+    "termination_counts": {
+      "no_progress": 1,
+      "death": 2
+    }
+  },
+  "distance_delta": 411.6666666666667,
+  "action_counts": [
+    9498,
+    14834,
+    8021,
+    6135,
+    20615,
+    12574,
+    6787
+  ],
+  "last_rollout_action_counts": [
+    5,
+    13,
+    3,
+    3,
+    90,
+    7,
+    7
+  ],
+  "last_rollout_mean_probabilities": [
+    0.046250906540080905,
+    0.08225039005628787,
+    0.045533055264968425,
+    0.06731382853467949,
+    0.6377351279370487,
+    0.04839665914187208,
+    0.07252003310713917
+  ],
+  "last_rollout_entropy": 1.2866492428078211,
+  "reward_components": {
+    "completion": 0.0,
+    "death": -2580.0,
+    "enemy": 179.0,
+    "no_progress": -1890.0,
+    "progress": 2700.0999999990468,
+    "stall": -366.8199999999532,
+    "time": -312.7810000000374
+  },
+  "enemy_defeats": 358,
+  "training_episode_outcomes": {
+    "death": 258,
+    "no_progress": 189
+  },
+  "limitations": [
+    "One training seed, three fixed evaluation seeds, short session. No guarantee of improvement or generalization.",
+    "Rewards/config differ from old Run; reward sums are not comparable.",
+    "Multiple settings changed together; cannot attribute causality to one change."
+  ],
+  "evaluation_history": [
+    {
+      "snapshot_updates": 0,
+      "distances": [
+        682,
+        555,
+        250
+      ],
+      "mean_distance": 495.6666666666667,
+      "termination_counts": {
+        "no_progress": 2,
+        "death": 1
+      }
+    },
+    {
+      "snapshot_updates": 250,
+      "distances": [
+        555,
+        555,
+        555
+      ],
+      "mean_distance": 555.0,
+      "termination_counts": {
+        "no_progress": 3
+      }
+    },
+    {
+      "snapshot_updates": 500,
+      "distances": [
+        555,
+        555,
+        554
+      ],
+      "mean_distance": 554.6666666666666,
+      "termination_counts": {
+        "no_progress": 3
+      }
+    },
+    {
+      "snapshot_updates": 613,
+      "distances": [
+        859,
+        652,
+        1211
+      ],
+      "mean_distance": 907.3333333333334,
+      "termination_counts": {
+        "no_progress": 1,
+        "death": 2
+      }
+    }
+  ],
+  "saved_status": {
+    "status": "saved",
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "recording_status": "complete",
+    "checkpoint_id": "4c0b1fd3-f04c-465c-80c8-74e4122f7a0c"
+  },
+  "distance_change_percent": 83.05312710154674,
+  "last_rollout_action4_fraction": 0.703125,
+  "conclusion": "Distance improved for all three fixed evaluation seeds. No completion; deaths increased from1 to2 as no-progress endings decreased from2 to1. Action4 no longer fully collapsed but remains dominant. No additional training started."
+}
