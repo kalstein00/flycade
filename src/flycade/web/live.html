@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="ko">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Flycade · 실시간 학습 관찰</title><link rel="stylesheet" href="/live.css"><script defer src="/live.js"></script></head>
+<title>Flycade · 실시간 학습 관찰</title><link rel="stylesheet" href="/live.css"><script defer src="/inspector.js"></script><script defer src="/live.js"></script></head>
 <body>
 <header><h1>Flycade <span>학습 관찰</span></h1><div class="connection"><strong id="status" role="status">연결 중</strong><button id="reconnect" type="button">다시 연결</button></div></header>
-<div class="runbar"><span>Run <b id="run">—</b></span><span>세션 <b id="session">—</b></span><span>스테이지 <b id="stage">—</b></span><span id="mode">학습 · 확률적 행동 선택</span><span>현재 update <b id="update">—</b></span></div>
+<div class="stream-controls"><label for="run-choice">관찰 Run</label><select id="run-choice" aria-label="관찰 Run"></select><label for="worker-choice">worker</label><select id="worker-choice" aria-label="관찰 worker"></select><span>읽기 전용 · 실행 worker 수는 학습 프리셋을 따릅니다.</span></div>
+<div class="runbar"><span>Run <b id="run">—</b></span><span>세션 <b id="session">—</b></span><span>스테이지 <b id="stage">—</b></span><span id="model-kind">모델: 커넥톰 PPO</span><span id="mode">학습 · 확률적 행동 선택</span><span>현재 update <b id="update">—</b></span></div>
 <details id="run-info"><summary>Run 정보 · <strong id="run-kind">—</strong></summary><p id="run-identity" class="identifier"></p><p id="lineage" class="identifier"></p><p id="budget-info"></p><p id="budget-events"></p></details>
 <p class="freshness"><span id="received">수신된 표본 없음</span><span id="lag">지연 —</span><span id="frequency">표본 빈도 —</span></p>
 <div class="operations" aria-label="학습 저장 상태"><strong id="operation" role="status">저장 상태 확인 중</strong><span id="recovery"></span><span id="reset-notice"></span><span>학습 제어는 CLI에서 · 영상 일시정지는 학습을 중단하지 않습니다.</span></div>
@@ -16,17 +17,20 @@
 <div class="game-caption"><span>선택 버튼 <strong id="chosen"></strong></span><span>에피소드 <b id="episode"></b> · step <b id="step"></b></span></div>
 <div class="transition"><h3>행동 적용 후 · 전이 결과</h3><dl><div><dt>보상</dt><dd id="reward"></dd></div><div><dt>진행 거리</dt><dd id="progress"></dd></div><div><dt>종료 사유</dt><dd id="reason"></dd></div></dl><p>RAM 기반 성과 지표 · 정책 입력에 포함되지 않음</p></div></section>
 <section class="network panel"><h2>실제 회로 활동 <span>고정 구조도 · 해부학 위치 아님</span></h2>
-<svg id="circuit" viewBox="0 0 340 350" role="img" aria-label="실제 부분 그래프의 연결과 노드별 모델 활성값"></svg>
-<div class="legend"><span>원: 입력군</span><span>마름모: 내부</span><span>사각형: 출력군</span></div>
+<div class="circuit-controls"><label>표시군 <select id="node-filter"><option value="all">전체</option><option value="input">입력군</option><option value="output">출력군</option><option value="internal">내부군</option><option value="neighbors">선택 뉴런과 연결</option></select></label><button id="zoom-out" type="button" aria-label="회로 축소">축소</button><span id="zoom-level"></span><button id="zoom-in" type="button" aria-label="회로 확대">확대</button></div>
+<svg id="circuit" viewBox="0 0 340 350" role="group" aria-label="실제 부분 그래프의 연결과 노드별 모델 활성값"></svg>
+<p id="filter-counts"></p><div class="legend"><span>원: 입력군</span><span>마름모: 내부</span><span>사각형: 출력군</span></div>
 <p class="activity-key"><i class="negative"></i> −1 <i class="neutral"></i> 0 <i class="positive"></i> +1</p>
 <p>색: 마지막 전파 단계 상태 벡터의 산술평균 (−1~+1). 생물학적 전압·발화율이 아닙니다.</p><p id="activity-summary"></p>
 <details><summary>그래프 버전과 표시 범위</summary><p id="graph-counts"></p><p id="graph-version" class="identifier"></p><p>실제 입력→출력 경로의 처음·끝 각 32개와 입력·출력군 각 앞 12개에서 연결 이웃을 3회 탐색합니다. 인덱스 순으로 최대 128개 노드, 그 사이의 앞 512개 방향 연결을 표시합니다. 필터는 정책을 변경하지 않습니다.</p></details>
 </section>
-<section class="detail panel"><h2>정책 입력과 행동</h2><h3>실제 전처리 픽셀</h3><div id="inputs"></div><p id="input-contract"></p>
+<section class="detail panel"><h2>정책 입력과 행동</h2><h3>실제 전처리 픽셀</h3><label for="frame-choice">누적 입력 보기</label><select id="frame-choice"><option value="all">연속 이미지</option></select><div id="inputs"></div><img id="selected-input" hidden alt="선택한 정책 입력"><p id="input-contract"></p>
 <h3>행동 확률</h3><p class="action-note">범주 분포에서 샘플링 · <b>선택</b> 표시가 실제 행동<br>최대 확률 행동: <b id="argmax"></b></p><div id="actions"></div>
+<details id="history-details" open><summary>최근 활동과 행동 확률</summary><p id="history-activity-label"></p><svg id="history-activity" class="history-chart" viewBox="0 0 290 100" role="img" aria-label="모델 활성 평균의 최근 시계열"></svg><label for="history-action">확률 이력의 행동</label><select id="history-action"></select><p>세로축: 행동 확률 (0~1)</p><svg id="history-probability" class="history-chart" viewBox="0 0 290 100" role="img" aria-label="선택 행동 확률의 최근 시계열"></svg><p id="history-note"></p></details>
+<p id="selected-neuron" class="identifier"></p><p id="selected-value"></p><details id="neuron-details"><summary>뉴런 표 · |활성 평균| 상위 10개와 선택</summary><table class="neurons"><thead><tr><th>원본 ID · 종류 / 영역</th><th>군</th><th>평균</th></tr></thead><tbody id="neurons"></tbody></table><p>부호 있는 벡터 산술평균 · −1~+1 · 무차원. 0은 실제 값, 누락은 빈 관측, 미상은 알려지지 않은 주석입니다. 미사용은 정책 그래프 밖으로 관측 대상이 아닙니다.</p></details>
 </section>
 </div>
 <section class="metrics panel"><h2>학습·자원 <span id="metrics-time"></span></h2><dl id="metrics"></dl><p id="save-state"></p></section>
-<footer><details><summary>표본 식별 정보</summary><dl class="identity"><dt>표본 ID</dt><dd id="sample-id"></dd><dt>스트림 / worker</dt><dd id="stream"></dd><dt>정책 버전</dt><dd id="policy-version"></dd><dt>표본 시각</dt><dd id="sample-time"></dd><dt>관측 SHA-256</dt><dd id="observation-hash"></dd></dl></details><p>최신 완성 표본만 표시 · 전송 대기 1개 · 최근 이력 0개 · 화면을 닫아도 학습은 계속됩니다.</p></footer>
+<footer><details><summary>표본 식별 정보</summary><dl class="identity"><dt>표본 ID</dt><dd id="sample-id"></dd><dt>스트림 / worker</dt><dd id="stream"></dd><dt>정책 버전</dt><dd id="policy-version"></dd><dt>표본 시각</dt><dd id="sample-time"></dd><dt>관측 SHA-256</dt><dd id="observation-hash"></dd></dl></details><p>최신 완성 표본만 표시 · 전송 대기 1개 · 브라우저 이력 최대 30초·90개 · 화면을 닫아도 학습은 계속됩니다.</p></footer>
 </template>
 </body></html>

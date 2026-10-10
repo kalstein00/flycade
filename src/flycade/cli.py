@@ -91,6 +91,7 @@ def main() -> int:
     live = sub.add_parser('live')
     live.add_argument('run', type=Path)
     live.add_argument('--port', type=int, default=8766)
+    live.add_argument('--run', dest='run_options', type=Path, action='append', default=[], help='Additional Run available in the read-only viewer')
     history = sub.add_parser('history')
     history.add_argument('output', type=Path)
     history.add_argument('--serve', action='store_true', help='Read-only local browser playback')
@@ -169,7 +170,7 @@ def main() -> int:
             report = run_status(args.run)
         elif args.command == 'live':
             from flycade.live import serve_live
-            report = serve_live(args.run, args.port)
+            report = serve_live(args.run, args.port, args.run_options)
         elif args.command == 'history':
             from flycade.recording import recording_history
             if args.serve:

@@ -171,6 +171,12 @@ def test_active_browser_close_does_not_stop_or_change_training(tmp_path):
             page.wait_for_selector('[data-sample-id]')
             assert trainer.poll() is None
             first = json.loads((runs[0] / 'live' / 'latest.json').read_text())
+            page.locator('#circuit [data-node]').first.focus()
+            page.keyboard.press('Enter')
+            page.locator('#node-filter').select_option('output')
+            page.locator('#zoom-in').click()
+            page.locator('#history-action').select_option('2')
+            page.locator('#frame-choice').select_option('1')
             before = first['sample']['step']
             initial_bytes = (runs[0] / 'live' / 'latest.json').stat().st_size
             page.context.set_offline(True)

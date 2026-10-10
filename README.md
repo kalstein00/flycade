@@ -257,3 +257,5 @@ uv run --offline --locked --extra train flycade resume reports/daily-001
 기본 최근3개 정상본 외에 원하는 전체 학습 상태는 `pin-checkpoint RUN UUID`로 보호한다. `checkpoints RUN`에서 목록을 확인하며 pin 변경은 저장 후 종료한 상태에서 수행한다. 초기 정책과 최고본 참조는 보호한다. 공개 순서·오류 주입·보존 범위·실제 복구 증거는 [T09 기록](docs/validation/T09.md)을 참조한다.
 
 과거 저장본의 전체 학습 상태를 새 Run으로 이어가려면 `branch PARENT --checkpoint UUID --output CHILD` 후 `resume CHILD`를 실행합니다. `warm-start PARENT --checkpoint UUID --output CHILD --training-config CONFIG.json`은 가중치만 가져와 새 optimizer·진도·스케줄로 학습합니다. `extend-budget RUN --updates TOTAL`은 정지한 같은 Run의 총 update 예산을 명시적으로 늘립니다. 브라우저 ‘Run 정보’에서 부모 계보와 예산 변경을 확인할 수 있습니다. [계약·검증·실행 안내](docs/validation/T10.md).
+
+라이브 회로에서 노드(Enter/Space 가능)나 뉴런 표를 선택하면 원본 ID·알려진 종류·모델 활성 평균을 볼 수 있습니다. 표시군/연결 필터·확대·입력 프레임·짧은 활동 이력은 브라우저 안에서만 바뀝니다. `live RUN_A --run RUN_B`로 명시한 Run 사이를 전환합니다. [관찰 범위와 이력 상한·검증](docs/validation/T11.md).

@@ -1,0 +1,357 @@
+{
+  "other": {
+    "output": "/home/kalstein/vscode/flycade/reports/t11-inspector-003/other",
+    "run_id": "ebe6fca2-d17f-4b25-b9a0-894f12251ace",
+    "session_id": "c2983381-d971-441b-ae45-8517eed5b5c5",
+    "evidence": "real NES on cuda",
+    "status": "completed",
+    "transitions": 64,
+    "emulator_frames": 256,
+    "updates": 2,
+    "optimizer_steps": 4,
+    "episodes": 0,
+    "episode_outcomes": {},
+    "reward_sum": 273.0,
+    "max_progress": 273,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "budget": {
+      "total_updates": 2,
+      "original_updates": 2,
+      "events": [],
+      "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+    },
+    "next_autosave_seconds": 600,
+    "training_started_unix": 1791623213.5026476,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.13501065969467163,
+          0.1331796795129776,
+          0.13726885616779327,
+          0.149994358420372,
+          0.15055043995380402,
+          0.13946370780467987,
+          0.1545322835445404
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14366517961025238,
+          0.14164121448993683,
+          0.14318563044071198,
+          0.14242911338806152,
+          0.14349770545959473,
+          0.14200611412525177,
+          0.1435750424861908
+        ]
+      ],
+      "max_probability_delta": 0.01095724105834961,
+      "passed": true
+    },
+    "loss": 1129.958984375,
+    "policy_loss": -0.0600958988070488,
+    "value_loss": 2260.07470703125,
+    "entropy": 1.8355159759521484,
+    "approx_kl": 0.01716931164264679,
+    "clip_fraction": 0.40625,
+    "gradient_l2": {
+      "encoder.0.weight": 415.43365478515625,
+      "encoder.0.bias": 64.17769622802734,
+      "encoder.4.weight": 42.91419219970703,
+      "encoder.4.bias": 14.29537582397461,
+      "actor.weight": 1.2835140228271484,
+      "actor.bias": 0.11667797714471817,
+      "critic.weight": 434.7386169433594,
+      "critic.bias": 39.65480041503906
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.025002749636769295,
+      "encoder.0.bias": 0.0024972851388156414,
+      "encoder.4.weight": 1.4257261753082275,
+      "encoder.4.bias": 0.12797248363494873,
+      "actor.weight": 0.1771138608455658,
+      "actor.bias": 0.001657371874898672,
+      "critic.weight": 0.12321729958057404,
+      "critic.bias": 0.0011878740042448044
+    },
+    "training_seconds": 1.664683689999947,
+    "transitions_per_second": 38.445742205837334,
+    "checkpoint_id": "d912b942-18a4-4cd7-b801-0baced831957",
+    "final_sha256": "dde8d44362badad0a294f6fbb049d35f64d01a23abfdda33266537a50d4124c0",
+    "last_save": {
+      "checkpoint_id": "d912b942-18a4-4cd7-b801-0baced831957",
+      "updates": 2,
+      "transitions": 64,
+      "completed_unix": 1791623215.3222034
+    },
+    "pruned_checkpoints": [],
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 3,
+      "published": 3,
+      "dropped": 0,
+      "selected_forward_seconds": 0.17818686200007505,
+      "actual_hz": 1.6008275112832162,
+      "encode_seconds": 0.014356151999891154,
+      "error": null
+    },
+    "wall_seconds": 2.0229527699993923,
+    "peak_rss_bytes": 2332635136,
+    "peak_cuda_allocated_bytes": 111489024
+  },
+  "history_count": "34",
+  "selected": "720575940599755718 \u00b7 T4a \u00b7 \uc601\uc5ed: \uc54c \uc218 \uc5c6\uc74c \u00b7 \ucd9c\ub825 \u00b7 \uc815\ucc45 \uc0ac\uc6a9 \ub178\ub4dc",
+  "value": "\ubaa8\ub378 \ud65c\uc131 \ud3c9\uade0 -0.15968 \u00b7 \ubb34\ucc28\uc6d0",
+  "switch_run": "a672f0ba-2f28-404f-bb0e-e7cac918fd4f",
+  "train": {
+    "output": "/home/kalstein/vscode/flycade/reports/t11-inspector-003/run",
+    "run_id": "a672f0ba-2f28-404f-bb0e-e7cac918fd4f",
+    "session_id": "284c8a95-1156-4a38-8f97-722a18dc444a",
+    "evidence": "real NES on cuda",
+    "status": "saved",
+    "transitions": 4096,
+    "emulator_frames": 16312,
+    "updates": 128,
+    "optimizer_steps": 256,
+    "episodes": 68,
+    "episode_outcomes": {
+      "no_progress": 3,
+      "death": 65
+    },
+    "reward_sum": 18094.0,
+    "max_progress": 682,
+    "safe_boundary": true,
+    "environment_closed": true,
+    "workers_alive": 0,
+    "nonfinite_count": 0,
+    "initial_sha256": "32d8ed3c748989e27e952b72f9aa596f8b61f6b3a3cdcf0857d1e09ec4c06d87",
+    "budget": {
+      "total_updates": 100000,
+      "original_updates": 100000,
+      "events": [],
+      "schedule_rule": "constant learning rate; cumulative counters and save/evaluation schedules preserved"
+    },
+    "next_autosave_seconds": 600,
+    "training_paused": false,
+    "evaluation_worker_pid": 222346,
+    "evaluation_worker_reaped": true,
+    "initial_evaluation_id": "6cb4968b-21ff-447f-9dee-b5e5763b9498",
+    "training_started_unix": 1791623221.4572852,
+    "contract": {
+      "config": {
+        "width": 84,
+        "height": 84,
+        "color": "RGB",
+        "frame_stack": 4,
+        "action_repeat": 4,
+        "progress_reward": 1.0,
+        "survival_reward": 0.0,
+        "death_reward": -10.0,
+        "completion_reward": 100.0,
+        "no_progress_frames": 600,
+        "max_frames": 18000
+      },
+      "actions": [
+        [],
+        [
+          "RIGHT"
+        ],
+        [
+          "RIGHT",
+          "A"
+        ],
+        [
+          "RIGHT",
+          "B"
+        ],
+        [
+          "RIGHT",
+          "B",
+          "A"
+        ],
+        [
+          "A"
+        ],
+        [
+          "LEFT"
+        ]
+      ],
+      "button_order": [
+        "B",
+        null,
+        "SELECT",
+        "START",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "RIGHT",
+        "A"
+      ],
+      "observation_shape": [
+        4,
+        84,
+        84,
+        3
+      ],
+      "observation_dtype": "uint8",
+      "resize": "Pillow bilinear",
+      "frame_stack_order": "oldest to newest; last frame of each action repeat",
+      "policy_input": "pixels only",
+      "reward_unit": "per emulated frame"
+    },
+    "graph_influence": {
+      "intervention": "all edges removed; identical pixels and parameters",
+      "input_sha256": "250495448f51a0976eda8b7b294aac5aaebbf169025c6e4debb19dffeaee8c14",
+      "original_probabilities": [
+        [
+          0.13501065969467163,
+          0.1331796795129776,
+          0.13726885616779327,
+          0.149994358420372,
+          0.15055043995380402,
+          0.13946370780467987,
+          0.1545322835445404
+        ]
+      ],
+      "removed_probabilities": [
+        [
+          0.14366517961025238,
+          0.14164121448993683,
+          0.14318563044071198,
+          0.14242911338806152,
+          0.14349770545959473,
+          0.14200611412525177,
+          0.1435750424861908
+        ]
+      ],
+      "max_probability_delta": 0.01095724105834961,
+      "passed": true
+    },
+    "loss": 2486.916748046875,
+    "policy_loss": -0.014849783852696419,
+    "value_loss": 4973.8759765625,
+    "entropy": 0.6365640163421631,
+    "approx_kl": 0.002206813544034958,
+    "clip_fraction": 0.0625,
+    "gradient_l2": {
+      "encoder.0.weight": 4606.41552734375,
+      "encoder.0.bias": 868.2882690429688,
+      "encoder.4.weight": 936.02294921875,
+      "encoder.4.bias": 142.99623107910156,
+      "actor.weight": 1.1215037107467651,
+      "actor.bias": 0.03728633001446724,
+      "critic.weight": 1597.2435302734375,
+      "critic.bias": 57.97502899169922
+    },
+    "parameter_delta_l2": {
+      "encoder.0.weight": 0.6973960399627686,
+      "encoder.0.bias": 0.06415566056966782,
+      "encoder.4.weight": 26.285837173461914,
+      "encoder.4.bias": 0.9980074167251587,
+      "actor.weight": 0.5384863018989563,
+      "actor.bias": 0.005138983950018883,
+      "critic.weight": 3.4778451919555664,
+      "critic.bias": 0.01697814278304577
+    },
+    "training_seconds": 35.015659441000025,
+    "transitions_per_second": 116.97623478722699,
+    "checkpoint_id": "138251ab-6b7e-4130-a9a8-4098ae16d348",
+    "final_sha256": "c41b273568d30dfe17dc8d4ec0891b520a2cbff7edd53ddbaea816f84c07acfb",
+    "last_save": {
+      "checkpoint_id": "138251ab-6b7e-4130-a9a8-4098ae16d348",
+      "updates": 128,
+      "transitions": 4096,
+      "completed_unix": 1791623256.1238496
+    },
+    "pruned_checkpoints": [],
+    "recording_error": null,
+    "recording_status": "complete",
+    "observer": {
+      "requested_hz": 3,
+      "queue_capacity": 1,
+      "history_capacity": 0,
+      "captured": 101,
+      "published": 101,
+      "dropped": 0,
+      "selected_forward_seconds": 0.45188123999832897,
+      "actual_hz": 2.8728685034756256,
+      "encode_seconds": 0.3421043970010942,
+      "error": null
+    },
+    "wall_seconds": 39.00990794000063,
+    "peak_rss_bytes": 2373881856,
+    "peak_cuda_allocated_bytes": 111489024
+  }
+}
