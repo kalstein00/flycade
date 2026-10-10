@@ -1,0 +1,6 @@
+{
+  "seeds": [11, 22, 33],
+  "mode": "stochastic",
+  "max_frames": 1800,
+  "video_seconds": 15
+}

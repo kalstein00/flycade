@@ -26,10 +26,11 @@ from flycade.errors import PreparationError
 from flycade.game import GameConfig, GameEnv, Pixels
 from flycade.graph import digest, inspect_graph, write_json
 from flycade.nes import NesEmulator
-from flycade.policy import ConnectomePolicy
+from flycade.policy import ConnectomePolicy, policy_from_graph
 from flycade.recording import RecordingEmulator
 from flycade.rom import inspect_registration
 from flycade.training_fixture import FixtureEmulator
+from flycade.snapshot import publish_snapshot
 
 
 @dataclass(frozen=True)
@@ -149,16 +150,13 @@ def optimize(policy: ConnectomePolicy, optimizer: torch.optim.Optimizer,
 
 def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
           game: GameConfig, device: str, fixture: bool = False, stop_after_updates: int | None = None,
-           resume_state: dict[str, Any] | None = None) -> dict[str, Any]:
+           resume_state: dict[str, Any] | None = None,
+           initial_evaluation: dict[str, Any] | None = None) -> dict[str, Any]:
     if fixture and device != 'cpu':
         raise ValueError('Synthetic fixture requires --device cpu')
     if device == 'cuda' and not torch.cuda.is_available():
         raise PreparationError('cuda_unavailable', 'CUDA requested but unavailable; no silent CPU fallback')
     graph_report = inspect_graph(graph)
-    nodes = json.loads((graph / 'nodes.json').read_text())
-    edges = np.load(graph / 'edge_index.npy', allow_pickle=False).T.tolist()
-    inputs = [n['index'] for n in nodes if n['input']]
-    outputs = [n['index'] for n in nodes if n['output']]
     registration = {'evidence': 'synthetic fixture'} if fixture else inspect_registration(home)
     random.seed(config.seed)
     np.random.seed(config.seed)
@@ -167,8 +165,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
     if device == 'cuda':
         torch.cuda.reset_peak_memory_stats()
     channels = game.frame_stack * (3 if game.color == 'RGB' else 1)
-    policy = ConnectomePolicy(len(nodes), edges, np.load(graph / 'weight.npy').tolist(),
-        inputs, outputs, config.state_dim, config.propagation_steps, channels).to(device)
+    policy = policy_from_graph(graph, config.state_dim, config.propagation_steps, channels).to(device)
     optimizer = torch.optim.Adam(policy.parameters(), lr=config.learning_rate)
     initial_parameters = {name: p.detach().clone() for name, p in policy.named_parameters()}
     if resume_state is None:
@@ -208,6 +205,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                     os.fsync(handle.fileno())
         sync_directory(output / 'graph')
         sync_directory(output)
+        publish_snapshot(output, policy.state_dict(), manifest, 'initial', 0)
         report: dict[str, Any] = {'run_id': manifest['run_id'], 'session_id': manifest['session_id'],
             'evidence': 'synthetic CPU fixture; not NES/GPU acceptance' if fixture else f'real NES on {device}',
             'status': 'running', 'transitions': 0, 'emulator_frames': 0, 'updates': 0,
@@ -242,7 +240,24 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
     env: GameEnv | None = None
     recording: RecordingEmulator | None = None
     try:
-        recording = RecordingEmulator(FixtureEmulator() if fixture else NesEmulator(home), output, session)
+        if initial_evaluation is not None:
+            from flycade.evaluation import EvaluationConfig, create_protocol
+            protocol = output / 'initial-evaluation-protocol.json'
+            create_protocol(output, protocol, EvaluationConfig(**initial_evaluation))
+            report.update(status='evaluating_initial', training_paused=True)
+            write_json(output / 'report.json', report)
+            print('Initial evaluation: training waits before first rollout; separate CPU process.', file=sys.stderr)
+            result = subprocess.run([sys.executable, '-m', 'flycade', 'evaluate', str(output),
+                '--snapshot', 'initial', '--protocol', str(protocol), '--home', str(home),
+                '--device', 'cpu', '--training-paused'], capture_output=True, text=True, start_new_session=True)
+            if result.returncode != 0:
+                raise PreparationError('initial_evaluation_failed', result.stdout + result.stderr)
+            evaluation = json.loads(result.stdout)
+            report.update(initial_evaluation_id=evaluation['evaluation_id'], status='running', training_paused=False)
+        report['training_started_unix'] = time.time()
+        learning_started = time.perf_counter()
+        recording = RecordingEmulator(FixtureEmulator() if fixture else NesEmulator(home), output,
+            {**session, 'created_unix': report['training_started_unix']})
         env = GameEnv(recording, game)
         report['contract'] = env.describe()
         env.action_space.seed(config.seed + 1)
@@ -306,7 +321,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                 report['updates'] = update + 1
                 report['optimizer_steps'] += config.epochs
                 report['safe_boundary'] = True
-                elapsed = time.perf_counter() - started
+                elapsed = time.perf_counter() - learning_started
                 report['training_seconds'] = previous_seconds + elapsed
                 report['transitions_per_second'] = report['transitions'] / report['training_seconds']
                 log_row(updates, report)
@@ -320,6 +335,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         metadata = save_checkpoint(output, {'model': policy.state_dict(),
             'optimizer': optimizer.state_dict(), 'progress': report, 'manifest': manifest,
             **capture_rng(env, device)})
+        publish_snapshot(output, policy.state_dict(), manifest, metadata['checkpoint_id'], report['updates'])
         report['checkpoint_id'] = metadata['checkpoint_id']
         report['final_sha256'] = digest(output / 'final.pt')
         if digest(output / 'initial.pt') != report['initial_sha256']:
@@ -353,11 +369,15 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
 
 def train(home: Path, graph: Path, output: Path, config: TrainingConfig,
           game: GameConfig, device: str, fixture: bool = False,
-          stop_after_updates: int | None = None) -> dict[str, Any]:
+          stop_after_updates: int | None = None,
+          initial_evaluation: dict[str, Any] | None = None) -> dict[str, Any]:
     if output.exists():
         raise PreparationError('output_exists', f'Refusing to overwrite Run {output}')
     if stop_after_updates is not None and stop_after_updates <= 0:
         raise ValueError('stop-after-updates must be positive')
+    if initial_evaluation is not None:
+        from flycade.evaluation import EvaluationConfig
+        EvaluationConfig(**initial_evaluation)
     # Validate before reserving the directory, preserving the CLI no-artifacts-on-invalid-config contract.
     inspect_graph(graph)
     nodes = json.loads((graph / 'nodes.json').read_text())
@@ -369,7 +389,8 @@ def train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         raise ValueError('No input-to-output path within propagation_steps')
     output.mkdir(parents=True)
     with run_lock(output):
-        return _train(home, graph, output, config, game, device, fixture, stop_after_updates)
+        return _train(home, graph, output, config, game, device, fixture, stop_after_updates,
+                      initial_evaluation=initial_evaluation)
 
 
 def resume(output: Path, home: Path, stop_after_updates: int | None = None) -> dict[str, Any]:

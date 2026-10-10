@@ -24,7 +24,7 @@ button[aria-current=true] {font-weight:bold;text-decoration:underline}
 small {display:block} #error {color:light-dark(#a11919,#ffb3b3)}
 </style>
 <main><h1>플레이 영상 내역</h1>
-<p>학습 기록 영상</p><p>저장된 플레이를 다시 봅니다. 실시간 화면이나 고정 정책 평가가 아닙니다. 소리와 회로 활동 이력은 포함하지 않습니다.</p>
+<p id="mode">학습 기록 영상</p><p>학습 플레이와 고정 정책 평가의 저장된 영상을 다시 봅니다. 실시간 화면이 아니며 소리와 회로 활동 이력은 포함하지 않습니다.</p>
 <p id="run"></p><video controls preload="metadata" aria-label="선택한 플레이 영상"></video>
 <p id="detail" aria-live="polite">목록에서 영상을 선택하세요.</p><p id="error" role="alert"></p>
 <h2>저장된 영상</h2><p>각 영상은 최대 1분입니다. 새 기록을 보려면 페이지를 새로고침하세요.</p><ul id="recordings"></ul></main>
@@ -39,11 +39,15 @@ for (const [index, recording] of history.recordings.entries()) {
   const item = document.createElement('li');
   const button = document.createElement('button');
   const date = new Date(recording.created_unix * 1000).toLocaleString('ko-KR');
-  const title = date + ' · 구간 ' + recording.segment;
+  const modes = {training_recording: '학습 기록 영상', stochastic_evaluation: '확률적 평가 기록 영상',
+    deterministic_spectating: '결정론적 관전 기록 영상'};
+  const model = recording.snapshot_id === 'initial' ? '초기 모델' :
+    (recording.snapshot_id ? '갱신 ' + recording.start_updates + ' 모델' : '학습 플레이');
+  const title = date + ' · ' + model + ' · 구간 ' + recording.segment;
   button.textContent = title + ' 재생';
   const info = document.createElement('small');
   info.textContent = '세션 시작: ' + recording.start_updates + ' 갱신 · ' +
-    recording.duration_seconds.toFixed(1) + '초 · ' + (recording.bytes / 1024).toFixed(1) + ' KB';
+    recording.duration_seconds.toFixed(1) + '초 · ' + (recording.bytes / 1024).toFixed(1) + ' KB · ' + modes[recording.mode];
   button.disabled = !recording.available;
   if (!recording.available) info.textContent += ' · 파일 없음';
   button.addEventListener('click', () => {
@@ -52,7 +56,9 @@ for (const [index, recording] of history.recordings.entries()) {
     error.textContent = '';
     player.src = '/' + recording.file;
     player.load();
-    detail.textContent = title + ' · 세션 ' + recording.session_id;
+    document.querySelector('#mode').textContent = modes[recording.mode] || recording.mode;
+    detail.textContent = title + ' · 세션 ' + recording.session_id +
+      (recording.snapshot_id ? ' · snapshot ' + recording.snapshot_id + ' · protocol ' + recording.protocol_id : '');
   });
   item.append(button, info); document.querySelector('#recordings').append(item);
 }
@@ -79,7 +85,7 @@ def serve_history(output: Path, port: int) -> dict[str, Any]:
                 self.wfile.write(data)
                 return
             files = {'/' + row['file'] for row in history['recordings'] if row['available']}
-            if path not in files or not re.fullmatch(r'/videos/[a-f0-9-]+-\d+\.webm', path):
+            if path not in files or not re.fullmatch(r'/(?:evaluations/[a-f0-9-]+/)?videos/[a-f0-9-]+-\d+\.webm', path):
                 self.send_error(404)
                 return
             file = output / path.lstrip('/')

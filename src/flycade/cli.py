@@ -48,6 +48,7 @@ def main() -> int:
     training.add_argument('--rollout-steps', type=int)
     training.add_argument('--seed', type=int)
     training.add_argument('--training-config', type=Path)
+    training.add_argument('--initial-evaluation-config', type=Path, help='Evaluate initial policy before first rollout (EvaluationConfig JSON)')
     training.add_argument('--config', type=Path, help='GameConfig JSON')
     training.add_argument('--stop-after-updates', type=int, help='Save and stop this session; preserve total budget')
     resume_parser = sub.add_parser('resume')
@@ -58,6 +59,24 @@ def main() -> int:
     history.add_argument('output', type=Path)
     history.add_argument('--serve', action='store_true', help='Read-only local browser playback')
     history.add_argument('--port', type=int, default=8765)
+    protocol = sub.add_parser('evaluation-protocol')
+    protocol.add_argument('run', type=Path)
+    protocol.add_argument('--output', type=Path, required=True)
+    protocol.add_argument('--seeds', default='11,22,33')
+    protocol.add_argument('--mode', choices=('stochastic', 'deterministic'), default='stochastic')
+    protocol.add_argument('--max-frames', type=int, default=1800)
+    protocol.add_argument('--video-seconds', type=int, default=15)
+    evaluation = sub.add_parser('evaluate')
+    evaluation.add_argument('run', type=Path)
+    evaluation.add_argument('--snapshot', default='initial')
+    evaluation.add_argument('--protocol', type=Path, required=True)
+    evaluation.add_argument('--home', type=Path, default=Path('.flycade'))
+    evaluation.add_argument('--device', choices=('cpu', 'cuda'), default='cpu')
+    evaluation.add_argument('--realtime', action='store_true')
+    evaluation.add_argument('--training-paused', action='store_true', help=argparse.SUPPRESS)
+    compare = sub.add_parser('compare-evaluations')
+    compare.add_argument('run', type=Path)
+    compare.add_argument('evaluations', nargs='+')
     args = parser.parse_args()
     try:
         if args.command == 'diagnose':
@@ -77,6 +96,18 @@ def main() -> int:
             report = prepare_graph(args.cache, args.source_manifest or DEFAULT_SOURCE, args.config, args.output)
         elif args.command == 'inspect':
             report = inspect_registration(args.home)
+        elif args.command == 'evaluation-protocol':
+            from flycade.evaluation import EvaluationConfig, create_protocol
+            evaluation_config = EvaluationConfig(tuple(int(seed) for seed in args.seeds.split(',')), args.mode,
+                                      args.max_frames, args.video_seconds)
+            report = create_protocol(args.run, args.output, evaluation_config)
+        elif args.command == 'evaluate':
+            from flycade.evaluation import evaluate
+            report = evaluate(args.run, args.snapshot, args.protocol, args.home, args.device,
+                              args.realtime, args.training_paused)
+        elif args.command == 'compare-evaluations':
+            from flycade.evaluation import compare_evaluations
+            report = compare_evaluations(args.run, args.evaluations)
         elif args.command == 'history':
             from flycade.recording import recording_history
             if args.serve:
@@ -95,7 +126,8 @@ def main() -> int:
                              if getattr(args, name) is not None})
             game = GameConfig(**json.loads(args.config.read_text())) if args.config else GameConfig()
             report = train(args.home, args.graph, args.output, TrainingConfig(**settings),
-                           game, args.device, args.fixture, args.stop_after_updates)
+                           game, args.device, args.fixture, args.stop_after_updates,
+                           json.loads(args.initial_evaluation_config.read_text()) if args.initial_evaluation_config else None)
         else:
             from flycade.demo import demo
             from flycade.game import GameConfig

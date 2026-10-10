@@ -15,11 +15,13 @@ from flycade.graph import digest
 class RecordingEmulator:
     """Stream every fifth NES frame to VP9; publish independently playable 60s clips."""
 
-    def __init__(self, emulator: Emulator, output: Path, session: dict[str, Any]):
+    def __init__(self, emulator: Emulator, output: Path, session: dict[str, Any], *, max_video_frames: int | None = None):
         self.emulator = emulator
         self.buttons = emulator.buttons
         self.directory = output / 'videos'
         self.session = session
+        self.max_video_frames = max_video_frames
+        self.recorded_frames = 0
         self.process: subprocess.Popen[bytes] | None = None
         self.frames = 0
         self.clip_frames = 0
@@ -40,7 +42,8 @@ class RecordingEmulator:
 
     def step(self, buttons: list[int]) -> tuple[Pixels, dict[str, int], bool, bool]:
         result = self.emulator.step(buttons)
-        if self.frames % 5 == 0 and self.error is None:
+        if (self.frames % 5 == 0 and self.error is None
+                and (self.max_video_frames is None or self.recorded_frames < self.max_video_frames)):
             try:
                 self._record(result[0])
             except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as exc:
@@ -55,7 +58,7 @@ class RecordingEmulator:
             name = f"{self.session['session_id']}-{self.clip:05d}"
             self.temporary = self.directory / f'{name}.partial'
             height, width, _ = frame.shape
-            self.row = {**self.session, 'mode': 'training_recording', 'status': 'recording',
+            self.row = {**self.session, 'mode': self.session.get('mode', 'training_recording'), 'status': 'recording',
                         'file': f'videos/{name}.webm', 'codec': 'vp9', 'crf': 45,
                         'fps': 12, 'audio': False, 'width': width, 'height': height,
                         'session_frame_start': self.frames, 'segment': self.clip}
@@ -83,7 +86,8 @@ class RecordingEmulator:
             except BlockingIOError:
                 continue
         self.clip_frames += 1
-        if self.clip_frames == 720:
+        self.recorded_frames += 1
+        if self.clip_frames == 720 or self.recorded_frames == self.max_video_frames:
             self._finish()
 
     def _finish(self) -> None:
@@ -117,13 +121,18 @@ class RecordingEmulator:
             self.temporary.unlink(missing_ok=True)
             self.temporary = None
 
+    def stop_recording(self) -> None:
+        """Finalize the clip while leaving the emulator available for further episodes."""
+        self.max_video_frames = self.recorded_frames
+        try:
+            self._finish()
+        except (OSError, RuntimeError, subprocess.TimeoutExpired) as exc:
+            self.error = f'Video finalization failed: {exc}'
+            self._abort()
+
     def close(self) -> None:
         try:
-            try:
-                self._finish()
-            except (OSError, RuntimeError, subprocess.TimeoutExpired) as exc:
-                self.error = f'Video finalization failed: {exc}'
-                self._abort()
+            self.stop_recording()
         finally:
             self.emulator.close()
 
@@ -132,8 +141,14 @@ def recording_history(output: Path) -> dict[str, Any]:
     import json
     manifest = json.loads((output / 'run.json').read_text())
     rows = [json.loads(path.read_text()) for path in sorted((output / 'videos').glob('*.json'))]
+    for evaluation_file in sorted((output / 'evaluations').glob('*/report.json')):
+        evaluation = json.loads(evaluation_file.read_text())
+        if evaluation['status'] != 'completed':
+            continue
+        for video in evaluation['videos']:
+            rows.append({**video, 'file': str(evaluation_file.parent.relative_to(output) / video['file'])})
     rows.sort(key=lambda row: (row['created_unix'], row['segment']))
     for row in rows:
         row['available'] = (output / row['file']).is_file()
     return {'run_id': manifest['run_id'], 'recordings': rows,
-            'note': 'Recorded training gameplay, not evaluation or live play; no circuit samples recorded.'}
+            'note': 'Recorded training, fixed-policy evaluation or spectating; each entry identifies its mode. No live play or circuit samples.'}

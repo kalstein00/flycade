@@ -173,3 +173,35 @@ uv run --offline --locked --extra graph --extra train flycade history reports/my
 재개 호환성은 Python 소스 전체의 SHA-256, lock·패키지·Python/CUDA 버전, Run 설정 및 graph/ROM/state/초기 모델 해시가 동일한 경우로 한정한다. Git 커밋 ID는 출처 기록이며 문서만 바뀐 커밋은 허용된다. 코드 변경 후 부분 가중치 로드로 우회하지 않는다. 체크포인트는 Python/NumPy RNG를 포함한 로컬 신뢰 파일만 로드한다. 상세 계약과 실제 검증은 [A4 기록](docs/validation/A4.md)을 참조한다.
 
 브라우저 테스트 준비: `uv run playwright install chromium`. 자동 검증: `uv run --offline --locked --extra graph --extra train pytest -q`.
+
+## 고정 정책 평가와 초기 기록
+
+본 학습 전 비교 기준을 남기려면 새 Run에서 `--initial-evaluation-config configs/evaluation-small.json`을 지정한다. 초기 정책을 먼저 고정하고 **별도 CPU 프로세스의 평가가 끝난 뒤 첫 rollout**을 시작한다. 그동안 CLI와 Run 보고서에 학습 대기를 표시한다. 초기 평가 실패 시 학습을 시작하지 않는다.
+
+```bash
+uv run --offline --locked --extra graph --extra train flycade train \
+  --graph .flycade/graphs/visual-a2-final-001 --output reports/evaluated-run \
+  --updates 100 --initial-evaluation-config configs/evaluation-small.json
+
+uv run --offline --locked --extra graph --extra train flycade evaluate reports/evaluated-run \
+  --snapshot latest --protocol reports/evaluated-run/initial-evaluation-protocol.json
+```
+
+기본 예시는 seed 11·22·33의 **확률적 행동 선택**, 에피소드당 최대 1,800 emulator frame, 첫 에피소드 영상 최대 15초다. 학습 게임의 더 짧은 종료 제한은 유지한다. 결과에는 개별 거리(pixels)·분포 요약·완료 횟수/평가 횟수·사망/무진행 등 종료 사유·정규화하지 않은 게임 보상과 Run/snapshot/protocol 식별자를 기록한다. 짧은 표본의 차이를 학습 성공으로 단정하지 않는다.
+
+평가 protocol을 별도로 생성할 수도 있다. 게임·ROM/state·전처리·행동·횟수·seed·행동 선택 방식을 고정한다. 결과 JSON의 `evaluation_id` 두 개를 사용해 CLI에서 같은 protocol의 초기/후속 결과를 비교한다. 다른 protocol이면 비교를 거부한다.
+
+```bash
+uv run --offline --locked --extra graph --extra train flycade evaluation-protocol reports/evaluated-run \
+  --output reports/evaluation-protocol.json --seeds 11,22,33 --max-frames 1800 --video-seconds 15
+uv run --offline --locked --extra graph --extra train flycade evaluate reports/evaluated-run \
+  --snapshot initial --protocol reports/evaluation-protocol.json
+uv run --offline --locked --extra graph --extra train flycade compare-evaluations reports/evaluated-run \
+  <초기-evaluation-ID> <후속-evaluation-ID>
+```
+
+`--snapshot initial`, `latest`, 또는 snapshot UUID를 선택한다. `snapshots/`의 정책 전용 불변 파일을 사용하므로 optimizer나 전체 resume 파일 없이도 평가할 수 있다. 처음부터 평가 형식으로 생성한 Run이 필요하며 구형 Run snapshot의 자동 변환은 제공하지 않는다. 평가 프로그램은 학습 상태를 쓰지 않고 결과를 `evaluations/<ID>/`에 추가한다. 같은 모델을 다시 평가해도 기존 결과를 덮어쓰지 않는다.
+
+대표 **결정론적 관전**은 별도 protocol로 `--mode deterministic --seeds 11`을 지정한다. 가장 확률이 큰 행동을 고르며 seed 하나만 허용한다. seed만 바꾼 결정론적 반복을 다양한 평가로 세지 않는다. `evaluate --realtime`은 이 모드에서 가능한 범위의 게임 속도(약 60 emulator fps)에 맞춘다. 화면 관전은 `history --serve`에서 완성된 짧은 영상을 재생한다. 확률적 평가·결정론적 관전·학습 기록은 화면에서 구별되며 평가 영상에 snapshot/protocol을 표시한다.
+
+평가는 기본 CPU·환경 1개·에피소드 순차 실행이다. `--device cuda`는 여유가 있을 때 명시한다. RAM/VRAM이 부족하면 학습을 Ctrl+C로 안전 저장·종료한 다음 평가하고 `resume`한다. 평가 명령 자체가 실행 중인 trainer를 중단하지는 않는다. 소요 시간·프로세스 peak RSS·인코더 peak RSS·PyTorch peak GPU allocation을 평가 보고서에 기록한다. GPU 전체 VRAM이나 동시 프로세스 합계의 측정값은 아니다. 평가용 녹화에 실패하면 결과를 실패로 표시하고 비교에서 제외한다.

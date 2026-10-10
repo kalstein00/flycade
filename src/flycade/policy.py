@@ -1,4 +1,8 @@
 """Pixel encoder -> directed fixed COO graph -> output-only actor/critic."""
+import json
+from pathlib import Path
+
+import numpy as np
 import torch
 from torch import Tensor, nn
 from torch.distributions import Categorical
@@ -49,3 +53,12 @@ class ConnectomePolicy(nn.Module):
             state = torch.tanh(propagated.reshape(self.nodes, batch, self.state_dim).permute(1, 0, 2) + drive)
         readout = state[:, self.outputs].reshape(batch, -1)
         return Categorical(logits=self.actor(readout)), self.critic(readout).squeeze(-1)
+
+
+def policy_from_graph(graph: Path, state_dim: int, propagation_steps: int, channels: int) -> ConnectomePolicy:
+    """Construct the training/evaluation policy from an already verified graph artifact."""
+    nodes = json.loads((graph / 'nodes.json').read_text())
+    return ConnectomePolicy(len(nodes), np.load(graph / 'edge_index.npy', allow_pickle=False).T.tolist(),
+        np.load(graph / 'weight.npy', allow_pickle=False).tolist(),
+        [node['index'] for node in nodes if node['input']], [node['index'] for node in nodes if node['output']],
+        state_dim, propagation_steps, channels)
