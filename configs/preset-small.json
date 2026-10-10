@@ -1,0 +1,45 @@
+{
+  "format_version": 1,
+  "name": "small-5090-v1",
+  "status": "verified_a5",
+  "graph": {
+    "path": ".flycade/graphs/visual-a2-final-001",
+    "sha256": "97ea609f3c64c24ebfd90c73b4590878d437b5e67851dff1f60f9e74c730de7f",
+    "nodes": 4622,
+    "edges": 8010
+  },
+  "training_config": "configs/training-small.json",
+  "environment_count": 1,
+  "batch_size": 32,
+  "device": "cuda",
+  "observation": {
+    "hz": 3,
+    "max_nodes": 128,
+    "max_edges": 512,
+    "queue_capacity": 1
+  },
+  "evaluation": {
+    "config": "configs/evaluation-small.json",
+    "every_updates": 1000,
+    "execution": "sequential_cpu",
+    "best_order": [
+      "completion_rate_desc",
+      "mean_distance_desc",
+      "keep_existing_on_tie"
+    ]
+  },
+  "autosave_seconds": 600,
+  "budgets": {
+    "process_tree_peak_rss_bytes": 6442450944,
+    "pytorch_peak_allocated_bytes": 536870912,
+    "system_gpu_used_bytes": 8589934592,
+    "windows_available_min_bytes": 6442450944,
+    "linux_available_min_bytes": 4294967296,
+    "sustained_swap_allowed": false,
+    "min_transitions_per_second": 80,
+    "max_p95_update_seconds": 1.0,
+    "max_save_stop_seconds": 5.0
+  },
+  "scope": "One actual connectome NES environment; no claim of game completion or one-hour stability.",
+  "evidence": "docs/validation/A5-evidence.json"
+}

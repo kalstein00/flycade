@@ -222,3 +222,16 @@ uv run --offline --locked --extra graph --extra train flycade live reports/my-ru
 `train`과 `resume`의 `--observe-hz 2|3|4|5`로 최대 표본 빈도를 선택하고 `--observe-hz 0`으로 끈다. 이것은 게임 속도나 학습 예산을 바꾸지 않는다. `live/latest.json`은 최신 완성 표본 하나만 유지하고 전송 대기도 1개로 제한한다. 느린 소비자에게 누적 재생하지 않는다. 과거 영상은 기존 `history --serve`에서 보며, 회로 표본의 과거 영상 동기 재생은 제공하지 않는다.
 
 실제 NES·RTX 5090 측정과 브라우저 검증 범위는 [T06 기록](docs/validation/T06.md)을 참고한다. 기존 Run은 코드 해시가 다르면 재개가 거부되므로 이번 소스로 새 Run을 만들어 사용한다.
+
+## 실측된 작은 기본 프리셋 (A5)
+
+실제 NES·RTX5090·WSL에서 관찰/평가/저장/새 프로세스 재개를 포함해10분25초 검증했다. 설정과 수치 예산은 `configs/preset-small.json`, 근거와 재실행 절차는 [A5 기록](docs/validation/A5.md)에 있다. 본 학습은 다음 고정 예산과 초기 평가로 시작한다.
+
+```bash
+uv run --offline --locked --extra train flycade train \
+  --graph .flycade/graphs/visual-a2-final-001 --output reports/daily-001 \
+  --training-config configs/training-small.json \
+  --initial-evaluation-config configs/evaluation-small.json --observe-hz 3
+```
+
+이 자원 측정은1시간 안정성이나 게임 클리어를 보장하지 않는다. 자동 저장과 주기 평가는 다음 운영 단계에서 추가한다.
