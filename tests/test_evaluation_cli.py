@@ -9,7 +9,8 @@ from test_training_cli import prepared_graph
 def protected_files(run):
     return {str(path.relative_to(run)): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in run.rglob('*') if path.is_file()
-            and not any(part in ('evaluations', 'protocols') for part in path.relative_to(run).parts)}
+            and path.name not in ('checkpoint-references.json', 'evaluation-index.json', '.references.lock')
+            and not any(part in ('evaluations', 'protocols', 'evaluation-leases') for part in path.relative_to(run).parts)}
 
 
 def test_initial_and_trained_snapshots_evaluate_without_changing_training(tmp_path):

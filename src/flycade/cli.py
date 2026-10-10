@@ -111,6 +111,9 @@ def main() -> int:
     evaluation.add_argument('--device', choices=('cpu', 'cuda'), default='cpu')
     evaluation.add_argument('--realtime', action='store_true')
     evaluation.add_argument('--training-paused', action='store_true', help=argparse.SUPPRESS)
+    evaluations = sub.add_parser('evaluations')
+    evaluations.add_argument('run', type=Path)
+    evaluations.add_argument('--refresh', action='store_true', help='Rebuild the index from completed local reports')
     compare = sub.add_parser('compare-evaluations')
     compare.add_argument('run', type=Path)
     compare.add_argument('evaluations', nargs='+')
@@ -142,6 +145,9 @@ def main() -> int:
             from flycade.evaluation import evaluate
             report = evaluate(args.run, args.snapshot, args.protocol, args.home, args.device,
                               args.realtime, args.training_paused)
+        elif args.command == 'evaluations':
+            from flycade.evaluation_index import evaluation_catalog, refresh_evaluations
+            report = refresh_evaluations(args.run) if args.refresh else evaluation_catalog(args.run)
         elif args.command == 'compare-evaluations':
             from flycade.evaluation import compare_evaluations
             report = compare_evaluations(args.run, args.evaluations)

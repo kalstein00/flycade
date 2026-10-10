@@ -66,6 +66,29 @@ def branch(parent: Path, checkpoint_id: str, output: Path, home: Path) -> dict[s
         sync_directory(output / 'graph')
         atomic_json(output / 'run.json', manifest)
         progress = copy.deepcopy(state['progress'])
+        protocol = parent / 'initial-evaluation-protocol.json'
+        if protocol.exists():
+            shutil.copyfile(protocol, output / protocol.name)
+            (output / protocol.name).chmod(0o444)
+        if progress.get('evaluation_history'):
+            from flycade.evaluation_index import evaluation_catalog
+            catalog = evaluation_catalog(parent)
+            atomic_json(origin / 'evaluation-index.json', catalog)
+            # Preserve ancestor evidence separately: it must never enter the child's ranking.
+            for directory in ('evaluations', 'snapshots', 'protocols'):
+                if (parent / directory).exists():
+                    shutil.copytree(parent / directory, origin / directory)
+            progress['inherited_evaluation_history'] = {
+                'run_id': state['manifest']['run_id'],
+                'evaluation_ids': progress['evaluation_history'],
+                'archive': 'origin/evaluation-index.json'}
+            progress['evaluation_history'] = []
+            progress.pop('initial_evaluation_id', None)
+            for path in origin.rglob('*'):
+                if path.is_file():
+                    with path.open('rb') as handle:
+                        os.fsync(handle.fileno())
+            sync_directory(origin)
         for key in ('recovery', 'error', 'checkpoint_id', 'last_save', 'resumed_from'):
             progress.pop(key, None)
         progress.update(run_id=manifest['run_id'], session_id=manifest['session_id'], status='saved', lineage=lineage)

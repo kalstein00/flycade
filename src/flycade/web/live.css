@@ -15,3 +15,5 @@ select{font:inherit;color:var(--text);background:var(--panel);border:1px solid v
 .history-chart{display:block;width:100%;height:auto}.history-chart .axis{stroke:var(--line);stroke-width:.5}.history-chart text{fill:var(--muted);font-size:11px}.history-chart .series{stroke:var(--accent);stroke-width:1.5}.history-chart .point{fill:var(--accent)}#history-action{width:100%}
 
 .stream-controls{display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap;margin-bottom:14px;font-size:12px}.stream-controls span{color:var(--muted)}#run-choice{max-width:min(100%,440px)}
+
+a{color:var(--accent);text-underline-offset:4px}a:hover{color:var(--text)}

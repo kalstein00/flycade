@@ -11,5 +11,6 @@
   "clip_ratio": 0.2,
   "entropy_coefficient": 0.01,
   "value_coefficient": 0.5,
-  "max_grad_norm": 0.5
+  "max_grad_norm": 0.5,
+  "evaluation_every_updates": 1000
 }

@@ -14,6 +14,7 @@ function status() {
   if (connected && current?.control?.recovery?.state === 'validating') message = '복구 정상본 검증 중';
   if (connected && current?.control?.recovery?.state === 'failed') message = '복구 실패 · 정상본 확인 필요';
   if (!message) message = current?.sample ? (now - current.sample.observed_unix > 2 ? '표본 지연 · 마지막 표본' : '연결됨 · 학습 중') : '연결됨 · 첫 표본 대기';
+  if (connected && current?.control?.training_paused) message = '고정 정책 평가 중 · 학습 대기 · 마지막 학습 표본';
   $('#status').textContent = message;
   $('#received').textContent = lastReceived ? `마지막 수신 ${time(lastReceived)}` : '수신된 표본 없음';
   $('#lag').textContent = current?.sample ? `표본 경과 ${number(now - current.sample.observed_unix, 1)}초` : '지연 —';
@@ -22,6 +23,7 @@ function operation(control) {
   if (!control) {$('#operation').textContent='저장 상태 확인 불가';return;}
   const labels={idle:'학습 중 · 저장 전',waiting_boundary:'저장 요청 접수 · 안전 경계 대기',saving:'체크포인트 저장 중',complete:control.active?(control.stop?'저장 완료 · 종료 정리 중':'저장 완료 · 학습 계속'):'저장 완료 · 종료 완료',failed:'저장 또는 학습 실패',trainer_stopped:'프로세스 종료 · 마지막 정상본 확인 필요'};
   $('#operation').textContent=control.pending_request ? '저장 요청 전송 · 접수 대기' : labels[control.state] || control.state;
+  if(control.training_paused) $('#operation').textContent='순차 CPU 평가 중 · 학습 대기 · snapshot '+control.evaluating_snapshot;
   if(control.delay_seconds) $('#operation').textContent+=` · 대기 ${number(control.delay_seconds,1)}초`;
   if(control.error) $('#operation').textContent+=` · ${control.error}`;
   const recovery=control.recovery;
@@ -123,7 +125,8 @@ async function poll() {
   try {
     if(!catalog){
       const response=await fetch('/api/catalog',{cache:'no-store',signal:AbortSignal.timeout(2000)});if(!response.ok)throw new Error('Catalog unavailable');catalog=await response.json();
-      selectedRun=catalog.default_run;
+      const requested=new URLSearchParams(location.search).get('run');
+      selectedRun=catalog.runs.some(run=>run.run_id===requested)?requested:catalog.default_run;
       for(const run of catalog.runs){const option=document.createElement('option');option.value=run.run_id;option.textContent=`${run.label} · ${run.run_id.slice(0,8)}`;$('#run-choice').append(option);}
       $('#run-choice').value=selectedRun;workerChoices();
     }
@@ -135,6 +138,7 @@ async function poll() {
     if (accepts(next)) {
       if (!current || next.generation!==current.generation || next.sequence!==current.sequence || next.status!==current.status) await render(next);
       if(selection!==selectionVersion)return;
+      $('#compare-link').href='/compare?'+new URLSearchParams({run:selectedRun});
       operation(next.control);
       runInformation(next.run_info);
       current=next;runID=next.run_id;lastReceived=Date.now()/1000;

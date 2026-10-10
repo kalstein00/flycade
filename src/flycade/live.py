@@ -1,6 +1,7 @@
 """Loopback-only read-only live viewer. Polling reads one atomically replaced bundle."""
 import json
 import os
+import re
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from typing import Any
@@ -78,10 +79,36 @@ def serve_live(run: Path, port: int = 8766, additional_runs: list[Path] | None =
                 envelope['selected_worker'] = worker
                 body = json.dumps(envelope, allow_nan=False).encode()
                 content_type = 'application/json'
-            elif self.path in ('/', '/live.js', '/live.css', '/inspector.js'):
-                filename = 'live.html' if self.path == '/' else self.path[1:]
+            elif request.path in ('/api/evaluations', '/api/video'):
+                from flycade.evaluation_index import evaluation_catalog
+                query = parse_qs(request.query)
+                evaluation_run = registry.get(query.get('run', [default_id])[0])
+                if evaluation_run is None:
+                    self.send_error(404, 'Unknown Run')
+                    return
+                try:
+                    catalog = evaluation_catalog(evaluation_run)
+                except (OSError, ValueError, KeyError):
+                    self.send_error(503, 'Evaluation history unavailable')
+                    return
+                if request.path == '/api/video':
+                    filename = query.get('file', [''])[0]
+                    allowed = {f"evaluations/{row['evaluation_id']}/{video['file']}"
+                               for group in catalog['protocols'] for row in group['results']
+                               for video in row['videos']}
+                    if filename not in allowed or not re.fullmatch(
+                            r'evaluations/[a-f0-9-]+/videos/[a-f0-9-]+-\d+\.webm', filename):
+                        self.send_error(404)
+                        return
+                    from flycade.media import send_video
+                    send_video(self, evaluation_run / filename)
+                    return
+                body = json.dumps(catalog, allow_nan=False).encode()
+                content_type = 'application/json'
+            elif request.path in ('/', '/compare', '/live.js', '/live.css', '/inspector.js', '/compare.js', '/compare.css'):
+                filename = {'/': 'live.html', '/compare': 'compare.html'}.get(request.path, request.path[1:])
                 body = (assets / filename).read_bytes()
-                content_type = {'live.html': 'text/html', 'live.js': 'text/javascript', 'live.css': 'text/css', 'inspector.js': 'text/javascript'}[filename]
+                content_type = {'.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css'}[Path(filename).suffix]
             else:
                 self.send_error(404)
                 return

@@ -3,7 +3,7 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Flycade · 실시간 학습 관찰</title><link rel="stylesheet" href="/live.css"><script defer src="/inspector.js"></script><script defer src="/live.js"></script></head>
 <body>
-<header><h1>Flycade <span>학습 관찰</span></h1><div class="connection"><strong id="status" role="status">연결 중</strong><button id="reconnect" type="button">다시 연결</button></div></header>
+<header><h1>Flycade <span>학습 관찰</span></h1><div class="connection"><a id="compare-link" href="/compare">평가 비교</a><strong id="status" role="status">연결 중</strong><button id="reconnect" type="button">다시 연결</button></div></header>
 <div class="stream-controls"><label for="run-choice">관찰 Run</label><select id="run-choice" aria-label="관찰 Run"></select><label for="worker-choice">worker</label><select id="worker-choice" aria-label="관찰 worker"></select><span>읽기 전용 · 실행 worker 수는 학습 프리셋을 따릅니다.</span></div>
 <div class="runbar"><span>Run <b id="run">—</b></span><span>세션 <b id="session">—</b></span><span>스테이지 <b id="stage">—</b></span><span id="model-kind">모델: 커넥톰 PPO</span><span id="mode">학습 · 확률적 행동 선택</span><span>현재 update <b id="update">—</b></span></div>
 <details id="run-info"><summary>Run 정보 · <strong id="run-kind">—</strong></summary><p id="run-identity" class="identifier"></p><p id="lineage" class="identifier"></p><p id="budget-info"></p><p id="budget-events"></p></details>

@@ -234,7 +234,7 @@ uv run --offline --locked --extra train flycade train \
   --initial-evaluation-config configs/evaluation-small.json --observe-hz 3
 ```
 
-이 자원 측정은1시간 안정성이나 게임 클리어를 보장하지 않는다. 자동 저장은 기본600초이며 주기 평가는 후속 단계에서 추가한다.
+이 자원 측정은1시간 안정성이나 게임 클리어를 보장하지 않는다. 자동 저장은 기본600초이며, 초기 평가를 활성화한 Run은 기본1,000 updates마다 같은 조건으로 순차 CPU 평가한다.
 
 
 ## 매일 저장하고 이어 학습하기
@@ -259,3 +259,5 @@ uv run --offline --locked --extra train flycade resume reports/daily-001
 과거 저장본의 전체 학습 상태를 새 Run으로 이어가려면 `branch PARENT --checkpoint UUID --output CHILD` 후 `resume CHILD`를 실행합니다. `warm-start PARENT --checkpoint UUID --output CHILD --training-config CONFIG.json`은 가중치만 가져와 새 optimizer·진도·스케줄로 학습합니다. `extend-budget RUN --updates TOTAL`은 정지한 같은 Run의 총 update 예산을 명시적으로 늘립니다. 브라우저 ‘Run 정보’에서 부모 계보와 예산 변경을 확인할 수 있습니다. [계약·검증·실행 안내](docs/validation/T10.md).
 
 라이브 회로에서 노드(Enter/Space 가능)나 뉴런 표를 선택하면 원본 ID·알려진 종류·모델 활성 평균을 볼 수 있습니다. 표시군/연결 필터·확대·입력 프레임·짧은 활동 이력은 브라우저 안에서만 바뀝니다. `live RUN_A --run RUN_B`로 명시한 Run 사이를 전환합니다. [관찰 범위와 이력 상한·검증](docs/validation/T11.md).
+
+주기 평가와 초기·최근·최고본 비교는 [T12 운영·검증](docs/validation/T12.md)을 참고하세요. `live RUN` 화면의 **평가 비교**에서 저장된 짧은 영상과 시드별 성과를 확인합니다.

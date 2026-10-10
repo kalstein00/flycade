@@ -54,11 +54,14 @@ class TrainingConfig:
     autosave_seconds: float = 600
     evaluation_timeout_seconds: float = 120
     keep_checkpoints: int = 3
+    evaluation_every_updates: int = 1000
 
     def __post_init__(self) -> None:
         for name in ('updates', 'rollout_steps', 'epochs', 'state_dim', 'propagation_steps', 'keep_checkpoints'):
             if type(getattr(self, name)) is not int or getattr(self, name) <= 0:
                 raise ValueError(f'{name} must be a positive integer')
+        if type(self.evaluation_every_updates) is not int or self.evaluation_every_updates < 0:
+            raise ValueError('evaluation_every_updates must be a nonnegative integer')
         if type(self.seed) is not int or not 0 <= self.seed < 2**32:
             raise ValueError('seed must be an integer in [0, 2**32)')
         for name in ('learning_rate', 'gamma', 'gae_lambda', 'clip_ratio', 'entropy_coefficient',
@@ -191,6 +194,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
         git = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=source, capture_output=True, text=True)
         manifest: dict[str, Any] = {'format_version': 2, 'checkpoint_format': FORMAT, 'fixture': fixture, 'run_id': str(uuid.uuid4()), 'session_id': str(uuid.uuid4()),
             'created_unix': time.time(), 'seed': config.seed, 'training': asdict(config),
+            'evaluation': initial_evaluation,
             'game': asdict(game), 'registration': registration, 'graph': graph_report,
             'device': device, 'device_name': torch.cuda.get_device_name() if device == 'cuda' else 'CPU',
             'python': platform.python_version(), 'cuda_runtime': torch.version.cuda,
@@ -256,6 +260,8 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
     sessions.mkdir(exist_ok=True)
     write_json(sessions / f"{report['session_id']}.json", session)
     report.setdefault('next_autosave_seconds', config.autosave_seconds)
+    report.setdefault('evaluation_history', [])
+    report.setdefault('next_evaluation_update', config.evaluation_every_updates if manifest.get('evaluation') is not None and config.evaluation_every_updates else None)
     control = SaveControl(output, session, report)
     write_json(output / 'report.json', report)
     if resume_state is not None:
@@ -279,35 +285,11 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
             from flycade.evaluation import EvaluationConfig, create_protocol
             protocol = output / 'initial-evaluation-protocol.json'
             create_protocol(output, protocol, EvaluationConfig(**initial_evaluation))
-            report.update(status='evaluating_initial', training_paused=True)
-            write_json(output / 'report.json', report)
-            print('Initial evaluation: training waits before first rollout; separate CPU process.', file=sys.stderr)
-            from flycade.workers import kill_worker
-            worker = subprocess.Popen([sys.executable, '-m', 'flycade', 'evaluate', str(output),
-                '--snapshot', 'initial', '--protocol', str(protocol), '--home', str(home),
-                '--device', 'cpu', '--training-paused'], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                text=True, start_new_session=True)
-            report['evaluation_worker_pid'] = worker.pid
-            deadline = time.monotonic() + config.evaluation_timeout_seconds
-            try:
-                while True:
-                    control.poll(stop_requested)
-                    remaining = deadline - time.monotonic()
-                    if remaining <= 0:
-                        raise PreparationError('evaluation_timeout', 'Initial evaluator exceeded bounded wait; no rollout started, initial policy retained')
-                    try:
-                        stdout, stderr = worker.communicate(timeout=min(.1, remaining))
-                        break
-                    except subprocess.TimeoutExpired:
-                        continue
-                if worker.returncode != 0:
-                    raise PreparationError('initial_evaluation_failed', stdout + stderr)
-                evaluation = json.loads(stdout)
-            finally:
-                if worker.poll() is None:
-                    kill_worker(worker)
-                report['evaluation_worker_reaped'] = worker.poll() is not None
-            report.update(initial_evaluation_id=evaluation['evaluation_id'], status='running', training_paused=False)
+            from flycade.evaluation_worker import evaluate_snapshot
+            evaluation = evaluate_snapshot(output, home, 'initial', protocol,
+                config.evaluation_timeout_seconds, report, control, lambda: control.poll(stop_requested))
+            report['initial_evaluation_id'] = evaluation['evaluation_id']
+            report['evaluation_history'].append(evaluation['evaluation_id'])
         report['training_started_unix'] = time.time()
         learning_started = time.perf_counter()
         recording = RecordingEmulator(FixtureEmulator() if fixture else NesEmulator(home), output,
@@ -352,9 +334,37 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
             from flycade.retention import prune_checkpoints
             report['pruned_checkpoints'] = prune_checkpoints(output, config.keep_checkpoints)
 
+        def periodic_evaluation() -> None:
+            nonlocal learning_started
+            control.poll(stop_requested)
+            if stop_requested or (control.pending is not None and control.pending['stop']):
+                return
+            due = report.get('next_evaluation_update')
+            if due is None or report['updates'] < due:
+                return
+            from flycade.evaluation_worker import evaluate_snapshot
+            # Commit before starting another process. A failed evaluator leaves the due
+            # position in this full-state checkpoint, so resume retries it.
+            control.poll(stop_requested, True)
+            persist()
+            paused_at = time.perf_counter()
+            evaluation = evaluate_snapshot(output, home, report['checkpoint_id'],
+                output / 'initial-evaluation-protocol.json', config.evaluation_timeout_seconds,
+                report, control, lambda: control.poll(stop_requested))
+            paused_seconds = time.perf_counter() - paused_at
+            learning_started += paused_seconds
+            report['evaluation_seconds'] = report.get('evaluation_seconds', 0.) + paused_seconds
+            report['evaluation_history'].append(evaluation['evaluation_id'])
+            report['next_evaluation_update'] = due + (int((report['updates'] - due) / config.evaluation_every_updates) + 1) * config.evaluation_every_updates
+            write_json(output / 'report.json', report)
+
+        if resume_state is not None:
+            periodic_evaluation()
         episode_step = 0
         with (output / 'transitions.jsonl').open('a') as transitions, (output / 'updates.jsonl').open('a') as updates:
             for update in range(start_updates, config.updates):
+                if resume_state is not None and (stop_requested or (control.pending is not None and control.pending['stop'])):
+                    break
                 report['safe_boundary'] = False
                 rollout: list[RolloutTransition] = []
                 for _ in range(config.rollout_steps):
@@ -418,6 +428,7 @@ def _train(home: Path, graph: Path, output: Path, config: TrainingConfig,
                 report['transitions_per_second'] = report['transitions'] / report['training_seconds']
                 log_row(updates, report)
                 write_json(output / 'report.json', report)
+                periodic_evaluation()
                 control.poll(stop_requested)
                 if control.pending is not None and not control.pending['stop']:
                     persist()
@@ -506,7 +517,9 @@ def resume(output: Path, home: Path, stop_after_updates: int | None = None, obse
         if state['progress'].get('budget', {}).get('total_updates', 0) > budget['total_updates']:
             raise ValueError('Budget ledger is older than the checkpoint; restore the ledger')
         config = replace(TrainingConfig(**manifest['training']), updates=budget['total_updates'])
-        if state['progress']['updates'] >= config.updates:
+        due = state['progress'].get('next_evaluation_update')
+        pending_evaluation = due is not None and due <= state['progress']['updates']
+        if state['progress']['updates'] >= config.updates and not pending_evaluation:
             raise PreparationError('budget_completed', 'Run budget is already complete; no schedule restart')
         return _train(home, output / 'graph', output, config, GameConfig(**manifest['game']),
                       manifest['device'], manifest['fixture'], stop_after_updates, state, observe_hz=observe_hz)

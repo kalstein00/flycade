@@ -1,5 +1,4 @@
 """Sequential fixed-policy evaluation in a dedicated CLI process."""
-import hashlib
 import json
 import random
 import resource
@@ -14,6 +13,8 @@ import torch
 
 from flycade.checkpoint import atomic_json
 from flycade.errors import PreparationError
+from flycade.evaluation_index import protocol_identity, refresh_evaluations
+from flycade.retention import evaluation_lease
 from flycade.game import ACTIONS, GameConfig, GameEnv
 from flycade.graph import digest
 from flycade.nes import NesEmulator
@@ -41,10 +42,6 @@ class EvaluationConfig:
             raise ValueError('Evaluation max_frames must be a positive integer')
         if type(self.video_seconds) is not int or not 1 <= self.video_seconds <= 60:
             raise ValueError('Evaluation video_seconds must be an integer in [1, 60]')
-
-
-def protocol_identity(protocol: dict[str, Any]) -> str:
-    return hashlib.sha256(json.dumps(protocol, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()).hexdigest()
 
 
 def make_protocol(manifest: dict[str, Any], config: EvaluationConfig) -> dict[str, Any]:
@@ -82,6 +79,13 @@ def validate_protocol(protocol: dict[str, Any], manifest: dict[str, Any]) -> Non
 
 def evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device: str,
              realtime: bool = False, training_paused: bool = False) -> dict[str, Any]:
+    evaluation_id = str(uuid.uuid4())
+    with evaluation_lease(run, evaluation_id, selection) as snapshot_id:
+        return _evaluate(run, snapshot_id, protocol_path, home, device, realtime, training_paused, evaluation_id)
+
+
+def _evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device: str,
+              realtime: bool, training_paused: bool, evaluation_id: str) -> dict[str, Any]:
     started = time.perf_counter()
     torch.set_num_threads(1)
     if device == 'cuda' and torch.cuda.is_available():
@@ -101,7 +105,6 @@ def evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device:
     else:
         atomic_json(persisted, protocol)
         persisted.chmod(0o444)
-    evaluation_id = str(uuid.uuid4())
     output = run / 'evaluations' / evaluation_id
     output.mkdir(parents=True)
     atomic_json(output / 'protocol.json', protocol)
@@ -111,7 +114,7 @@ def evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device:
         'created_unix': time.time(), 'mode': 'stochastic_evaluation' if protocol['mode'] == 'stochastic'
                                           else 'deterministic_spectating',
         'device': device, 'status': 'running', 'training_paused': training_paused,
-        'training_pause_reason': 'initial evaluation before first rollout' if training_paused else None,
+        'training_pause_reason': 'sequential CPU evaluation; trainer waits at a safe boundary' if training_paused else None,
         'execution': 'one separate evaluation process; episodes sequential; no optimizer',
         'evidence': 'synthetic CPU fixture; not NES/GPU acceptance' if manifest['fixture'] else f'real NES on {device}',
         'distance_unit': 'pixels', 'reward_unit': 'raw game reward', 'episodes': [], 'videos': [],
@@ -196,6 +199,7 @@ def evaluate(run: Path, selection: str, protocol_path: Path, home: Path, device:
         report['encoder_peak_rss_bytes'] = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss * 1024
         report['peak_cuda_allocated_bytes'] = torch.cuda.max_memory_allocated() if device == 'cuda' else 0
         atomic_json(output / 'report.json', report)
+        refresh_evaluations(run)
     if report['status'] != 'completed':
         raise PreparationError('evaluation_recording_failed', str(report.get('error')))
     return {'output': str(output.resolve()), **report}
